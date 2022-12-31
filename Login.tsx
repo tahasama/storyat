@@ -33,7 +33,7 @@ const Login = () => {
       }
       setTimeout(() => {
         setLoading(!loading);
-      }, 500);
+      }, 5000);
     });
 
     return unsubscribe;
@@ -59,37 +59,37 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      {/* {loading ? ( */}
-      <Splash />
-      {/* //   <View style={styles.container1}>
-      //     <View style={styles.inputContainer}>
-      //       <TextInput
-      //         placeholder="Email"
-      //         value={email}
-      //         onChangeText={(text) => setEmail(text)}
-      //         style={styles.input}
-      //       />
-      //       <TextInput
-      //         placeholder="Password"
-      //         value={password}
-      //         onChangeText={(text) => setPassword(text)}
-      //         style={styles.input}
-      //         secureTextEntry
-      //       />
-      //     </View>
-      //     <View style={styles.buttonContainer}>
-      //       <TouchableOpacity onPress={handleLogin} style={styles.button}>
-      //         <Text style={styles.buttonText}>Login</Text>
-      //       </TouchableOpacity>
-      //       <TouchableOpacity
-      //         onPress={handleSignUp}
-      //         style={[styles.button, styles.buttonOutline]}
-      //       >
-      //         <Text style={styles.buttonOutlineText}>Register</Text>
-      //       </TouchableOpacity>
-      //     </View>
-      //   </View>
-      // )} */}
+      {loading ? (
+        <Splash />
+      ) : (
+        <View style={styles.container1}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor={"#8BBCCC"}
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor={"#8BBCCC"}
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              style={styles.input}
+              secureTextEntry
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={handleLogin} style={styles.button1}>
+              <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleSignUp} style={[styles.button2]}>
+              <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#051e28",
   },
   container1: {
     flex: 1,
@@ -112,7 +113,8 @@ const styles = StyleSheet.create({
     width: "60%",
   },
   input: {
-    backgroundColor: "white",
+    backgroundColor: "#144272",
+    color: "#EAFDFC",
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
@@ -124,26 +126,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 40,
   },
-  button: {
-    backgroundColor: "#0782F9",
+  button1: {
+    backgroundColor: "#292FBF",
     width: "100%",
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
   },
-  buttonOutline: {
-    backgroundColor: "white",
-    marginTop: 7,
-    borderColor: "#0782F9",
-    borderWidth: 2,
+  button2: {
+    backgroundColor: "#2A3FA0",
+    width: "100%",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 8,
   },
+
   buttonText: {
-    color: "white",
-    fontWeight: "700",
-    fontSize: 16,
-  },
-  buttonOutlineText: {
-    color: "#0782F9",
+    color: "#8BBCCC",
     fontWeight: "700",
     fontSize: 16,
   },

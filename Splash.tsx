@@ -12,9 +12,11 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
+import { LinearGradient } from "expo-linear-gradient";
 
 const Splash = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnimOut = useRef(new Animated.Value(1)).current;
   const moveAnim = useRef(new Animated.ValueXY({ x: 0, y: 150 })).current;
   const colorAnim = useRef(new Animated.Value(0)).current;
 
@@ -27,15 +29,22 @@ const Splash = () => {
       }),
       Animated.timing(colorAnim, {
         toValue: 1,
-        duration: 2000,
+        duration: 3000,
         useNativeDriver: false,
       }),
       Animated.timing(moveAnim, {
         toValue: { x: 0, y: 0 },
-        duration: 1500,
+        duration: 2000,
         useNativeDriver: false,
       }),
     ]).start();
+    setTimeout(() => {
+      Animated.timing(fadeAnimOut, {
+        toValue: 0,
+        duration: 3000,
+        useNativeDriver: false,
+      }).start();
+    }, 2000);
   }, []);
 
   const boxInterpolation = colorAnim.interpolate({
@@ -59,8 +68,11 @@ const Splash = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
+    <Animated.View style={[styles.container, { opacity: fadeAnimOut }]}>
+      <LinearGradient
+        colors={["#4c669f", "#3b5998", "#192f6a"]}
+        style={[styles.container]}
+      >
         <Animated.Text
           style={[
             styles.title,
@@ -82,8 +94,8 @@ const Splash = () => {
         >
           STORYAT
         </Animated.Text>
-      </View>
-    </SafeAreaView>
+      </LinearGradient>
+    </Animated.View>
   );
 };
 

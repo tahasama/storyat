@@ -1,8 +1,12 @@
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signInWithPopup,
+  getAuth,
+  GoogleAuthProvider,
+  signInWithCredential,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, faceBookProvider, googleProvider } from "./firebase";
 import {
   View,
   Text,
@@ -16,9 +20,20 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigation } from "@react-navigation/core";
 import Splash from "./Splash";
+import * as AuthSession from "expo-auth-session";
+import {
+  useAuthRequest,
+  useIdTokenAuthRequest,
+} from "expo-auth-session/build/providers/Google";
+import * as WebBrowser from "expo-web-browser";
+import GoogleLogin from "./GoogleLogin";
+import FaceBookLogin from "./FaceBookLogin";
+
+WebBrowser.maybeCompleteAuthSession();
 
 const Login = () => {
   // const dispatch = useDispatch();
+  const [AccessToken, setAccessToken] = useState("");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,39 +72,59 @@ const Login = () => {
       .catch((error) => alert(error.message));
   };
 
+  // const handleLoginGoogle = () => {
+  //   signInWithPopup(auth, googleProvider)
+  //     .then((userCredentials) => {
+  //       const user = userCredentials.user;
+  //       console.log("Logged in with:", user.email);
+  //     })
+  //     .catch((error) => alert(error.message));
+  // };
+
+  const handleLoginFacebook = () => {
+    signInWithPopup(auth, faceBookProvider)
+      .then((userCredentials) => {
+        const user = userCredentials.user;
+        console.log("Logged in with:", user.email);
+      })
+      .catch((error) => alert(error.message));
+  };
+
   return (
     <View style={styles.container}>
-      {loading ? (
+      {/* {loading ? (
         <Splash />
-      ) : (
-        <View style={styles.container1}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Email"
-              placeholderTextColor={"#8BBCCC"}
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor={"#8BBCCC"}
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              style={styles.input}
-              secureTextEntry
-            />
-          </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={handleLogin} style={styles.button1}>
-              <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleSignUp} style={[styles.button2]}>
-              <Text style={styles.buttonText}>Register</Text>
-            </TouchableOpacity>
-          </View>
+      ) : ( */}
+      <View style={styles.container1}>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Email"
+            placeholderTextColor={"#8BBCCC"}
+            value={email}
+            onChangeText={(text) => setEmail(text)}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor={"#8BBCCC"}
+            value={password}
+            onChangeText={(text) => setPassword(text)}
+            style={styles.input}
+            secureTextEntry
+          />
         </View>
-      )}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={handleLogin} style={styles.button1}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSignUp} style={styles.button2}>
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+          <GoogleLogin />
+          <FaceBookLogin />
+        </View>
+      </View>
+      {/* )} */}
     </View>
   );
 };
@@ -121,7 +156,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   buttonContainer: {
-    width: "43%",
+    width: "60%",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 40,
@@ -129,17 +164,46 @@ const styles = StyleSheet.create({
   button1: {
     backgroundColor: "#292FBF",
     width: "100%",
-    padding: 15,
-    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 20,
     alignItems: "center",
+    borderColor: "#0F3460",
+    borderWidth: 1,
   },
   button2: {
     backgroundColor: "#2A3FA0",
     width: "100%",
-    padding: 15,
-    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 20,
     alignItems: "center",
-    marginTop: 8,
+    marginTop: 12,
+    borderColor: "#0F3460",
+    borderWidth: 1,
+  },
+  button3: {
+    backgroundColor: "#16213E",
+    width: "100%",
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 20,
+    marginTop: 12,
+    alignItems: "center",
+    borderColor: "#0F3460",
+    borderWidth: 1,
+  },
+
+  button4: {
+    backgroundColor: "#182747",
+    width: "100%",
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 20,
+    marginTop: 12,
+    alignItems: "center",
+    borderColor: "#0F3460",
+    borderWidth: 1,
   },
 
   buttonText: {

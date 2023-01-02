@@ -13,18 +13,27 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+  
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier":"com.storyat"
     },
     "android": {
+      "package":"com.storyat",
       "adaptiveicon": {
-        "foregroundImage": "./assets/icon.png"    
+        "backgroundColor": "#FFFFFF",
+        "resizeMode": "cover"
       }
     },
     "web": {
-    
       "resizeMode": "cover"
-
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "fa46581a-98d0-486d-9914-59ff9da718f4"
+      }
+    },
+    "owner": "tahasama",
+    "scheme":"com.storyat"
   }
 }

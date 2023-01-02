@@ -4,6 +4,7 @@ import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { auth } from "./firebase";
 import { useNavigation } from "@react-navigation/core";
+import { RevokeTokenRequest } from "expo-auth-session";
 
 const Logout = () => {
   const navigation = useNavigation<any>();

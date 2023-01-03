@@ -1,13 +1,17 @@
-import { signOut } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { auth } from "./firebase";
 import { useNavigation } from "@react-navigation/core";
-import { RevokeTokenRequest } from "expo-auth-session";
+import { AccessTokenRequest, RevokeTokenRequest } from "expo-auth-session";
+import { useIdTokenAuthRequest } from "expo-auth-session/build/providers/Google";
 
 const Logout = () => {
   const navigation = useNavigation<any>();
+  const [request, response, promptAsync] = useIdTokenAuthRequest({
+    clientId: process.env.REACT_APP_CLIENT_ID_WEB,
+  });
 
   return (
     <View style={styles.buttonContainer}>

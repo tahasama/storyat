@@ -21,7 +21,6 @@ const Index = () => {
   const Stack = createNativeStackNavigator();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
-  console.log("hello user", user.email);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {

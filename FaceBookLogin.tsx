@@ -32,7 +32,6 @@ const GoogleLogin = () => {
     responseType: AuthSession.ResponseType.Token,
     expoClientId: process.env.REACT_APP_FACEBOOK_APP_ID,
   });
-  console.log("eeeeeeeeeeeeeeee", request);
 
   useEffect(() => {
     if (response?.type === "success") {
@@ -40,15 +39,7 @@ const GoogleLogin = () => {
       const auth = getAuth();
       const credential = FacebookAuthProvider.credential(access_token);
       // Sign in with the credential from the Facebook user.
-      console.log("11111111", credential);
       signInWithCredential(auth, credential).catch((err) => {
-        console.log(
-          "xxxxxxxxxx",
-          err.code === "auth/account-exists-with-different-credential",
-          err.email,
-          "and....",
-          err
-        );
         err.code === "auth/account-exists-with-different-credential" &&
           Alert.alert(
             "Email used with other method",
@@ -57,7 +48,6 @@ const GoogleLogin = () => {
       });
     }
   }, [response]);
-  console.log("AuthSession with:", response);
   return (
     <TouchableOpacity
       onPress={() => {

@@ -44,7 +44,7 @@ const Login = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        navigation.replace("eee");
+        navigation.replace("items");
       }
       setTimeout(() => {
         setLoading(!loading);
@@ -65,24 +65,6 @@ const Login = () => {
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        console.log("Logged in with:", user.email);
-      })
-      .catch((error) => alert(error.message));
-  };
-
-  // const handleLoginGoogle = () => {
-  //   signInWithPopup(auth, googleProvider)
-  //     .then((userCredentials) => {
-  //       const user = userCredentials.user;
-  //       console.log("Logged in with:", user.email);
-  //     })
-  //     .catch((error) => alert(error.message));
-  // };
-
-  const handleLoginFacebook = () => {
-    signInWithPopup(auth, faceBookProvider)
       .then((userCredentials) => {
         const user = userCredentials.user;
         console.log("Logged in with:", user.email);

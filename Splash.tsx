@@ -61,6 +61,7 @@ const Splash = () => {
     "RubikBubbles-Regular": require("./assets/fonts/RubikBubbles-Regular.ttf"),
     "Caramel-Regular": require("./assets/fonts/Caramel-Regular.ttf"),
     "JosefinSans-Bold": require("./assets/fonts/JosefinSans-Bold.ttf"),
+    "BebasNeue-Regular": require("./assets/fonts/BebasNeue-Regular.ttf"),
   });
 
   if (!fontsLoaded) {
@@ -79,7 +80,7 @@ const Splash = () => {
             {
               opacity: fadeAnim,
               color: boxInterpolation,
-              fontFamily: "JosefinSans-Bold",
+              fontFamily: "BebasNeue-Regular",
               //   transform: [
               //     {
               //       translateY: moveAnim.interpolate({

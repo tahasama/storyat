@@ -78,6 +78,7 @@ export interface userProps {
     // confirmPassword: string;
     err: { code: string; message: string };
     user: any;
+    menuStateVakue:boolean
   };
 }
 
@@ -87,6 +88,7 @@ export const userInitialState = {
   password: "",
   err: { code: "", message: "" },
   user: "",
+  menuStateVakue:false
 };
 
 export const authSlice = createSlice({
@@ -99,6 +101,9 @@ export const authSlice = createSlice({
     },
     saveUser: (state, action) => {
       state.user = action.payload;
+    },
+    menuState: (state, action) => {
+      state.menuStateVakue = action.payload;
     },
     resetUser: (state, action) => {
       Object.assign(state, action.payload);
@@ -121,5 +126,5 @@ export const authSlice = createSlice({
 });
 
 export const getAuthData = (state: userProps) => state.authUser;
-export const { updateError, saveUser, resetUser } = authSlice.actions;
+export const { updateError, saveUser, resetUser ,menuState} = authSlice.actions;
 export default authSlice.reducer;

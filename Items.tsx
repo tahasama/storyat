@@ -11,6 +11,9 @@ import {
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
+import Menu from "./Menu";
+import { useAppDispatch, useAppSelector } from "./state/hooks";
+import { getAuthData } from "./state/reducers/authSlice";
 // import { openAndClose, initialize } from "./state/reducers/modalSlice";
 
 const DATA = [
@@ -41,6 +44,8 @@ const DATA = [
 //   }
 
 const Items = ({ navigation }) => {
+  const dispatch = useAppDispatch();
+  const { menuStateVakue } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
@@ -49,11 +54,12 @@ const Items = ({ navigation }) => {
 
   // const modal = useSelector((state) => state.modalz);
   // console.log("ffff00000", modal);
-  const dispatch = useDispatch();
+
   return (
     <SafeAreaView style={styles.container}>
       {/* <AntDesign name='logout' style={styles.icon}/> */}
-      <FlatList
+      <Menu navigation />
+      {/* <FlatList
         data={DATA}
         renderItem={({ item }) => (
           <View style={styles.item}>
@@ -68,7 +74,7 @@ const Items = ({ navigation }) => {
         )}
         keyExtractor={(item) => item.id}
         extraData={selectedId}
-      />
+      /> */}
 
       {/* {modal.firstOneValue && <Modal />} */}
     </SafeAreaView>
@@ -76,12 +82,9 @@ const Items = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  count: {
-    alignItems: "center",
-  },
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    // marginTop: StatusBar.currentHeight || 0,
     // opacity: 0.5,
     backgroundColor: "#333333",
   },

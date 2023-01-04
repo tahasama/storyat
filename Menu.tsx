@@ -1,67 +1,77 @@
-import { signOut } from "firebase/auth";
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  Button,
-  Pressable,
-} from "react-native";
-import React from "react";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Entypo from "@expo/vector-icons/Entypo";
-import { auth } from "./firebase";
-import { useNavigation } from "@react-navigation/core";
-import { useState } from "react";
-// import Modal from "./Modalx";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import { NavigationContainer } from "@react-navigation/native";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, Button } from "react-native";
+import Items from "./Items";
+import Login from "./Login";
+import { useAppDispatch, useAppSelector } from "./state/hooks";
+import { getAuthData } from "./state/reducers/authSlice";
+import { DrawerActions } from "@react-navigation/native";
 
-import { useAppDispatch } from "./state/hooks";
-// import { openAndClose, firstOne } from "./state/reducers/modalSlice";
+const Drawer = createDrawerNavigator();
 
-const Menu = () => {
-  const navigation = useNavigation();
-  const [menu, setMenu] = useState(false);
-  // const modal = useSelector((state) => state.modalz.value);
-  // console.log("state in menu", modal);
+function HomeScreen({ navigation }) {
   const dispatch = useAppDispatch();
-
+  const { menuStateVakue } = useAppSelector(getAuthData);
+  menuStateVakue && DrawerActions.toggleDrawer();
   return (
-    <View style={styles.buttonContainer}>
-      <Pressable
-        onPress={() => {
-          console.log("open menu");
-        }}
-        style={styles.button}
-      >
-        <Entypo name="menu" size={30} color="#646464" />
-      </Pressable>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Home Screen</Text>
+      <Button title="Toggle drawer" onPress={() => navigation.toggleDrawer()} />
     </View>
   );
-};
+}
 
-export default Menu;
+function SettingsScreen({ navigation }) {
+  const { menuStateVakue } = useAppSelector(getAuthData);
+  // menuStateVakue && DrawerActions.toggleDrawer();
+  useEffect(() => {
+    navigation.toggleDrawer();
+  }, [menuStateVakue]);
+
+  return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Settings Screen</Text>
+    </View>
+  );
+}
+export default function Menu({ navigation }) {
+  return (
+    <View style={styles.buttonContainer}>
+      <NavigationContainer independent={true}>
+        <Drawer.Navigator
+          useLegacyImplementation
+          initialRouteName="SettingsScreen"
+          screenOptions={{
+            header: () => null,
+          }}
+        >
+          <Drawer.Screen name="Homejj" component={HomeScreen} />
+          <Drawer.Screen name="Settings" component={SettingsScreen} />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    justifyContent: "center",
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "#292929",
     alignItems: "center",
-    margin: 10,
+    height: "100%",
+    // marginTop: 20,
   },
   button: {
-    width: "100%",
-    borderRadius: 10,
-    alignItems: "center",
-    zIndex: 99,
-  },
-  modal: {
-    width: "100%",
-    borderRadius: 10,
-    alignItems: "center",
-    border: 5,
-    borderColor: "black",
-    height: "100%",
-    backgroundColor: "blue",
-    // marginTop: 80,
-    transform: [{ translateX: 50 }],
+    color: "#dadada",
+    fontFamily: "BebasNeue-Regular",
+    fontSize: 32,
+    // textAlign: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
+    letterSpacing: 1,
+    // backgroundColor: "green",
   },
 });

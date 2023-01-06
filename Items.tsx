@@ -1,20 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  Button,
   View,
 } from "react-native";
 
-import { useSelector, useDispatch } from "react-redux";
-import Menu from "./Menu";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData } from "./state/reducers/authSlice";
-// import { openAndClose, initialize } from "./state/reducers/modalSlice";
+import { getAuthData, menuState } from "./state/reducers/authSlice";
 
 const DATA = [
   {
@@ -31,35 +26,29 @@ const DATA = [
   },
 ];
 
-// function Items({ navigation }) {
-//     return (
-//       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//         <Text>Home Screen</Text>
-//         <Button
-//           title="Go to Details"
-//           onPress={() => navigation.navigate('ItemZ')}
-//         />
-//       </View>
-//     );
-//   }
-
 const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { menuStateVakue } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
+
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
     setSelectedId(item.id);
   };
+  useEffect(() => {
+    dispatch(menuState(!menuStateVakue));
+  }, []);
 
-  // const modal = useSelector((state) => state.modalz);
-  // console.log("ffff00000", modal);
+  useEffect(() => {
+    menuStateVakue ? navigation.openDrawer() : navigation.closeDrawer();
+    // navigation.toggleDrawer();
+  }, [menuStateVakue]);
 
   return (
     <SafeAreaView style={styles.container}>
       {/* <AntDesign name='logout' style={styles.icon}/> */}
-      <Menu navigation />
-      {/* <FlatList
+      {/* <Menu navigation /> */}
+      <FlatList
         data={DATA}
         renderItem={({ item }) => (
           <View style={styles.item}>
@@ -74,9 +63,7 @@ const Items = ({ navigation }) => {
         )}
         keyExtractor={(item) => item.id}
         extraData={selectedId}
-      /> */}
-
-      {/* {modal.firstOneValue && <Modal />} */}
+      />
     </SafeAreaView>
   );
 };
@@ -84,8 +71,6 @@ const Items = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginTop: StatusBar.currentHeight || 0,
-    // opacity: 0.5,
     backgroundColor: "#333333",
   },
 
@@ -104,10 +89,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column-reverse",
     backgroundColor: "#0782F9",
-    // width:'5%',
-
-    // justifyContent:'flex-end',
-    // alignItems:'center'
   },
 });
 

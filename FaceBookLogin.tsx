@@ -1,30 +1,14 @@
 import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
   getAuth,
-  GoogleAuthProvider,
   signInWithCredential,
   FacebookAuthProvider,
 } from "firebase/auth";
-import { auth, faceBookProvider, googleProvider } from "./firebase";
-import {
-  View,
-  Text,
-  //   KeyboardAvoidingView,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import React from "react";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { useNavigation } from "@react-navigation/core";
-import Splash from "./Splash";
+import { useEffect } from "react";
+
 import * as AuthSession from "expo-auth-session";
 
-import * as WebBrowser from "expo-web-browser";
 import { useAuthRequest } from "expo-auth-session/build/providers/Facebook";
 
 const GoogleLogin = () => {
@@ -38,7 +22,6 @@ const GoogleLogin = () => {
       const { access_token } = response.params;
       const auth = getAuth();
       const credential = FacebookAuthProvider.credential(access_token);
-      // Sign in with the credential from the Facebook user.
       signInWithCredential(auth, credential).catch((err) => {
         err.code === "auth/account-exists-with-different-credential" &&
           Alert.alert(

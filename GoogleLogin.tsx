@@ -1,31 +1,13 @@
 import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
   getAuth,
   GoogleAuthProvider,
   signInWithCredential,
 } from "firebase/auth";
-import { auth, faceBookProvider, googleProvider } from "./firebase";
-import {
-  View,
-  Text,
-  //   KeyboardAvoidingView,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { useNavigation } from "@react-navigation/core";
-import Splash from "./Splash";
-import * as AuthSession from "expo-auth-session";
-import {
-  useAuthRequest,
-  useIdTokenAuthRequest,
-} from "expo-auth-session/build/providers/Google";
-import * as WebBrowser from "expo-web-browser";
+import { useEffect } from "react";
+
+import { useIdTokenAuthRequest } from "expo-auth-session/build/providers/Google";
 
 const GoogleLogin = () => {
   const [request, response, promptAsync] = useIdTokenAuthRequest({

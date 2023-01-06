@@ -2,7 +2,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider,FacebookAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import * as WebBrowser from "expo-web-browser";
 
 
 

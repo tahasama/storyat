@@ -1,16 +1,5 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Animated,
-  Dimensions,
-  SafeAreaView,
-  Button,
-  TouchableWithoutFeedback,
-  TouchableOpacity,
-} from "react-native";
-import React, { useEffect, useRef, useState } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StyleSheet, Animated } from "react-native";
+import React, { useEffect, useRef } from "react";
 import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -81,14 +70,6 @@ const Splash = () => {
               opacity: fadeAnim,
               color: boxInterpolation,
               fontFamily: "BebasNeue-Regular",
-              //   transform: [
-              //     {
-              //       translateY: moveAnim.interpolate({
-              //         inputRange: [0, 1],
-              //         outputRange: [200, 0], // 0 : 150, 0.5 : 75, 1 : 0
-              //       }),
-              //     },
-              //   ],
             },
             moveAnim.getLayout(),
           ]}
@@ -115,6 +96,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 40,
     letterSpacing: 5,
-    // fontWeight: "300",
   },
 });

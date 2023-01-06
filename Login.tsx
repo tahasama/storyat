@@ -1,50 +1,43 @@
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInWithPopup,
-  getAuth,
-  GoogleAuthProvider,
-  signInWithCredential,
 } from "firebase/auth";
-import { auth, faceBookProvider, googleProvider } from "./firebase";
+import { auth } from "./firebase";
 import {
   View,
   Text,
-  //   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { useNavigation } from "@react-navigation/core";
+
 import Splash from "./Splash";
-import * as AuthSession from "expo-auth-session";
-import {
-  useAuthRequest,
-  useIdTokenAuthRequest,
-} from "expo-auth-session/build/providers/Google";
+
 import * as WebBrowser from "expo-web-browser";
 import GoogleLogin from "./GoogleLogin";
 import FaceBookLogin from "./FaceBookLogin";
+import { getAuthData, menuState } from "./state/reducers/authSlice";
+import { useAppDispatch, useAppSelector } from "./state/hooks";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const Login = () => {
-  // const dispatch = useDispatch();
-  const [AccessToken, setAccessToken] = useState("");
+const Login = ({ navigation }) => {
+  const dispatch = useAppDispatch();
+  const { menuStateVakue } = useAppSelector(getAuthData);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigation = useNavigation<any>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    dispatch(menuState(!menuStateVakue));
+
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        navigation.replace("items");
+        navigation.replace("lll");
       }
       setTimeout(() => {
         setLoading(!loading);
@@ -58,7 +51,6 @@ const Login = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        console.log("Registered with:", user.email);
       })
       .catch((error) => alert(error.message));
   };
@@ -67,46 +59,45 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        console.log("Logged in with:", user.email);
       })
       .catch((error) => alert(error.message));
   };
 
   return (
     <View style={styles.container}>
-      {/* {loading ? (
+      {loading ? (
         <Splash />
-      ) : ( */}
-      <View style={styles.container1}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Email"
-            placeholderTextColor={"#8BBCCC"}
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="Password"
-            placeholderTextColor={"#8BBCCC"}
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            style={styles.input}
-            secureTextEntry
-          />
+      ) : (
+        <View style={styles.container1}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor={"#8BBCCC"}
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor={"#8BBCCC"}
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              style={styles.input}
+              secureTextEntry
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={handleLogin} style={styles.button1}>
+              <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleSignUp} style={styles.button2}>
+              <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
+            <GoogleLogin />
+            <FaceBookLogin />
+          </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleLogin} style={styles.button1}>
-            <Text style={styles.buttonText}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleSignUp} style={styles.button2}>
-            <Text style={styles.buttonText}>Register</Text>
-          </TouchableOpacity>
-          <GoogleLogin />
-          <FaceBookLogin />
-        </View>
-      </View>
-      {/* )} */}
+      )}
     </View>
   );
 };

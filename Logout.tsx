@@ -4,9 +4,12 @@ import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { auth } from "./firebase";
 import { useNavigation } from "@react-navigation/core";
+import { resetUser } from "./state/reducers/authSlice";
+import { useDispatch } from "react-redux";
 
 const Logout = () => {
   const navigation = useNavigation<any>();
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.buttonContainer}>
@@ -14,7 +17,10 @@ const Logout = () => {
         onPress={() => {
           signOut(auth)
             .then(() => {
-              navigation.replace("login");
+              setTimeout(() => {
+                dispatch(resetUser({}));
+                navigation.replace("login", "noSplash");
+              }, 1000);
             })
             .catch((error) => alert(error.message));
         }}

@@ -33,7 +33,7 @@ const Index = () => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(!loading);
-    }, 8000);
+    }, 6000);
   }, []);
 
   let [fontsLoaded] = useFonts({

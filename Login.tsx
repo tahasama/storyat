@@ -23,9 +23,12 @@ import { useAppDispatch, useAppSelector } from "./state/hooks";
 
 WebBrowser.maybeCompleteAuthSession();
 
-const Login = ({ navigation }) => {
+const Login = ({ navigation, route }) => {
+  const para = route.params;
+  console.log("ppppppppp", para);
   const dispatch = useAppDispatch();
-  const { menuStateVakue } = useAppSelector(getAuthData);
+  const { menuStateVakue, user } = useAppSelector(getAuthData);
+  console.log("11111", user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,17 +38,15 @@ const Login = ({ navigation }) => {
   useEffect(() => {
     dispatch(menuState(!menuStateVakue));
 
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user && !loading) {
-        navigation.replace("lll");
-      }
-      setTimeout(() => {
-        setLoading(!loading);
-      }, 5000);
-    });
+    user && !loading && navigation.replace("lll");
+  }, [loading, user]);
 
-    return unsubscribe;
-  }, [loading]);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(!loading);
+    }, 5000);
+  }, []);
+  console.log("2222", loading, user);
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -65,7 +66,7 @@ const Login = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {loading ? (
+      {loading && para !== "noSplash" ? (
         <Splash />
       ) : (
         <View style={styles.container1}>

@@ -112,7 +112,7 @@ export const authSlice = createSlice({
       state.itemRouteVakue = action.payload;
     },
     resetUser: (state, action) => {
-      Object.assign(state, action.payload);
+      state.user = '';
     },
   },
   extraReducers: (builder) => {

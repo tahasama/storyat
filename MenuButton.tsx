@@ -1,23 +1,39 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import Entypo from "@expo/vector-icons/Entypo";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, menuState } from "./state/reducers/authSlice";
+import { getAuthData, itemRoute, menuState } from "./state/reducers/authSlice";
+import { useNavigation, StackActions } from "@react-navigation/core";
 
 const MenuButton = () => {
   const dispatch = useAppDispatch();
-  const { menuStateVakue } = useAppSelector(getAuthData);
+  const navigation = useNavigation<any>();
+
+  const { menuStateVakue, itemRouteVakue } = useAppSelector(getAuthData);
+  console.log("dddddddddddd");
+
+  const popAction = StackActions.pop(1);
 
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity
         onPress={() => {
-          dispatch(menuState(!menuStateVakue));
+          {
+            itemRouteVakue === ""
+              ? dispatch(menuState(!menuStateVakue))
+              : navigation.dispatch(popAction),
+              dispatch(itemRoute(""));
+          }
         }}
         style={styles.button}
       >
-        <Entypo name="menu" size={30} color="#646464" />
+        {itemRouteVakue === "" ? (
+          <Entypo name="menu" size={30} color="#646464" />
+        ) : (
+          <AntDesign name="left" size={30} color="#646464" />
+        )}
       </TouchableOpacity>
     </View>
   );

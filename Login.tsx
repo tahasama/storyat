@@ -36,7 +36,7 @@ const Login = ({ navigation }) => {
     dispatch(menuState(!menuStateVakue));
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
+      if (user && !loading) {
         navigation.replace("lll");
       }
       setTimeout(() => {
@@ -45,7 +45,7 @@ const Login = ({ navigation }) => {
     });
 
     return unsubscribe;
-  }, []);
+  }, [loading]);
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)

@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Item from "./Item";
 import Login from "./Login";
 import Logout from "./Logout";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { getAuthData, saveUser } from "./state/reducers/authSlice";
@@ -18,6 +18,7 @@ const Index = () => {
   const Stack = createNativeStackNavigator();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     onAuthStateChanged(auth, (userx) => {
@@ -27,6 +28,12 @@ const Index = () => {
         console.log("no user bro");
       }
     });
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(!loading);
+    }, 8000);
   }, []);
 
   let [fontsLoaded] = useFonts({
@@ -46,7 +53,7 @@ const Index = () => {
         <StatusBar backgroundColor={"#292929"} />
       </View>
       <Stack.Navigator
-        screenOptions={{ header: () => (!user ? null : <Title />) }}
+        screenOptions={{ header: () => (user && !loading ? <Title /> : null) }}
         initialRouteName={!user ? "login" : "lll"}
       >
         <Stack.Group>

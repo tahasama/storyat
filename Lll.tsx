@@ -24,8 +24,16 @@ function SettingsScreen({ navigation }) {
 const Lll = () => {
   const { menuStateVakue } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(menuState(false));
+  }, []);
+
   return (
-    <Drawer.Navigator initialRouteName="items">
+    <Drawer.Navigator
+      initialRouteName="items"
+      screenOptions={{ header: () => null }}
+    >
       <Drawer.Screen
         name="items"
         component={Items}

@@ -1,8 +1,12 @@
 import { View, Text, Button, StyleSheet } from "react-native";
 import React from "react";
+import { useAppDispatch } from "./state/hooks";
+import { itemRoute } from "./state/reducers/authSlice";
 
 const Item = ({ navigation, route }) => {
   const { item } = route.params;
+  const dispatch = useAppDispatch();
+  dispatch(itemRoute(item.id));
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>

@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
+  Button,
   View,
 } from "react-native";
 
+import { useSelector, useDispatch } from "react-redux";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData, menuState } from "./state/reducers/authSlice";
 
@@ -35,6 +38,7 @@ const Items = ({ navigation }) => {
     navigation.navigate("item", { item: item });
     setSelectedId(item.id);
   };
+  console.log("44444", menuStateVakue);
   useEffect(() => {
     dispatch(menuState(!menuStateVakue));
   }, []);

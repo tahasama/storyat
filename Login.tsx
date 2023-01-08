@@ -25,10 +25,8 @@ WebBrowser.maybeCompleteAuthSession();
 
 const Login = ({ navigation, route }) => {
   const para = route.params;
-  console.log("ppppppppp", para);
   const dispatch = useAppDispatch();
   const { menuStateVakue, user } = useAppSelector(getAuthData);
-  console.log("11111", user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +44,6 @@ const Login = ({ navigation, route }) => {
       setLoading(!loading);
     }, 5000);
   }, []);
-  console.log("2222", loading, user);
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)

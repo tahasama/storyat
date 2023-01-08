@@ -50,7 +50,7 @@ const Index = () => {
   return (
     <NavigationContainer>
       <View style={styles.buttonContainer}>
-        <StatusBar backgroundColor={"#292929"} />
+        <StatusBar backgroundColor={"#051E28"} />
       </View>
       <Stack.Navigator
         screenOptions={{ header: () => (user && !loading ? <Title /> : null) }}
@@ -71,5 +71,5 @@ const Index = () => {
 export default Index;
 
 const styles = StyleSheet.create({
-  buttonContainer: { backgroundColor: "#292929", height: 14 },
+  buttonContainer: { backgroundColor: "#051E28", height: 14 },
 });

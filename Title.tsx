@@ -19,7 +19,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#292929",
+    backgroundColor: "#051E28",
+    // backgroundColor: "#002244",
+    // backgroundColor: "#001f20",
+
     alignItems: "center",
     height: 60,
   },

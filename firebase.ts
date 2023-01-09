@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider,FacebookAuthProvider } from "firebase/auth";
 import { getStorage } from "firebase/storage";
+import {getFirestore}from 'firebase/firestore'
 
 
 
@@ -27,6 +28,8 @@ export const faceBookProvider = new FacebookAuthProvider();
 
 export const auth = getAuth(app);
 
-export const storage = getStorage();
+export const storage = getStorage(app);
+
+export const db = getFirestore(app);
 
 export default app;

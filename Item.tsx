@@ -8,14 +8,32 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from "react-native";
-import React, { useEffect } from "react";
-import { useAppDispatch } from "./state/hooks";
-import { itemRoute } from "./state/reducers/authSlice";
+import React, { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "./state/hooks";
+import { getAuthData, itemRoute } from "./state/reducers/authSlice";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  FieldValue,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { db } from "./firebase";
 
 const Item = ({ navigation, route }) => {
   const { item } = route.params;
-  console.log("4444444", item.commentSection);
+  const { user } = useAppSelector(getAuthData);
+  const [status, setStatus] = useState("");
+  const [comment, setComment] = useState("");
+
+  console.log(
+    "4444444",
+    item.commentSection.map((x) => x)
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -24,6 +42,17 @@ const Item = ({ navigation, route }) => {
 
   const handlePost = () => {
     console.log("Posted!");
+  };
+
+  const handleComment = async () => {
+    try {
+      await updateDoc(doc(db, "stories", item.id), {
+        commentSection: arrayUnion({ comment: comment }),
+      }).then(() => setStatus("success"));
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
   };
 
   return (
@@ -40,16 +69,19 @@ const Item = ({ navigation, route }) => {
           {item.commentSection.map((comment: any) => (
             <View style={styles.commentResponseContainer}>
               <View style={styles.commentContainer} key={comment.id}>
-                <Image
+                {/* <Image
                   style={styles.logo}
                   source={{
                     uri: comment.user.avatar,
                   }}
-                />
+                /> */}
                 <Text style={styles.comment}>{comment.comment}</Text>
               </View>
+              <View style={{ flex: 1 }}>
+                <replyModal />
+              </View>
               {/* <View style={styles.commentContainer}> */}
-              {comment.response.map((response: any) => {
+              {/* {comment.response.map((response: any) => {
                 return (
                   <View style={styles.responseContainer} key={response.id}>
                     <Image
@@ -61,7 +93,7 @@ const Item = ({ navigation, route }) => {
                     <Text style={styles.response}>{response.comment}</Text>
                   </View>
                 );
-              })}
+              })} */}
             </View>
           ))}
         </View>

@@ -1,5 +1,5 @@
-import { StatusBar, StyleSheet, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { StatusBar, StyleSheet, TouchableOpacity, View } from "react-native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Item from "./Item";
 import Login from "./Login";
@@ -13,12 +13,16 @@ import React from "react";
 import { useFonts } from "expo-font";
 import Lll from "./Lll";
 import Title from "./Title";
+// import StoryModal from "./StoryModal";
+import AntDesign from "@expo/vector-icons/AntDesign";
+// import { StoryModal } from "./Modal";
 
 const Index = () => {
   const Stack = createNativeStackNavigator();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(true);
+  // const navigation = useNavigation();
 
   useEffect(() => {
     onAuthStateChanged(auth, (userx) => {
@@ -47,24 +51,36 @@ const Index = () => {
   if (!fontsLoaded) {
     return null;
   }
+
+  // const handleStory = () => {
+  //   navigation.navigate("login");
+  // };
   return (
-    <NavigationContainer>
-      <View style={styles.buttonContainer}>
-        <StatusBar backgroundColor={"#051E28"} />
-      </View>
-      <Stack.Navigator
-        screenOptions={{ header: () => (user && !loading ? <Title /> : null) }}
-        initialRouteName={!user ? "login" : "lll"}
-      >
-        <Stack.Group>
-          <Stack.Screen name="lll" component={Lll} />
-          {/* <Stack.Screen name="items" component={Items} /> */}
-          <Stack.Screen name="item" component={Item} />
-          <Stack.Screen name="login" component={Login} />
-          <Stack.Screen name="logout" component={Logout} />
-        </Stack.Group>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+      <NavigationContainer>
+        {!loading && (
+          <View style={styles.buttonContainer}>
+            <StatusBar backgroundColor={"#051E28"} barStyle="light-content" />
+          </View>
+        )}
+
+        <Stack.Navigator
+          screenOptions={{
+            header: () => (user && !loading ? <Title /> : null),
+          }}
+          initialRouteName={!user ? "login" : "lll"}
+        >
+          <Stack.Group>
+            <Stack.Screen name="lll" component={Lll} />
+            {/* <Stack.Screen name="items" component={Items} /> */}
+            <Stack.Screen name="item" component={Item} />
+            <Stack.Screen name="login" component={Login} />
+            <Stack.Screen name="logout" component={Logout} />
+            {/* <Stack.Screen name="storyModal" component={StoryModal} /> */}
+          </Stack.Group>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </>
   );
 };
 
@@ -72,4 +88,29 @@ export default Index;
 
 const styles = StyleSheet.create({
   buttonContainer: { backgroundColor: "#051E28", height: 14 },
+
+  buttonSpace: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    padding: 20,
+    // backgroundColor: "transparent",
+    backgroundColor: "#051E28",
+  },
+  buttonContainer1: {
+    flexDirection: "row",
+    justifyContent: "center",
+    // backgroundColor: "#051E28",
+    // backgroundColor: "#002244",
+    backgroundColor: "#332FD0",
+
+    alignItems: "center",
+    height: 80,
+    width: 80,
+    borderRadius: 50,
+    bottom: 5,
+  },
+  button: {
+    color: "yellow",
+    fontSize: 32,
+  },
 });

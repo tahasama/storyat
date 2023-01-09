@@ -8,11 +8,18 @@ import {
   TouchableOpacity,
   Button,
   View,
+  Modal,
+  Alert,
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData, menuState } from "./state/reducers/authSlice";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import StoryModal from "./StoryModal";
+import { getDocs } from "@firebase/firestore";
+import { collection } from "firebase/firestore";
+import { db } from "./firebase";
 
 const DATA = [
   {
@@ -91,11 +98,29 @@ const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { menuStateVakue } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
+  const [data, setData] = useState([]);
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
     setSelectedId(item.id);
   };
+
+  // const [locations, setLocations] = useState([]);
+  const loadData = async () => {
+    let result = [];
+    const querySnapshot = await getDocs(collection(db, "stories"));
+    querySnapshot.forEach((doc: any) =>
+      result.push({ ...doc.data(), id: doc.id })
+    );
+
+    setData(result);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+  console.log("element 00000", data);
+
   useEffect(() => {
     dispatch(menuState(!menuStateVakue));
   }, []);
@@ -110,7 +135,7 @@ const Items = ({ navigation }) => {
       {/* <AntDesign name='logout' style={styles.icon}/> */}
       {/* <Menu navigation /> */}
       <FlatList
-        data={DATA}
+        data={data}
         renderItem={({ item }) => (
           <View style={styles.item}>
             <TouchableOpacity
@@ -122,9 +147,19 @@ const Items = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => {
+          return item.id;
+        }}
         extraData={selectedId}
       />
+      {/* <View style={styles.buttonSpace}>
+        <TouchableOpacity style={styles.buttonContainer1} onPress={handleStory}>
+          <AntDesign name="plus" style={styles.button} />
+        </TouchableOpacity>
+      </View> */}
+      <View style={{ flex: 1 }}>
+        <StoryModal />
+      </View>
     </SafeAreaView>
   );
 };
@@ -151,6 +186,31 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column-reverse",
     backgroundColor: "#0782F9",
+  },
+  buttonSpace: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    padding: 20,
+    // backgroundColor: "transparent",
+    backgroundColor: "#051E28",
+  },
+  buttonContainer1: {
+    flexDirection: "row",
+    justifyContent: "center",
+    // backgroundColor: "#051E28",
+    // backgroundColor: "#002244",
+    backgroundColor: "#332FD0",
+    zIndex: 99,
+
+    alignItems: "center",
+    height: 80,
+    width: 80,
+    borderRadius: 50,
+    bottom: 5,
+  },
+  button: {
+    color: "yellow",
+    fontSize: 32,
   },
 });
 

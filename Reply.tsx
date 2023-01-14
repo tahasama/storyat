@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, storyRoute } from "./state/reducers/authSlice";
+import { commentRoute, getAuthData } from "./state/reducers/authSlice";
 import {
   addDoc,
   arrayUnion,
@@ -28,27 +28,27 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-const Item = ({ navigation, route }) => {
+const Reply = ({ navigation, route }) => {
   const { item } = route.params;
-  const { user, storyRouteValue } = useAppSelector(getAuthData);
+  const { user, commentRouteValue } = useAppSelector(getAuthData);
   const [status, setStatus] = useState("");
-  const [comment, setComment] = useState("");
+  const [reply, setReply] = useState("");
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
 
-  console.log("hiiiii", storyRouteValue);
+  console.log("hiiiii222", commentRouteValue);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(storyRoute(item.id));
+    dispatch(commentRoute(item.id));
   }, [item.id]);
 
   const loadData = async () => {
     let result = [];
     const q = query(
-      collection(db, "comments"),
-      where("storyId", "==", item.id)
+      collection(db, "replies"),
+      where("commentId", "==", item.id)
     );
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc: any) =>
@@ -62,13 +62,13 @@ const Item = ({ navigation, route }) => {
     loadData();
   }, []);
 
-  const handleComment = async () => {
+  const handleReply = async () => {
     try {
-      await addDoc(collection(db, "comments"), {
-        comment: comment,
-        commenter: user.displayName ? user.displayName : user.email,
+      await addDoc(collection(db, "replies"), {
+        reply: reply,
+        replier: user.displayName ? user.displayName : user.email,
         timestamp: Date.now(),
-        storyId: item.id,
+        commentId: item.id,
       }).then(() => setStatus("success"));
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -77,7 +77,7 @@ const Item = ({ navigation, route }) => {
   };
 
   const handleOnpress = (item) => {
-    navigation.navigate("reply", { item: item });
+    navigation.navigate("item", { item: item });
     setSelectedId(item.id);
   };
 
@@ -85,25 +85,13 @@ const Item = ({ navigation, route }) => {
     <>
       <View style={styles.container}>
         <View style={styles.subContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.content}>
-            {"\t"}
-
-            {item.content}
-          </Text>
+          <Text style={styles.title}>{item.comment}</Text>
         </View>
         <FlatList
           data={data}
           renderItem={({ item }) => (
             <View style={styles.commentContainer}>
-              <Text style={styles.comment}>{item.comment}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  handleOnpress(item);
-                }}
-              >
-                <Text style={styles.comment}>reply</Text>
-              </TouchableOpacity>
+              <Text style={styles.comment}>{item.reply}</Text>
             </View>
           )}
           keyExtractor={(item) => {
@@ -116,12 +104,12 @@ const Item = ({ navigation, route }) => {
         <TextInput
           style={styles.input}
           multiline
-          onChangeText={(text) => setComment(text)}
+          onChangeText={(text) => setReply(text)}
           // value={number}
-          placeholder="Add a comment ..."
+          placeholder="Add a reply ..."
           placeholderTextColor={"#8BBCCC"}
         />
-        <TouchableOpacity onPress={handleComment} style={styles.button}>
+        <TouchableOpacity onPress={handleReply} style={styles.button}>
           <Text style={styles.buttonText}>Post</Text>
         </TouchableOpacity>
       </View>
@@ -232,4 +220,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Item;
+export default Reply;

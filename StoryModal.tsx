@@ -25,7 +25,6 @@ const StoryModal = () => {
   const [content, setContent] = useState("");
   const [status, setStatus] = useState("");
   const { user } = useAppSelector(getAuthData);
-  console.log("ccccccc", user.displayName ? user.displayName : user.email);
 
   const handleStory = async () => {
     try {
@@ -33,7 +32,6 @@ const StoryModal = () => {
         title: title,
         content: content,
         writer: user.displayName ? user.displayName : user.email,
-        commentSection: [],
         timestamp: Date.now(),
       }).then(() => setStatus("success"));
     } catch (e) {

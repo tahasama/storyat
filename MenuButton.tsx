@@ -1,35 +1,54 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, itemRoute, menuState } from "./state/reducers/authSlice";
+import {
+  commentRoute,
+  getAuthData,
+  menuState,
+  storyRoute,
+} from "./state/reducers/authSlice";
 import { useNavigation, StackActions } from "@react-navigation/core";
+import { useRoute } from "@react-navigation/native";
 
 const MenuButton = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
 
-  const { menuStateVakue, itemRouteVakue } = useAppSelector(getAuthData);
-  console.log("dddddddddddd");
+  const route = useRoute();
+
+  console.log("route", route);
+
+  const { menuStateValue, commentRouteValue, storyRouteValue } =
+    useAppSelector(getAuthData);
+  console.log(
+    "commentRouteValue",
+    commentRouteValue,
+    "storyRouteValue",
+    storyRouteValue
+  );
 
   const popAction = StackActions.pop(1);
+
+  // useEffect(() => {}, [route.name]);
 
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity
         onPress={() => {
           {
-            itemRouteVakue === ""
-              ? dispatch(menuState(!menuStateVakue))
-              : navigation.dispatch(popAction),
-              dispatch(itemRoute(""));
+            commentRouteValue === "" && storyRouteValue === ""
+              ? dispatch(menuState(!menuStateValue))
+              : navigation.dispatch(popAction);
+            route.name === "item" && dispatch(commentRoute("")),
+              route.name === "item" && dispatch(storyRoute(""));
           }
         }}
         style={styles.button}
       >
-        {itemRouteVakue === "" ? (
+        {commentRouteValue === "" && storyRouteValue === "" ? (
           <Entypo name="menu" size={30} color="#646464" />
         ) : (
           <AntDesign name="left" size={30} color="#646464" />

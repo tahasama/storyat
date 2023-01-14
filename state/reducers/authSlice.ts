@@ -78,8 +78,9 @@ export interface userProps {
     // confirmPassword: string;
     err: { code: string; message: string };
     user: any;
-    menuStateVakue:boolean;
-    itemRouteVakue:string
+    menuStateValue:false,
+    storyRouteValue:string,
+    commentRouteValue:string,
 
   };
 }
@@ -90,8 +91,9 @@ export const userInitialState = {
   password: "",
   err: { code: "", message: "" },
   user: "",
-  menuStateVakue:false,
-  itemRouteVakue:''
+  menuStateValue:false,
+  storyRouteValue:'',
+  commentRouteValue:'',
 };
 
 export const authSlice = createSlice({
@@ -106,10 +108,13 @@ export const authSlice = createSlice({
       state.user = action.payload;
     },
     menuState: (state, action) => {
-      state.menuStateVakue = action.payload;
+      state.menuStateValue = action.payload;
     },
-    itemRoute: (state, action) => {
-      state.itemRouteVakue = action.payload;
+    storyRoute: (state, action) => {
+      state.storyRouteValue = action.payload;
+    },
+    commentRoute: (state, action) => {
+      state.commentRouteValue = action.payload;
     },
     resetUser: (state, action) => {
       state.user = '';
@@ -132,5 +137,5 @@ export const authSlice = createSlice({
 });
 
 export const getAuthData = (state: userProps) => state.authUser;
-export const { updateError, saveUser, resetUser ,menuState, itemRoute} = authSlice.actions;
+export const { updateError, saveUser, resetUser ,menuState,storyRoute, commentRoute} = authSlice.actions;
 export default authSlice.reducer;

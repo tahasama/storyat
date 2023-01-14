@@ -7,7 +7,7 @@ import Logout from "./Logout";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
-import { getAuthData, saveUser } from "./state/reducers/authSlice";
+import { getAuthData, saveUser, storyRoute } from "./state/reducers/authSlice";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import React from "react";
 import { useFonts } from "expo-font";
@@ -15,6 +15,8 @@ import Lll from "./Lll";
 import Title from "./Title";
 // import StoryModal from "./StoryModal";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import StoryModal from "./StoryModal";
+import Reply from "./Reply";
 // import { StoryModal } from "./Modal";
 
 const Index = () => {
@@ -74,6 +76,7 @@ const Index = () => {
             <Stack.Screen name="lll" component={Lll} />
             {/* <Stack.Screen name="items" component={Items} /> */}
             <Stack.Screen name="item" component={Item} />
+            <Stack.Screen name="reply" component={Reply} />
             <Stack.Screen name="login" component={Login} />
             <Stack.Screen name="logout" component={Logout} />
             {/* <Stack.Screen name="storyModal" component={StoryModal} /> */}

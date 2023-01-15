@@ -18,15 +18,19 @@ import Splash from "./Splash";
 import * as WebBrowser from "expo-web-browser";
 import GoogleLogin from "./GoogleLogin";
 import FaceBookLogin from "./FaceBookLogin";
-import { getAuthData, menuState } from "./state/reducers/authSlice";
+import { getAuthData } from "./state/reducers/authSlice";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
+import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = ({ navigation, route }) => {
   const para = route.params;
   const dispatch = useAppDispatch();
-  const { menuStateVakue, user } = useAppSelector(getAuthData);
+  const { user } = useAppSelector(getAuthData);
+  const { menuStateValue } = useAppSelector(getHeaderData);
+
+  // console.log("login", user);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +38,7 @@ const Login = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(menuState(!menuStateVakue));
+    dispatch(menuState(!menuStateValue));
 
     user && !loading && navigation.replace("lll");
   }, [loading, user]);

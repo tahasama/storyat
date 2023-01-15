@@ -10,6 +10,8 @@ import { useEffect } from "react";
 import * as AuthSession from "expo-auth-session";
 
 import { useAuthRequest } from "expo-auth-session/build/providers/Facebook";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "./firebase";
 
 const GoogleLogin = () => {
   const [request, response, promptAsync] = useAuthRequest({
@@ -22,13 +24,26 @@ const GoogleLogin = () => {
       const { access_token } = response.params;
       const auth = getAuth();
       const credential = FacebookAuthProvider.credential(access_token);
-      signInWithCredential(auth, credential).catch((err) => {
-        err.code === "auth/account-exists-with-different-credential" &&
-          Alert.alert(
-            "Email used with other method",
-            "It appears that this email was uses before with another method of athentification, please try with a different email or a different method"
-          );
+      signInWithCredential(auth, credential).then(async (cred) => {
+        try {
+          await addDoc(collection(db, "users"), {
+            username: cred.user.displayName,
+            firebaseUserId: cred.user.uid,
+            writer: cred.user.email,
+            timestamp: Date.now(),
+          });
+        } catch (e) {
+          console.error("Error adding document: ", e);
+          Alert.alert("action failed please try again");
+        }
       });
+      // .catch((err) => {
+      //   err.code === "auth/account-exists-with-different-credential" &&
+      //     Alert.alert(
+      //       "Email used with other method",
+      //       "It appears that this email was uses before with another method of athentification, please try with a different email or a different method"
+      //     );
+      // });
     }
   }, [response]);
   return (

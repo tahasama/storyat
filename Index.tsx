@@ -6,8 +6,8 @@ import Login from "./Login";
 import Logout from "./Logout";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
-import { getAuthData, saveUser, storyRoute } from "./state/reducers/authSlice";
+import { auth, db } from "./firebase";
+import { getAuthData, saveUser } from "./state/reducers/authSlice";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import React from "react";
 import { useFonts } from "expo-font";
@@ -17,6 +17,7 @@ import Title from "./Title";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import StoryModal from "./StoryModal";
 import Reply from "./Reply";
+import { collection, getDocs, query, where } from "firebase/firestore";
 // import { StoryModal } from "./Modal";
 
 const Index = () => {
@@ -25,15 +26,27 @@ const Index = () => {
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(true);
   // const navigation = useNavigation();
-
+  // console.log(user);
   useEffect(() => {
-    onAuthStateChanged(auth, (userx) => {
+    const unsubscribe = onAuthStateChanged(auth, async (userx) => {
+      let result = [];
+
       if (userx) {
-        dispatch(saveUser(userx));
+        const q = query(
+          collection(db, "users"),
+          where("firebaseUserId", "==", userx.uid)
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc: any) =>
+          result.push({ ...doc.data(), id: doc.id })
+        );
+        console.log("wwwwwwwwwwwwwwwwwwwwwwww", result);
+        dispatch(saveUser(result[0]));
       } else {
         console.log("no user bro");
       }
     });
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {

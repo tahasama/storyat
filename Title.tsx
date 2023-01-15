@@ -2,13 +2,14 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import Logout from "./Logout";
 import MenuButton from "./MenuButton";
+import Options from "./Options";
 
 const Title = () => {
   return (
     <View style={styles.buttonContainer}>
       <MenuButton />
       <Text style={styles.button}>Storyat</Text>
-      <Logout />
+      <Options />
     </View>
   );
 };

@@ -6,21 +6,20 @@ import {
 } from "@react-navigation/drawer";
 import Items from "./Items";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, menuState } from "./state/reducers/authSlice";
+import { getAuthData } from "./state/reducers/authSlice";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 
 const Drawer = createDrawerNavigator();
 
 function SettingsScreen({ navigation }) {
-  const { menuStateVakue } = useAppSelector(getAuthData);
+  const { menuStateValue } = useAppSelector(getHeaderData);
   const ddd = useDrawerStatus();
   const dispatch = useAppDispatch();
 
-  console.log("55555", ddd);
-
   useEffect(() => {
-    menuStateVakue ? navigation.openDrawer() : navigation.closeDrawer();
-  }, [menuStateVakue]);
+    menuStateValue ? navigation.openDrawer() : navigation.closeDrawer();
+  }, [menuStateValue]);
 
   useEffect(() => {
     ddd === "closed" && dispatch(menuState(false));
@@ -34,7 +33,7 @@ function SettingsScreen({ navigation }) {
 }
 
 const Lll = ({ navigation }) => {
-  const { menuStateVakue } = useAppSelector(getAuthData);
+  const { menuStateValue } = useAppSelector(getHeaderData);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -59,7 +58,7 @@ const Lll = ({ navigation }) => {
           component={Items}
           listeners={{
             drawerItemPress: () => {
-              dispatch(menuState(!menuStateVakue));
+              dispatch(menuState(!menuStateValue));
             },
           }}
         />
@@ -68,7 +67,7 @@ const Lll = ({ navigation }) => {
           component={SettingsScreen}
           listeners={{
             drawerItemPress: () => {
-              dispatch(menuState(!menuStateVakue));
+              dispatch(menuState(!menuStateValue));
             },
           }}
         />

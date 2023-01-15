@@ -4,14 +4,15 @@ import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import {
-  commentRoute,
-  getAuthData,
-  menuState,
-  storyRoute,
-} from "./state/reducers/authSlice";
+import { getAuthData } from "./state/reducers/authSlice";
 import { useNavigation, StackActions } from "@react-navigation/core";
 import { useRoute } from "@react-navigation/native";
+import {
+  commentRoute,
+  getHeaderData,
+  menuState,
+  storyRoute,
+} from "./state/reducers/headerSlice";
 
 const MenuButton = () => {
   const dispatch = useAppDispatch();
@@ -19,16 +20,8 @@ const MenuButton = () => {
 
   const route = useRoute();
 
-  console.log("route", route);
-
   const { menuStateValue, commentRouteValue, storyRouteValue } =
-    useAppSelector(getAuthData);
-  console.log(
-    "commentRouteValue",
-    commentRouteValue,
-    "storyRouteValue",
-    storyRouteValue
-  );
+    useAppSelector(getHeaderData);
 
   const popAction = StackActions.pop(1);
 

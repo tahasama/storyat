@@ -14,16 +14,18 @@ import {
 
 import { useSelector, useDispatch } from "react-redux";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, menuState } from "./state/reducers/authSlice";
+import { getAuthData } from "./state/reducers/authSlice";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import StoryModal from "./StoryModal";
 import { getDocs } from "@firebase/firestore";
 import { collection } from "firebase/firestore";
 import { db } from "./firebase";
+import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 
 const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
-  const { menuStateValue } = useAppSelector(getAuthData);
+  const { user } = useAppSelector(getAuthData);
+  const { menuStateValue } = useAppSelector(getHeaderData);
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
 

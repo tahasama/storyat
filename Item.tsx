@@ -9,10 +9,11 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, storyRoute } from "./state/reducers/authSlice";
+import { getAuthData } from "./state/reducers/authSlice";
 import {
   addDoc,
   arrayUnion,
@@ -27,16 +28,16 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { getHeaderData, storyRoute } from "./state/reducers/headerSlice";
 
 const Item = ({ navigation, route }) => {
   const { item } = route.params;
-  const { user, storyRouteValue } = useAppSelector(getAuthData);
+  const { user } = useAppSelector(getAuthData);
+  const { storyRouteValue } = useAppSelector(getHeaderData);
   const [status, setStatus] = useState("");
   const [comment, setComment] = useState("");
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-
-  console.log("hiiiii", storyRouteValue);
 
   const dispatch = useAppDispatch();
 
@@ -69,7 +70,10 @@ const Item = ({ navigation, route }) => {
         commenter: user.displayName ? user.displayName : user.email,
         timestamp: Date.now(),
         storyId: item.id,
-      }).then(() => setStatus("success"));
+      })
+        .then(() => setStatus("success"))
+        .then(() => setComment(""))
+        .then(() => Keyboard.dismiss());
     } catch (e) {
       console.error("Error adding document: ", e);
       Alert.alert("action failed please try again");
@@ -120,6 +124,7 @@ const Item = ({ navigation, route }) => {
           // value={number}
           placeholder="Add a comment ..."
           placeholderTextColor={"#8BBCCC"}
+          value={comment}
         />
         <TouchableOpacity onPress={handleComment} style={styles.button}>
           <Text style={styles.buttonText}>Post</Text>

@@ -25,13 +25,14 @@ const StoryModal = () => {
   const [content, setContent] = useState("");
   const [status, setStatus] = useState("");
   const { user } = useAppSelector(getAuthData);
+  console.log("tha usaaa", user);
 
   const handleStory = async () => {
     try {
       await addDoc(collection(db, "stories"), {
         title: title,
         content: content,
-        writer: user.displayName ? user.displayName : user.email,
+        writerId: user.id,
         timestamp: Date.now(),
       }).then(() => setStatus("success"));
     } catch (e) {

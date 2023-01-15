@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { commentRoute, getAuthData } from "./state/reducers/authSlice";
+import { getAuthData } from "./state/reducers/authSlice";
 import {
   addDoc,
   arrayUnion,
@@ -27,16 +27,16 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { commentRoute, getHeaderData } from "./state/reducers/headerSlice";
 
 const Reply = ({ navigation, route }) => {
   const { item } = route.params;
-  const { user, commentRouteValue } = useAppSelector(getAuthData);
+  const { user } = useAppSelector(getAuthData);
+  const { commentRouteValue } = useAppSelector(getHeaderData);
   const [status, setStatus] = useState("");
   const [reply, setReply] = useState("");
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-
-  console.log("hiiiii222", commentRouteValue);
 
   const dispatch = useAppDispatch();
 

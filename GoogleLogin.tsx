@@ -3,23 +3,38 @@ import {
   GoogleAuthProvider,
   signInWithCredential,
 } from "firebase/auth";
-import { Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import React from "react";
 import { useEffect } from "react";
 
 import { useIdTokenAuthRequest } from "expo-auth-session/build/providers/Google";
+import { addDoc, collection, getDocs } from "firebase/firestore";
+import { db } from "./firebase";
 
 const GoogleLogin = () => {
   const [request, response, promptAsync] = useIdTokenAuthRequest({
     clientId: process.env.REACT_APP_CLIENT_ID_WEB,
   });
-
   useEffect(() => {
     if (response?.type === "success") {
+      // let result = [];
+
       const { id_token } = response.params;
       const auth = getAuth();
       const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential);
+      signInWithCredential(auth, credential).then(async (cred) => {
+        try {
+          await addDoc(collection(db, "users"), {
+            username: cred.user.displayName,
+            firebaseUserId: cred.user.uid,
+            writer: cred.user.email,
+            timestamp: Date.now(),
+          });
+        } catch (e) {
+          console.error("Error adding document: ", e);
+          Alert.alert("action failed please try again");
+        }
+      });
     }
   }, [response]);
   return (

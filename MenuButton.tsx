@@ -42,7 +42,7 @@ const MenuButton = () => {
         style={styles.button}
       >
         {commentRouteValue === "" && storyRouteValue === "" ? (
-          <Entypo name="menu" size={30} color="#646464" />
+          <Entypo name="menu" size={38} color="#646464" />
         ) : (
           <AntDesign name="left" size={30} color="#646464" />
         )}
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     alignItems: "center",
-    zIndex: 99,
+    // zIndex: 99,
   },
   modal: {
     width: "100%",

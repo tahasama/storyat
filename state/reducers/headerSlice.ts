@@ -30,6 +30,8 @@ export interface HeaderProps {
         menuStateValue:boolean,
         storyRouteValue:string,
         commentRouteValue:string,
+        modalStateValue:boolean,
+
   };
 }
 
@@ -38,6 +40,7 @@ export const headerInitialState = {
   menuStateValue:false,
   storyRouteValue:'',
   commentRouteValue:'',
+  modalStateValue:false
 };
 
 export const headerSlice = createSlice({
@@ -47,6 +50,10 @@ export const headerSlice = createSlice({
 
     menuState: (state, action) => {
       state.menuStateValue = action.payload;
+    },
+    modalState: (state, action) => {
+      state.modalStateValue = action.payload;
+      console.log(state.modalStateValue)
     },
     storyRoute: (state, action) => {
       state.storyRouteValue = action.payload;
@@ -65,5 +72,5 @@ export const headerSlice = createSlice({
 });
 
 export const getHeaderData = (state: HeaderProps) => state.headerStates;
-export const { menuState,storyRoute, commentRoute} = headerSlice.actions;
+export const { menuState,storyRoute, commentRoute,modalState} = headerSlice.actions;
 export default headerSlice.reducer;

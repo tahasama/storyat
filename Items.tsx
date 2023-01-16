@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "#051E28",
     // backgroundColor: "#002244",
     backgroundColor: "#332FD0",
-    zIndex: 99,
+    // zIndex: 99,
 
     alignItems: "center",
     height: 80,

@@ -9,6 +9,7 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { collection, addDoc } from "firebase/firestore";
@@ -25,7 +26,7 @@ const StoryModal = () => {
   const [content, setContent] = useState("");
   const [status, setStatus] = useState("");
   const { user } = useAppSelector(getAuthData);
-  console.log("tha usaaa", user);
+  // console.log("tha usaaa", user);
 
   const handleStory = async () => {
     try {
@@ -51,7 +52,21 @@ const StoryModal = () => {
 
   return (
     <View style={styles.centeredView}>
+      {modalVisible && <StatusBar hidden />}
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <TouchableOpacity
+          // activeOpacity={1}
+          style={{
+            position: "absolute",
+            top: -30,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            height: windowHeight + 30,
+          }}
+          onPress={() => setModalVisible(false)}
+        />
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View style={styles.inputContainer}>

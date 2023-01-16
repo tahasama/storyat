@@ -1,5 +1,5 @@
 import { signOut } from "firebase/auth";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { auth } from "./firebase";
@@ -27,6 +27,7 @@ const Logout = () => {
         style={styles.button}
       >
         <AntDesign name="logout" size={24} color="#646464" />
+        <Text style={styles.text}> Logout</Text>
       </TouchableOpacity>
     </View>
   );
@@ -45,5 +46,10 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     alignItems: "center",
+    flexDirection: "row",
+  },
+  text: {
+    color: "#646464",
+    fontSize: 24,
   },
 });

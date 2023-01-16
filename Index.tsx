@@ -18,6 +18,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import StoryModal from "./StoryModal";
 import Reply from "./Reply";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import Options from "./Options";
 // import { StoryModal } from "./Modal";
 
 const Index = () => {
@@ -50,10 +51,11 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(!loading);
-    }, 6000);
-  }, []);
+    loading &&
+      setTimeout(() => {
+        setLoading(!loading);
+      }, 6000);
+  }, [loading]);
 
   let [fontsLoaded] = useFonts({
     "IndieFlower-Regular": require("./assets/fonts/IndieFlower-Regular.ttf"),
@@ -73,12 +75,11 @@ const Index = () => {
   return (
     <>
       <NavigationContainer>
-        {!loading && (
-          <View style={styles.buttonContainer}>
-            <StatusBar backgroundColor={"#051E28"} barStyle="light-content" />
-          </View>
-        )}
-
+        {/* {!loading && ( */}
+        <View style={styles.buttonContainer}>
+          <StatusBar backgroundColor={"#051E28"} barStyle="light-content" />
+        </View>
+        {/* )} */}
         <Stack.Navigator
           screenOptions={{
             header: () => (user && !loading ? <Title /> : null),
@@ -87,15 +88,14 @@ const Index = () => {
         >
           <Stack.Group>
             <Stack.Screen name="lll" component={Lll} />
-            {/* <Stack.Screen name="items" component={Items} /> */}
             <Stack.Screen name="item" component={Item} />
             <Stack.Screen name="reply" component={Reply} />
             <Stack.Screen name="login" component={Login} />
             <Stack.Screen name="logout" component={Logout} />
-            {/* <Stack.Screen name="storyModal" component={StoryModal} /> */}
           </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>
+      {/* <Options /> */}
     </>
   );
 };

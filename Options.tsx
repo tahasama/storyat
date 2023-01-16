@@ -1,23 +1,78 @@
-import { View, Text, StyleSheet, Modal, Alert, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  Alert,
+  Pressable,
+  Dimensions,
+  TouchableOpacity,
+  Switch,
+  StatusBar,
+} from "react-native";
 import React, { useState } from "react";
 import Logout from "./Logout";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import AntDesign from "@expo/vector-icons/AntDesign";
+
+{
+  /* <TouchableOpacity
+// activeOpacity={1}
+style={{
+  position: "absolute",
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: "rgba(0,0,0,0.5)",
+}}
+onPress={() => setModalVisible(false)}
+/> */
+}
 
 const Options = () => {
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
   const [modalVisible, setModalVisible] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
   return (
-    <View>
+    <View style={styles.centeredView}>
+      {modalVisible && <StatusBar hidden />}
+
       <Modal
+        onRequestClose={() => setModalVisible(false)}
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+        <TouchableOpacity
+          activeOpacity={1}
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+          }}
+          onPress={() => setModalVisible(false)}
+        />
+        <View
+          style={[styles.centeredView, { bottom: 0, position: "absolute" }]}
+        >
+          <View
+            style={[
+              styles.modalView,
+              {
+                height: windowHeight / 3,
+                width: windowWidth,
+
+                // position: "relative",
+              },
+            ]}
+          >
             <Text style={styles.modalText}>Hello World!</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
@@ -32,7 +87,7 @@ const Options = () => {
         style={[styles.buttonContainer]}
         onPress={() => setModalVisible(true)}
       >
-        <FontAwesome name="user-circle-o" size={23} color="#646464" />
+        <FontAwesome name="user-circle-o" size={28} color="#646464" />
       </Pressable>
     </View>
   );
@@ -41,10 +96,10 @@ const Options = () => {
 const styles = StyleSheet.create({
   buttonContainer: {
     // position: "absolute",
-    // justifyContent: "center",
-    // alignItems: "center",
+    justifyContent: "center",
+    alignItems: "center",
     // margin: 10,
-    right: 10,
+    right: 20,
   },
   button: {
     width: "100%",
@@ -53,15 +108,15 @@ const styles = StyleSheet.create({
     zIndex: 99,
   },
   centeredView: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    // marginTop: 22,
   },
   modalView: {
-    margin: 20,
+    // margin: 20,
     backgroundColor: "white",
-    borderRadius: 20,
+    borderTopEndRadius: 20,
+    borderTopStartRadius: 20,
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",

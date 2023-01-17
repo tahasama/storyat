@@ -2,15 +2,17 @@
 
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 // import itnReducer from "./reducers/itnSlice";
-import authReducer from "./reducers/authSlice";
+import authSlice from "./reducers/authSlice";
 import headerSlice from "./reducers/headerSlice";
+import storiesSlice from "./reducers/storiesSlice";
 
 
 export const store = configureStore({
   reducer: {
     // itnz: itnReducer
-    authUser: authReducer,
-    headerStates:headerSlice
+    authUser: authSlice,
+    headerStates:headerSlice,
+    storiesStates:storiesSlice
 
   },
   middleware: (getDefaultMiddleware) =>

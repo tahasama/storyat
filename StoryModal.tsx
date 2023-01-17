@@ -14,33 +14,53 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import { useAppSelector } from "./state/hooks";
+import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
+import { useDispatch } from "react-redux";
+import {
+  addStories,
+  getstoriesData,
+  loadStories,
+} from "./state/reducers/storiesSlice";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const StoryModal = () => {
+  const dispatch = useAppDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [status, setStatus] = useState("");
+  const [titleError, setTitleError] = useState(false);
+  const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
-  // console.log("tha usaaa", user);
+  console.log("ddddddddddd", user);
 
   const handleStory = async () => {
-    try {
-      await addDoc(collection(db, "stories"), {
-        title: title,
-        content: content,
-        writerId: user.id,
-        timestamp: Date.now(),
-      }).then(() => setStatus("success"));
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
-    }
+    console.log(content, "jjjj", title, "kkk", user);
+
+    content !== "" && title !== ""
+      ? (dispatch(addStories({ title, userId: user.id, content })).then(() =>
+          setStatus("success")
+        ),
+        setTimeout(() => {
+          dispatch(loadStories());
+        }, 250))
+      : title === "" && content !== ""
+      ? setTitleError(true)
+      : title !== "" && content === ""
+      ? setContentError(true)
+      : (setTitleError(true), setContentError(true));
   };
+
+  useEffect(() => {
+    !modalVisible &&
+      (setTitleError(false),
+      setContentError(false),
+      setContent(""),
+      setTitle(""));
+  }, [modalVisible]);
 
   useEffect(() => {
     status === "success" &&
@@ -71,17 +91,19 @@ const StoryModal = () => {
           <View style={styles.modalView}>
             <View style={styles.inputContainer}>
               <TextInput
-                placeholder="Give it a title"
-                placeholderTextColor={"#8BBCCC"}
+                placeholder={titleError ? "required title" : "Give it a title"}
+                placeholderTextColor={titleError ? "red" : "#8BBCCC"}
                 //   value={email}
                 onChangeText={(text) => setTitle(text)}
                 style={styles.input}
               />
               <TextInput
                 multiline
-                numberOfLines={10}
-                placeholder="Write your story here..."
-                placeholderTextColor={"#8BBCCC"}
+                numberOfLines={8}
+                placeholder={
+                  contentError ? "required content" : "Write your story here..."
+                }
+                placeholderTextColor={contentError ? "red" : "#8BBCCC"}
                 //   value={password}
                 onChangeText={(text) => setContent(text)}
                 style={styles.input}
@@ -91,7 +113,7 @@ const StoryModal = () => {
               <TouchableOpacity
                 onPress={handleStory}
                 style={styles.buttonSendContainer}
-                disabled={status === "success" && true}
+                // disabled={content === "" && title === "" && true}
               >
                 {status !== "success" ? (
                   <Text
@@ -219,7 +241,7 @@ const styles = StyleSheet.create({
     // width: "30%",
     // height: 70,
     // textAlign: "center",
-    top: 20,
+    top: 16,
     paddingVertical: 20,
     paddingHorizontal: 30,
   },

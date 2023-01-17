@@ -19,6 +19,7 @@ const MenuButton = () => {
   const navigation = useNavigation<any>();
 
   const route = useRoute();
+  console.log("im here", route);
 
   const { menuStateValue, commentRouteValue, storyRouteValue } =
     useAppSelector(getHeaderData);

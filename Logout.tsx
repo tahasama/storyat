@@ -12,24 +12,22 @@ const Logout = () => {
   const dispatch = useDispatch();
 
   return (
-    <View style={styles.buttonContainer}>
-      <TouchableOpacity
-        onPress={() => {
-          signOut(auth)
-            .then(() => {
-              setTimeout(() => {
-                dispatch(resetUser({}));
-                navigation.replace("login", "noSplash");
-              }, 1000);
-            })
-            .catch((error) => alert(error.message));
-        }}
-        style={styles.button}
-      >
-        <AntDesign name="logout" size={24} color="#646464" />
-        <Text style={styles.text}> Logout</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      style={styles.buttonContainer}
+      onPress={() => {
+        signOut(auth)
+          .then(() => {
+            setTimeout(() => {
+              dispatch(resetUser({}));
+              navigation.replace("login", "noSplash");
+            }, 1000);
+          })
+          .catch((error) => alert(error.message));
+      }}
+      // style={styles.button}
+    >
+      <AntDesign name="logout" size={28} color="#646464" />
+    </TouchableOpacity>
   );
 };
 

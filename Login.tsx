@@ -30,8 +30,6 @@ const Login = ({ navigation, route }) => {
   const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
 
-  // console.log("login", user);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

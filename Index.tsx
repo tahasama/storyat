@@ -19,6 +19,8 @@ import StoryModal from "./StoryModal";
 import Reply from "./Reply";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import Options from "./Options";
+import Profile from "./Profile";
+import Actions from "./Actions";
 // import { StoryModal } from "./Modal";
 
 const Index = () => {
@@ -27,7 +29,6 @@ const Index = () => {
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(true);
   // const navigation = useNavigation();
-  // console.log(user);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (userx) => {
       let result = [];
@@ -41,7 +42,6 @@ const Index = () => {
         querySnapshot.forEach((doc: any) =>
           result.push({ ...doc.data(), id: doc.id })
         );
-        console.log("wwwwwwwwwwwwwwwwwwwwwwww", result);
         dispatch(saveUser(result[0]));
       } else {
         console.log("no user bro");
@@ -75,11 +75,11 @@ const Index = () => {
   return (
     <>
       <NavigationContainer>
-        {/* {!loading && ( */}
-        <View style={styles.buttonContainer}>
-          <StatusBar backgroundColor={"#051E28"} barStyle="light-content" />
-        </View>
-        {/* )} */}
+        {!loading && (
+          <View style={styles.buttonContainer}>
+            <StatusBar backgroundColor={"#051E28"} barStyle="light-content" />
+          </View>
+        )}
         <Stack.Navigator
           screenOptions={{
             header: () => (user && !loading ? <Title /> : null),
@@ -92,6 +92,8 @@ const Index = () => {
             <Stack.Screen name="reply" component={Reply} />
             <Stack.Screen name="login" component={Login} />
             <Stack.Screen name="logout" component={Logout} />
+            <Stack.Screen name="profile" component={Profile} />
+            <Stack.Screen name="actions" component={Actions} />
           </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>

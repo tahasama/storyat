@@ -10,10 +10,12 @@ import {
   Switch,
   StatusBar,
 } from "react-native";
-import React, { useState } from "react";
+import React, { Profiler, useState } from "react";
 import Logout from "./Logout";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useNavigation } from "@react-navigation/native";
 
 {
   /* <TouchableOpacity
@@ -36,6 +38,7 @@ const Options = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const navigation = useNavigation<any>();
 
   return (
     <View style={styles.centeredView}>
@@ -48,14 +51,14 @@ const Options = () => {
         visible={modalVisible}
       >
         <TouchableOpacity
-          activeOpacity={1}
+          // activeOpacity={1}
           style={{
             position: "absolute",
             top: 0,
             bottom: 0,
             left: 0,
             right: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
+            backgroundColor: "rgba(0,0,0,0.4)",
           }}
           onPress={() => setModalVisible(false)}
         />
@@ -68,18 +71,127 @@ const Options = () => {
               {
                 height: windowHeight / 3,
                 width: windowWidth,
-
+                // backgroundColor: "blue",
                 // position: "relative",
               },
             ]}
           >
-            <Text style={styles.modalText}>Hello World!</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}
             >
-              <Text style={styles.textStyle}>Hide Modal</Text>
+              <AntDesign name="minus" color={"#404258"} />
             </Pressable>
+            <View style={styles.subMenu}>
+              <TouchableOpacity
+                style={{
+                  marginBottom: 20,
+                  // backgroundColor: "red",
+                  width: windowWidth / 2.55,
+                  flexDirection: "row",
+                }}
+                onPress={() => (
+                  navigation.navigate("profile"), setModalVisible(false)
+                )}
+              >
+                <FontAwesome name="user-circle-o" size={33} color="#646464" />
+
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flex: 1,
+                  }}
+                >
+                  <Text style={styles.menuText}>My Profile</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => (
+                  navigation.navigate("actions"), setModalVisible(false)
+                )}
+                style={{
+                  // backgroundColor: "red",
+                  width: windowWidth / 2.5,
+                  flexDirection: "row",
+                  marginBottom: 12,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="post-outline"
+                  size={36}
+                  color="#646464"
+                />
+
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flex: 1,
+                    marginLeft: 5,
+                  }}
+                >
+                  <Text style={styles.menuText}> My Actions</Text>
+                </View>
+              </TouchableOpacity>
+              <View
+                style={{
+                  // justifyContent: "center",
+                  // alignItems: "flex-start",
+                  flexDirection: "row",
+                  // flex: 1,
+                  height: windowHeight / 18,
+                  // backgroundColor: "red",
+                  width: windowWidth / 2.6,
+                  marginBottom: 12,
+                }}
+              >
+                <Switch
+                  style={{
+                    transform: [{ scale: 1.2 }],
+                  }}
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={toggleSwitch}
+                  value={isEnabled}
+                />
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flex: 1,
+                    height: "100%",
+                  }}
+                >
+                  <Text style={styles.menuText}>Dark/Light</Text>
+                </View>
+              </View>
+              <TouchableOpacity
+                style={{
+                  // justifyContent: "center",
+                  // alignItems: "flex-start",
+                  flexDirection: "row",
+                  // flex: 1,
+                  height: windowHeight / 18,
+                  // backgroundColor: "red",
+                  width: windowWidth / 3,
+                }}
+              >
+                <Logout />
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    // flex: 1,
+                    height: "100%",
+                    marginLeft: 16,
+                  }}
+                >
+                  <Text style={styles.menuText}>Logout</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -94,6 +206,14 @@ const Options = () => {
 };
 
 const styles = StyleSheet.create({
+  subMenu: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-evenly",
+    // alignItems: "flex-start",
+    // backgroundColor: "yellow",
+    width: "100%",
+  },
   buttonContainer: {
     // position: "absolute",
     justifyContent: "center",
@@ -114,7 +234,8 @@ const styles = StyleSheet.create({
   },
   modalView: {
     // margin: 20,
-    backgroundColor: "white",
+    backgroundColor: "#051E28",
+
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
     padding: 35,
@@ -137,7 +258,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#F194FF",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#404258",
+    top: -20,
+    width: "25%",
+    height: "5%",
   },
   textStyle: {
     color: "white",
@@ -147,6 +271,10 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+  },
+  menuText: {
+    fontSize: 16,
+    color: "#778899",
   },
 });
 

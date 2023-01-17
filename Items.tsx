@@ -21,47 +21,35 @@ import { getDocs } from "@firebase/firestore";
 import { collection } from "firebase/firestore";
 import { db } from "./firebase";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
+import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
 
 const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
-  const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
+  const { result } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
-  const [data, setData] = useState([]);
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
     setSelectedId(item.id);
   };
 
-  // const [locations, setLocations] = useState([]);
-  const loadData = async () => {
-    let result = [];
-    const querySnapshot = await getDocs(collection(db, "stories"));
-    querySnapshot.forEach((doc: any) =>
-      result.push({ ...doc.data(), id: doc.id })
-    );
-
-    setData(result);
-  };
+  useEffect(() => {
+    result.length === 0 && dispatch(loadStories());
+  }, [result]);
 
   useEffect(() => {
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    dispatch(menuState(!menuStateValue));
+    dispatch(menuState(false));
   }, []);
 
   useEffect(() => {
     menuStateValue ? navigation.openDrawer() : navigation.closeDrawer();
-    // navigation.toggleDrawer();
   }, [menuStateValue]);
 
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={data}
+        data={result.flat()}
         renderItem={({ item }) => (
           <View style={styles.item}>
             <TouchableOpacity

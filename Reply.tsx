@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
@@ -66,10 +67,13 @@ const Reply = ({ navigation, route }) => {
     try {
       await addDoc(collection(db, "replies"), {
         reply: reply,
-        replier: user.displayName ? user.displayName : user.email,
+        replier: user.username,
         timestamp: Date.now(),
         commentId: item.id,
-      }).then(() => setStatus("success"));
+      })
+        .then(() => setStatus("success"))
+        .then(() => setReply(""))
+        .then(() => Keyboard.dismiss());
     } catch (e) {
       console.error("Error adding document: ", e);
       Alert.alert("action failed please try again");
@@ -108,9 +112,14 @@ const Reply = ({ navigation, route }) => {
           // value={number}
           placeholder="Add a reply ..."
           placeholderTextColor={"#8BBCCC"}
+          value={reply}
         />
-        <TouchableOpacity onPress={handleReply} style={styles.button}>
-          <Text style={styles.buttonText}>Post</Text>
+        <TouchableOpacity
+          onPress={handleReply}
+          style={styles.button}
+          disabled={reply === "" && true}
+        >
+          <Text style={styles.buttonText}>Reply</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -203,13 +212,15 @@ const styles = StyleSheet.create({
     borderColor: "#828E94",
     backgroundColor: "#051E28 ",
     borderRadius: 5,
-    width: "60%",
+    width: "75%",
+    fontSize: 17,
 
     // width: "90%",
     color: "#8BBCCC",
   },
   button: {
     backgroundColor: "#052821",
+    marginRight: 9,
   },
   buttonText: {
     color: "#c5765c",

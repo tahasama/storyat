@@ -33,6 +33,7 @@ import { getHeaderData, storyRoute } from "./state/reducers/headerSlice";
 const Item = ({ navigation, route }) => {
   const { item } = route.params;
   const { user } = useAppSelector(getAuthData);
+
   const { storyRouteValue } = useAppSelector(getHeaderData);
   const [status, setStatus] = useState("");
   const [comment, setComment] = useState("");
@@ -63,11 +64,12 @@ const Item = ({ navigation, route }) => {
     loadData();
   }, []);
 
+  console.log("434343", user);
   const handleComment = async () => {
     try {
       await addDoc(collection(db, "comments"), {
         comment: comment,
-        commenter: user.displayName ? user.displayName : user.email,
+        commenter: user.username,
         timestamp: Date.now(),
         storyId: item.id,
       })
@@ -85,62 +87,188 @@ const Item = ({ navigation, route }) => {
     setSelectedId(item.id);
   };
 
-  return (
-    <>
-      <View style={styles.container}>
-        <View style={styles.subContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.content}>
-            {"\t"}
+  const getHeader = () => {
+    return (
+      <View style={styles.subContainer}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.content}>
+          {"\t"}
 
-            {item.content}
-          </Text>
-        </View>
-        <FlatList
-          data={data}
-          renderItem={({ item }) => (
-            <View style={styles.commentContainer}>
-              <Text style={styles.comment}>{item.comment}</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  handleOnpress(item);
-                }}
-              >
-                <Text style={styles.comment}>reply</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          keyExtractor={(item) => {
-            return item.id;
-          }}
-          extraData={selectedId}
-        />
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
+        <Text style={styles.content}>
+          {"\t"}
+
+          {item.content}
+        </Text>
       </View>
+    );
+  };
+  const getFooter = () => {
+    return (
       <View style={styles.postComment}>
         <TextInput
           style={styles.input}
           multiline
           onChangeText={(text) => setComment(text)}
-          // value={number}
           placeholder="Add a comment ..."
           placeholderTextColor={"#8BBCCC"}
           value={comment}
         />
-        <TouchableOpacity onPress={handleComment} style={styles.button}>
+        <TouchableOpacity
+          onPress={handleComment}
+          style={styles.button}
+          disabled={comment === "" && true}
+        >
           <Text style={styles.buttonText}>Post</Text>
         </TouchableOpacity>
       </View>
-    </>
+    );
+  };
+  return (
+    <View style={styles.container}>
+      <FlatList
+        style={{ marginBottom: 90 }}
+        data={data}
+        renderItem={({ item }) => (
+          <View style={styles.commentContainer}>
+            <Text style={styles.comment}>{item.comment}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                handleOnpress(item);
+              }}
+            >
+              <Text style={styles.comment}>reply</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        keyExtractor={(item) => {
+          return item.id;
+        }}
+        extraData={selectedId}
+        ListHeaderComponent={getHeader}
+        // ListFooterComponent={getFooter}
+        // ListFooterComponentStyle={{
+        //   backgroundColor: "#495C83",
+        //   borderRadius: 50,
+        //   padding: 26,
+        //   elevation: 4,
+        //   position: "absolute",
+        //   right: 20,
+        //   bottom: 60,
+        // }}
+      />
+      <View
+        style={{
+          // backgroundColor: "#002626",
+          // borderRadius: 50,
+          padding: 6,
+          elevation: 4,
+          position: "absolute",
+          right: 0,
+          bottom: 0,
+          flexDirection: "row",
+          width: "100%",
+          justifyContent: "space-between",
+        }}
+      >
+        <TextInput
+          style={styles.input}
+          multiline
+          onChangeText={(text) => setComment(text)}
+          placeholder="  Add a comment ..."
+          placeholderTextColor={"#8BBCCC"}
+          value={comment}
+        />
+        <TouchableOpacity
+          onPress={handleComment}
+          style={styles.button}
+          disabled={comment === "" && true}
+        >
+          <Text style={styles.buttonText}>Post</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     // alignItems: "center",
     // justifyContent: "center",
     backgroundColor: "#051e28",
-    color: "yellow",
+    // color: "yellow",
   },
   subContainer: { marginBottom: 60 },
   title: {
@@ -202,15 +330,15 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   postComment: {
-    // flex: 0,
-    flexDirection: "row",
-    // position: "absolute",
-    // bottom: 10,
-    alignItems: "center",
-    justifyContent: "space-around",
-    // width: "100%",
-    // marginHorizontal: -10,
-    backgroundColor: "#051E28",
+    // // flex: 0,
+    // flexDirection: "row",
+    // // position: "absolute",
+    // // bottom: 10,
+    // alignItems: "center",
+    // justifyContent: "space-around",
+    // // width: "100%",
+    // // marginHorizontal: -10,
+    // backgroundColor: "#051E28",
   },
   input: {
     height: 44,
@@ -220,13 +348,17 @@ const styles = StyleSheet.create({
     borderColor: "#828E94",
     backgroundColor: "#051E28 ",
     borderRadius: 5,
-    width: "60%",
+    width: "75%",
+    fontSize: 17,
 
     // width: "90%",
     color: "#8BBCCC",
   },
   button: {
-    backgroundColor: "#052821",
+    // backgroundColor: "#052821",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 9,
   },
   buttonText: {
     color: "#c5765c",

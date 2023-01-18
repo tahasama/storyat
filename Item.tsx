@@ -29,6 +29,14 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { getHeaderData, storyRoute } from "./state/reducers/headerSlice";
+import {
+  getcommentsData,
+  loadcomments,
+  addcomments,
+} from "./state/reducers/commentsSlice";
+import { loadStories } from "./state/reducers/storiesSlice";
+import Entypo from "@expo/vector-icons/Entypo";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const Item = ({ navigation, route }) => {
   const { item } = route.params;
@@ -39,47 +47,29 @@ const Item = ({ navigation, route }) => {
   const [comment, setComment] = useState("");
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-
+  console.log("ddddddddddd", user.id);
   const dispatch = useAppDispatch();
+  const { result } = useAppSelector(getcommentsData);
 
   useEffect(() => {
     dispatch(storyRoute(item.id));
   }, [item.id]);
 
-  const loadData = async () => {
-    let result = [];
-    const q = query(
-      collection(db, "comments"),
-      where("storyId", "==", item.id)
-    );
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc: any) =>
-      result.push({ ...doc.data(), id: doc.id })
-    );
-
-    setData(result);
-  };
-
   useEffect(() => {
-    loadData();
+    dispatch(loadcomments(item.id));
   }, []);
 
   console.log("434343", user);
   const handleComment = async () => {
-    try {
-      await addDoc(collection(db, "comments"), {
-        comment: comment,
-        commenter: user.username,
-        timestamp: Date.now(),
-        storyId: item.id,
-      })
-        .then(() => setStatus("success"))
-        .then(() => setComment(""))
-        .then(() => Keyboard.dismiss());
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
-    }
+    dispatch(
+      addcomments({ comment: comment, userId: user.id, storyId: item.id })
+    )
+      .then(() => setStatus("success"))
+      .then(() => setComment(""))
+      .then(() => Keyboard.dismiss()),
+      setTimeout(() => {
+        dispatch(loadcomments(item.id));
+      }, 250);
   };
 
   const handleOnpress = (item) => {
@@ -199,17 +189,52 @@ const Item = ({ navigation, route }) => {
     <View style={styles.container}>
       <FlatList
         style={{ marginBottom: 90 }}
-        data={data}
+        data={result}
         renderItem={({ item }) => (
           <View style={styles.commentContainer}>
             <Text style={styles.comment}>{item.comment}</Text>
-            <TouchableOpacity
-              onPress={() => {
-                handleOnpress(item);
+            <View style={styles.commentActions}>
+              <TouchableOpacity
+                onPress={() => {
+                  handleOnpress(item);
+                }}
+              >
+                <Text style={[styles.comment, { color: "#727577", margin: 5 }]}>
+                  Reply
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  handleOnpress(item);
+                }}
+              >
+                <Entypo name="arrow-bold-up" color={"#669393"} size={26} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  handleOnpress(item);
+                }}
+              >
+                <Entypo name="arrow-bold-down" color={"#669393"} size={26} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  handleOnpress(item);
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="delete"
+                  color={"#669393"}
+                  size={26}
+                />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                borderBottomColor: "grey",
+                borderBottomWidth: StyleSheet.hairlineWidth,
               }}
-            >
-              <Text style={styles.comment}>reply</Text>
-            </TouchableOpacity>
+            />
           </View>
         )}
         keyExtractor={(item) => {
@@ -289,12 +314,12 @@ const styles = StyleSheet.create({
   },
 
   commentContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     // paddingHorizontal: 20,
     // paddingBottom: 20,
     // marginTop: 20,
-    alignItems: "center",
-    justifyContent: "flex-start",
+    // alignItems: "center",
+    // justifyContent: "center",
     // backgroundColor: "red",
     paddingHorizontal: 20,
     marginTop: 20,
@@ -303,7 +328,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#9BA5A9",
     paddingHorizontal: 20,
-    // paddingVertical: 10,
+    paddingVertical: 10,
+  },
+  commentActions: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
   },
   logo: {
     width: 50,

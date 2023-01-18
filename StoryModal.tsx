@@ -35,11 +35,8 @@ const StoryModal = () => {
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
-  console.log("ddddddddddd", user);
 
   const handleStory = async () => {
-    console.log(content, "jjjj", title, "kkk", user);
-
     content !== "" && title !== ""
       ? (dispatch(addStories({ title, userId: user.id, content })).then(() =>
           setStatus("success")

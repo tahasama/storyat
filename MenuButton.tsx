@@ -33,16 +33,16 @@ const MenuButton = () => {
       <TouchableOpacity
         onPress={() => {
           {
-            commentRouteValue === "" && storyRouteValue === ""
-              ? dispatch(menuState(!menuStateValue))
-              : navigation.dispatch(popAction);
-            route.name === "item" && dispatch(commentRoute("")),
-              route.name === "item" && dispatch(storyRoute(""));
+            route.name !== "lll"
+              ? navigation.dispatch(popAction)
+              : dispatch(menuState(true));
+            // route.name === "item" && dispatch(commentRoute("")),
+            //   route.name === "item" && dispatch(storyRoute(""));
           }
         }}
         style={styles.button}
       >
-        {commentRouteValue === "" && storyRouteValue === "" ? (
+        {route.name === "lll" ? (
           <Entypo name="menu" size={38} color="#646464" />
         ) : (
           <AntDesign name="left" size={30} color="#646464" />

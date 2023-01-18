@@ -35,8 +35,8 @@ const Items = ({ navigation }) => {
   };
 
   useEffect(() => {
-    result.length === 0 && dispatch(loadStories());
-  }, [result]);
+    dispatch(loadStories());
+  }, []);
 
   useEffect(() => {
     dispatch(menuState(false));
@@ -49,7 +49,7 @@ const Items = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={result.flat()}
+        data={result}
         renderItem={({ item }) => (
           <View style={styles.item}>
             <TouchableOpacity

@@ -16,6 +16,10 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
+import { signOut } from "firebase/auth";
+import { resetUser } from "./state/reducers/authSlice";
+import { auth } from "./firebase";
+import { useDispatch } from "react-redux";
 
 {
   /* <TouchableOpacity
@@ -39,6 +43,7 @@ const Options = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const navigation = useNavigation<any>();
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.centeredView}>
@@ -168,24 +173,36 @@ const Options = () => {
                 </View>
               </View>
               <TouchableOpacity
+                onPress={() => {
+                  signOut(auth)
+                    .then(() => {
+                      setTimeout(() => {
+                        dispatch(resetUser({}));
+                        navigation.replace("login", "noSplash");
+                      }, 1000);
+                    })
+                    .catch((error) => alert(error.message));
+                }}
                 style={{
-                  // justifyContent: "center",
-                  // alignItems: "flex-start",
-                  flexDirection: "row",
-                  // flex: 1,
-                  height: windowHeight / 18,
                   // backgroundColor: "red",
-                  width: windowWidth / 3,
+                  width: windowWidth / 2.5,
+                  flexDirection: "row",
+                  marginBottom: 12,
                 }}
               >
-                <Logout />
+                <AntDesign
+                  name="logout"
+                  size={30}
+                  color="#646464"
+                  style={{ left: 7 }}
+                />
+
                 <View
                   style={{
                     alignItems: "center",
                     justifyContent: "center",
-                    // flex: 1,
-                    height: "100%",
-                    marginLeft: 16,
+                    flex: 1,
+                    marginRight: 12,
                   }}
                 >
                   <Text style={styles.menuText}>Logout</Text>

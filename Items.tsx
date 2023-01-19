@@ -10,6 +10,7 @@ import {
   View,
   Modal,
   Alert,
+  Image,
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -57,8 +58,54 @@ const Items = ({ navigation }) => {
                 handleOnpress(item);
               }}
             >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                }}
+              >
+                {/* <Image
+                  source={require(item.avatar !== undefined
+                    ? item.avatar
+                    : "https://i.pravatar.cc/300")}
+                /> */}
+                <Image
+                  source={{
+                    uri:
+                      item.avatar === ""
+                        ? "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
+                        : item.avatar,
+                  }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 50,
+                    marginHorizontal: 10,
+                    marginVertical: 18,
+                  }}
+                />
+                <Text style={{ fontSize: 16, color: "white" }}>
+                  {item.username}
+                </Text>
+              </View>
               <Text style={styles.title}>{item.title}</Text>
+              <Text
+                style={[
+                  styles.title,
+                  { marginHorizontal: 20, color: "#9fa3a7", fontSize: 20 },
+                ]}
+                numberOfLines={2}
+              >
+                {item.content}
+              </Text>
             </TouchableOpacity>
+            <View
+              style={{
+                borderBottomColor: "grey",
+                borderBottomWidth: StyleSheet.hairlineWidth,
+              }}
+            />
           </View>
         )}
         keyExtractor={(item) => {
@@ -82,13 +129,15 @@ const styles = StyleSheet.create({
   },
 
   item: {
-    padding: 20,
+    padding: 8,
     marginVertical: 8,
-    marginHorizontal: 16,
+    // marginHorizontal: 16,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     color: "#bcbcbc",
+    marginBottom: 25,
+    marginHorizontal: 12,
   },
 
   icon: {

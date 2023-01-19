@@ -182,9 +182,9 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 120,
     // paddingVertical: 10,
     marginTop: 100,
-    width: windowWidth * 0.9,
+    width: windowWidth * 0.98,
     paddingVertical: 50,
-    paddingHorizontal: 20,
+    paddingHorizontal: 17,
   },
 
   buttonOpen: {

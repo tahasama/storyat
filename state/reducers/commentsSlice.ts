@@ -1,5 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { Alert } from "react-native";
 import { db } from "../../firebase";
 
@@ -14,16 +23,28 @@ interface commentProps {
 export const loadcomments = createAsyncThunk(
   "loadcomments",
   async (storyId: string) => {
+    console.log("qwqwqwqwqwq", storyId);
     try {
-      let result = [];
       const q = query(
         collection(db, "comments"),
         where("storyId", "==", storyId)
       );
       const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc: any) =>
-        result.push({ ...doc.data(), id: doc.id })
-      );
+      const promises = querySnapshot.docs.map(async (docs: any) => {
+        const username = await (
+          await getDoc(doc(db, "users", docs.data().commenter))
+        ).data().username;
+        const avatar = await (
+          await getDoc(doc(db, "users", docs.data().commenter))
+        ).data().avatar;
+        return {
+          ...docs.data(),
+          id: docs.id,
+          username: username,
+          avatar: avatar,
+        };
+      });
+      const result = await Promise.all(promises);
       return result;
     } catch (error: any) {
       return error;
@@ -51,6 +72,13 @@ export const addcomments = createAsyncThunk(
       console.error("Error adding document: ", e);
       Alert.alert("action failed please try again");
     }
+  }
+);
+
+export const removeComment = createAsyncThunk(
+  "removeComment",
+  async (commentId: any) => {
+    deleteDoc(doc(db, "comments", commentId));
   }
 );
 
@@ -82,10 +110,9 @@ export const commentsSlice = createSlice({
     builder.addCase(loadcomments.fulfilled, (state, action: any) => {
       state.result = action.payload;
     });
-    //     builder.addCase(addcomments.fulfilled, (state, action) => {
-    // state=action.payload
-
-    //     });
+    // builder.addCase(removeComment.fulfilled, (state, action) => {
+    //   state = action.payload;
+    // });
   },
 });
 

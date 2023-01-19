@@ -33,13 +33,14 @@ import {
   getcommentsData,
   loadcomments,
   addcomments,
+  removeComment,
 } from "./state/reducers/commentsSlice";
 import { loadStories } from "./state/reducers/storiesSlice";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const Item = ({ navigation, route }) => {
-  const { item } = route.params;
+  const ccc = route.params;
   const { user } = useAppSelector(getAuthData);
 
   const { storyRouteValue } = useAppSelector(getHeaderData);
@@ -52,23 +53,23 @@ const Item = ({ navigation, route }) => {
   const { result } = useAppSelector(getcommentsData);
 
   useEffect(() => {
-    dispatch(storyRoute(item.id));
-  }, [item.id]);
+    dispatch(storyRoute(ccc.item.id));
+  }, [ccc.item.id]);
 
   useEffect(() => {
-    dispatch(loadcomments(item.id));
+    dispatch(loadcomments(ccc.item.id));
   }, []);
 
   console.log("434343", user);
   const handleComment = async () => {
     dispatch(
-      addcomments({ comment: comment, userId: user.id, storyId: item.id })
+      addcomments({ comment: comment, userId: user.id, storyId: ccc.item.id })
     )
       .then(() => setStatus("success"))
       .then(() => setComment(""))
       .then(() => Keyboard.dismiss()),
       setTimeout(() => {
-        dispatch(loadcomments(item.id));
+        dispatch(loadcomments(ccc.item.id));
       }, 250);
   };
 
@@ -80,86 +81,11 @@ const Item = ({ navigation, route }) => {
   const getHeader = () => {
     return (
       <View style={styles.subContainer}>
-        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.title}>{ccc.item.title}</Text>
         <Text style={styles.content}>
           {"\t"}
 
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
-        </Text>
-        <Text style={styles.content}>
-          {"\t"}
-
-          {item.content}
+          {ccc.item.content}
         </Text>
       </View>
     );
@@ -192,6 +118,37 @@ const Item = ({ navigation, route }) => {
         data={result}
         renderItem={({ item }) => (
           <View style={styles.commentContainer}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            >
+              {/* <Image
+                  source={require(item.avatar !== undefined
+                    ? item.avatar
+                    : "https://i.pravatar.cc/300")}
+                /> */}
+              <Image
+                source={{
+                  uri:
+                    item.avatar === ""
+                      ? "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
+                      : item.avatar,
+                }}
+                style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: 50,
+                  marginHorizontal: 0,
+                  marginVertical: 0,
+                }}
+              />
+              <Text style={{ fontSize: 16, color: "white", marginLeft: 8 }}>
+                {item.username}
+              </Text>
+            </View>
             <Text style={styles.comment}>{item.comment}</Text>
             <View style={styles.commentActions}>
               <TouchableOpacity
@@ -219,7 +176,8 @@ const Item = ({ navigation, route }) => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  handleOnpress(item);
+                  dispatch(removeComment(item.id));
+                  dispatch(loadcomments(ccc.item.id));
                 }}
               >
                 <MaterialCommunityIcons
@@ -289,7 +247,7 @@ const Item = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     // alignItems: "center",
     // justifyContent: "center",
     backgroundColor: "#051e28",

@@ -31,6 +31,7 @@ const GoogleLogin = () => {
             firebaseUserId: cred.user.uid,
             writer: cred.user.email,
             timestamp: Date.now(),
+            avatar: "",
           });
         } catch (e) {
           console.error("Error adding document: ", e);

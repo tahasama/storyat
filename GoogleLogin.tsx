@@ -15,6 +15,10 @@ const GoogleLogin = () => {
   const [request, response, promptAsync] = useIdTokenAuthRequest({
     clientId: process.env.REACT_APP_CLIENT_ID_WEB,
   });
+
+  const PicId = () => {
+    return Math.floor(Math.random() * 1084);
+  };
   useEffect(() => {
     if (response?.type === "success") {
       // let result = [];
@@ -29,7 +33,7 @@ const GoogleLogin = () => {
             firebaseUserId: cred.user.uid,
             writer: cred.user.email,
             timestamp: Date.now(),
-            avatar: "",
+            avatar: `https://picsum.photos/id/${PicId()}/200/300`,
           });
         } catch (e) {
           console.error("Error adding document: ", e);

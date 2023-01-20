@@ -10,7 +10,7 @@ import {
   Switch,
   StatusBar,
 } from "react-native";
-import React, { Profiler, useState } from "react";
+import React, { Profiler, useEffect, useState } from "react";
 import Logout from "./Logout";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -20,6 +20,7 @@ import { signOut } from "firebase/auth";
 import { resetUser } from "./state/reducers/authSlice";
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
+import { menuState } from "./state/reducers/headerSlice";
 
 {
   /* <TouchableOpacity
@@ -44,6 +45,8 @@ const Options = () => {
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
+
+  useEffect(() => {}, []);
 
   return (
     <View style={styles.centeredView}>
@@ -214,7 +217,7 @@ const Options = () => {
       </Modal>
       <Pressable
         style={[styles.buttonContainer]}
-        onPress={() => setModalVisible(true)}
+        onPress={() => (setModalVisible(true), dispatch(menuState(false)))}
       >
         <FontAwesome name="user-circle-o" size={28} color="#646464" />
       </Pressable>

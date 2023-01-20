@@ -72,10 +72,7 @@ const Items = ({ navigation }) => {
                 /> */}
                 <Image
                   source={{
-                    uri:
-                      item.avatar === ""
-                        ? "https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250"
-                        : item.avatar,
+                    uri: item.avatar,
                   }}
                   style={{
                     width: 30,

@@ -49,7 +49,6 @@ export const headerSlice = createSlice({
     },
     modalState: (state, action) => {
       state.modalStateValue = action.payload;
-      console.log(state.modalStateValue);
     },
     storyRoute: (state, action) => {
       state.storyRouteValue = action.payload;

@@ -30,8 +30,6 @@ export const addStories = createAsyncThunk(
   "addStories",
   async ({ title, content, userId }: storyProps) => {
     try {
-      console.log("the res is", title, content, userId);
-
       const res = await addDoc(collection(db, "stories"), {
         title: title,
         content: content,
@@ -77,7 +75,6 @@ export const storiesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
-      // console.log("sssssssssssssssssssss", action);
       state.result = action.payload;
     });
     //     builder.addCase(addStories.fulfilled, (state, action) => {

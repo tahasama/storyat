@@ -14,7 +14,6 @@ interface replyProps {
 export const loadreplies = createAsyncThunk(
   "loadreplies",
   async (commentId: string) => {
-    console.log("ffffffffffffff", commentId);
     try {
       let result = [];
       const q = query(
@@ -36,14 +35,11 @@ export const addreplies = createAsyncThunk(
   "addreplies",
   async ({ reply, userId }: replyProps) => {
     try {
-      console.log("the res is", reply, userId);
-
       const res = await addDoc(collection(db, "replies"), {
         reply: reply,
         replier: userId,
         timestamp: Date.now(),
       });
-      console.log("the res is", res);
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);

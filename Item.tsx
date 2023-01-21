@@ -36,6 +36,9 @@ import {
   removeComment,
   addCommentLike,
   isCommentLiked,
+  isCommentDisliked,
+  addCommentDislike,
+  getComment,
 } from "./state/reducers/commentsSlice";
 import { loadStories } from "./state/reducers/storiesSlice";
 import Entypo from "@expo/vector-icons/Entypo";
@@ -49,11 +52,11 @@ const Item = ({ navigation, route }) => {
   const { storyRouteValue } = useAppSelector(getHeaderData);
   const [status, setStatus] = useState("");
   const [comment, setComment] = useState("");
-  const [data, setData] = useState([]);
+  const [q, setQ] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const dispatch = useAppDispatch();
-  const { result, commentLiked } = useAppSelector(getcommentsData);
-  console.log("ddddddddddd", commentLiked);
+  const { result, commentLiked, commentDisliked, likes, dislikes } =
+    useAppSelector(getcommentsData);
 
   useEffect(() => {
     dispatch(storyRoute(ccc.item.id));
@@ -63,7 +66,6 @@ const Item = ({ navigation, route }) => {
     dispatch(loadcomments(ccc.item.id));
   }, []);
 
-  console.log("434343", user);
   const handleComment = async () => {
     dispatch(
       addcomments({
@@ -87,6 +89,13 @@ const Item = ({ navigation, route }) => {
     setSelectedId(item.id);
   };
 
+  // useEffect(() => {
+  //   const xxx =
+  //     likes.filter((zzz) => zzz.liker === user.id && zzz.commentId === item.id)
+  //       .length === 0;
+  //   console.log("useeffect", likes);
+  // }, [likes]);
+
   const handleLike = (item) => {
     console.log(item.likes.filter((zzz) => zzz.liker === user.id).length === 0);
     const commentLikesData = { commentId: item.id, liker: user.id };
@@ -94,19 +103,55 @@ const Item = ({ navigation, route }) => {
     item.likes.filter((zzz) => zzz.liker === user.id).length === 0
       ? commentLikesArray.push(commentLikesData)
       : commentLikesArray.pop();
+    console.log("12313123123123", commentLikesArray);
+    const commentDislikesData = { commentId: item.id, liker: user.id };
+    const commentDislikesArray = [...item.dislikes];
+    item.dislikes.filter((zzz) => zzz.liker === user.id).length !== 0 &&
+      commentDislikesArray.pop();
+    dispatch(
+      addCommentDislike({
+        commentDislikesData,
+        commentDislikesArray,
+      })
+    ).then(() =>
+      dispatch(
+        addCommentLike({
+          commentLikesData,
+          commentLikesArray,
+        })
+      ).then(() => dispatch(loadcomments(ccc.item.id)))
+    );
+  };
+
+  const handleDislike = (item) => {
+    console.log(
+      item.dislikes.filter((zzz) => zzz.liker === user.id).length === 0
+    );
+    const commentDislikesData = { commentId: item.id, liker: user.id };
+    const commentDislikesArray = [...item.dislikes];
+    const commentLikesData = { commentId: item.id, liker: user.id };
+    const commentLikesArray = [...item.likes];
+    console.log("12313123123123", commentLikesArray);
+
+    item.likes.filter((zzz) => zzz.liker === user.id).length !== 0 &&
+      commentLikesArray.pop();
+
+    item.dislikes.filter((zzz) => zzz.liker === user.id).length === 0
+      ? commentDislikesArray.push(commentDislikesData)
+      : commentDislikesArray.pop();
     dispatch(
       addCommentLike({
         commentLikesData,
         commentLikesArray,
       })
-    ).then(() => dispatch(isCommentLiked(!commentLiked)));
-    console.log("12313123123123", commentLiked);
-  };
-
-  const handleDislike = (item) => {
-    // dispatch(addCommentDislike(item.id))
-
-    setSelectedId(item.id);
+    ).then(() =>
+      dispatch(
+        addCommentDislike({
+          commentDislikesData,
+          commentDislikesArray,
+        })
+      ).then(() => dispatch(loadcomments(ccc.item.id)))
+    );
   };
 
   const getHeader = () => {
@@ -195,11 +240,6 @@ const Item = ({ navigation, route }) => {
                 alignItems: "center",
               }}
             >
-              {/* <Image
-                  source={require(item.avatar !== undefined
-                    ? item.avatar
-                    : "https://i.pravatar.cc/300")}
-                /> */}
               <Image
                 source={{
                   uri: item.avatar,
@@ -238,17 +278,19 @@ const Item = ({ navigation, route }) => {
                   handleLike(item);
                 }}
               >
-                <View style={{ transform: [{ rotate: "40deg" }] }}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <Entypo
                     name="arrow-bold-up"
                     color={
                       item.likes.filter((zzz) => zzz.liker === user.id)
-                        .length !== 0 || commentLiked
-                        ? "#9715a5"
-                        : "#4d759a"
+                        .length !== 0
+                        ? "#6a4e7e"
+                        : "#3d4c57"
                     }
                     size={26}
+                    style={{ transform: [{ rotate: "40deg" }] }}
                   />
+                  <Text style={{ color: "white" }}>{item.likes.length}</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -256,8 +298,19 @@ const Item = ({ navigation, route }) => {
                   handleDislike(item);
                 }}
               >
-                <View style={{ transform: [{ rotate: "40deg" }] }}>
-                  <Entypo name="arrow-bold-down" color={"#4d759a"} size={26} />
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Entypo
+                    name="arrow-bold-down"
+                    color={
+                      item.dislikes.filter((zzz) => zzz.liker === user.id)
+                        .length === 0
+                        ? "#3d4c57"
+                        : "#6a4e7e"
+                    }
+                    size={26}
+                    style={{ transform: [{ rotate: "40deg" }] }}
+                  />
+                  <Text style={{ color: "white" }}>{item.dislikes.length}</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
@@ -445,3 +498,6 @@ const styles = StyleSheet.create({
 });
 
 export default Item;
+function cleanArray(): any {
+  throw new Error("Function not implemented.");
+}

@@ -26,7 +26,6 @@ interface commentProps {
 export const loadcomments = createAsyncThunk(
   "loadcomments",
   async (storyId: string) => {
-    console.log("qwqwqwqwqwq", storyId);
     try {
       const q = query(
         collection(db, "comments"),
@@ -58,11 +57,7 @@ export const loadcomments = createAsyncThunk(
 export const addcomments = createAsyncThunk(
   "addcomments",
   async ({ comment, userId, storyId }: commentProps) => {
-    console.log("the res is", comment, userId, storyId);
-
     try {
-      console.log("the res is", comment, userId);
-
       const res = await addDoc(collection(db, "comments"), {
         comment: comment,
         commenter: userId,
@@ -71,7 +66,19 @@ export const addcomments = createAsyncThunk(
         likes: [],
         dislikes: [],
       });
-      console.log("the res is", res);
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
+export const getComment = createAsyncThunk(
+  "getComment",
+  async (commentId: any) => {
+    try {
+      const res = (await getDoc(doc(db, "comments", commentId))).data();
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -82,18 +89,32 @@ export const addcomments = createAsyncThunk(
 
 export const addCommentLike = createAsyncThunk(
   "addCommentLike",
-  async (commentLikesInofs: any) => {
+  async (commentLikesInfos: any) => {
     try {
-      console.log("frfrfrrfr", commentLikesInofs);
-
       const res = await updateDoc(
-        doc(db, "comments", commentLikesInofs.commentLikesData.commentId),
+        doc(db, "comments", commentLikesInfos.commentLikesData.commentId),
         {
-          likes: commentLikesInofs.commentLikesArray,
+          likes: commentLikesInfos.commentLikesArray,
         }
       );
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
 
-      console.log("llllllllllllllllllllll", res);
+export const addCommentDislike = createAsyncThunk(
+  "addCommentDislike",
+  async (commentDislikesInfos: any) => {
+    try {
+      const res = await updateDoc(
+        doc(db, "comments", commentDislikesInfos.commentDislikesData.commentId),
+        {
+          dislikes: commentDislikesInfos.commentDislikesArray,
+        }
+      );
 
       return res;
     } catch (e) {
@@ -119,6 +140,8 @@ export interface commentsProps {
     likes: any[];
     dislikes: any[];
     commentLiked: boolean;
+    commentDisliked: boolean;
+    cleanArray: any[];
   };
 }
 
@@ -130,6 +153,8 @@ export const commentsInitialState = {
   likes: [],
   dislikes: [],
   commentLiked: false,
+  commentDisliked: false,
+  cleanArray: [],
 };
 
 export const commentsSlice = createSlice({
@@ -137,20 +162,27 @@ export const commentsSlice = createSlice({
   initialState: commentsInitialState,
   reducers: {
     isCommentLiked: (state, action) => {
-      console.log("ghjgjghjghjgjghjgh", action.payload);
       state.commentLiked = action.payload;
+    },
+    isCommentDisliked: (state, action) => {
+      state.commentDisliked = action.payload;
+    },
+    cleanArray: (state, action) => {
+      state.likes.pop();
     },
   },
   extraReducers: (builder) => {
     builder.addCase(loadcomments.fulfilled, (state, action: any) => {
       state.result = action.payload;
     });
-    // builder.addCase(removeComment.fulfilled, (state, action) => {
-    //   state = action.payload;
-    // });
+    builder.addCase(getComment.fulfilled, (state, action) => {
+      state.likes = action.payload.likes;
+      console.log("1234567", action.payload.likes);
+      state.dislikes = action.payload.dislikes;
+    });
   },
 });
 
 export const getcommentsData = (state: commentsProps) => state.commentsStates;
-export const { isCommentLiked } = commentsSlice.actions;
+export const { isCommentLiked, isCommentDisliked } = commentsSlice.actions;
 export default commentsSlice.reducer;

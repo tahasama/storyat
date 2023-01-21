@@ -65,11 +65,6 @@ const Items = ({ navigation }) => {
                   alignItems: "center",
                 }}
               >
-                {/* <Image
-                  source={require(item.avatar !== undefined
-                    ? item.avatar
-                    : "https://i.pravatar.cc/300")}
-                /> */}
                 <Image
                   source={{
                     uri: item.avatar,

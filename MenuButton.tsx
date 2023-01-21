@@ -19,7 +19,6 @@ const MenuButton = () => {
   const navigation = useNavigation<any>();
 
   const route = useRoute();
-  // console.log("im here", route);
 
   const { menuStateValue, commentRouteValue, storyRouteValue } =
     useAppSelector(getHeaderData);
@@ -27,7 +26,6 @@ const MenuButton = () => {
   const popAction = StackActions.pop(1);
 
   // useEffect(() => {}, [route.name]);
-  console.log("AAAAAAAAAAAAAAAAAAAAAAA", menuStateValue);
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity

@@ -10,8 +10,10 @@ import {
   TouchableOpacity,
   Alert,
   Keyboard,
+  ActivityIndicator,
+  Animated,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
 import {
@@ -43,7 +45,6 @@ import {
 import { loadStories } from "./state/reducers/storiesSlice";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { ComplexAnimationBuilder } from "react-native-reanimated";
 
 const Item = ({ navigation, route }) => {
   const ccc = route.params;
@@ -51,8 +52,13 @@ const Item = ({ navigation, route }) => {
 
   const { storyRouteValue } = useAppSelector(getHeaderData);
   const [status, setStatus] = useState("");
+  const [commentIdLoading, setCommentIdLoading] = useState("");
+
+  const [commentIdDelete, setCommentIdDelete] = useState(false);
   const [comment, setComment] = useState("");
-  const [q, setQ] = useState(false);
+  const [deleteComment, setDeleteComment] = useState(false);
+  const [likeLoading, setLikeLoading] = useState(false);
+  const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const dispatch = useAppDispatch();
   const { result, commentLiked, commentDisliked, likes, dislikes } =
@@ -89,23 +95,19 @@ const Item = ({ navigation, route }) => {
     setSelectedId(item.id);
   };
 
-  // useEffect(() => {
-  //   const xxx =
-  //     likes.filter((zzz) => zzz.liker === user.id && zzz.commentId === item.id)
-  //       .length === 0;
-  //   console.log("useeffect", likes);
-  // }, [likes]);
-
   const handleLike = (item) => {
+    setCommentIdLoading(item.id);
+    setLikeLoading(true);
     console.log(item.likes.filter((zzz) => zzz.liker === user.id).length === 0);
     const commentLikesData = { commentId: item.id, liker: user.id };
     const commentLikesArray = [...item.likes];
+    const commentDislikesData = { commentId: item.id, liker: user.id };
+    const commentDislikesArray = [...item.dislikes];
+
     item.likes.filter((zzz) => zzz.liker === user.id).length === 0
       ? commentLikesArray.push(commentLikesData)
       : commentLikesArray.pop();
-    console.log("12313123123123", commentLikesArray);
-    const commentDislikesData = { commentId: item.id, liker: user.id };
-    const commentDislikesArray = [...item.dislikes];
+
     item.dislikes.filter((zzz) => zzz.liker === user.id).length !== 0 &&
       commentDislikesArray.pop();
     dispatch(
@@ -119,19 +121,19 @@ const Item = ({ navigation, route }) => {
           commentLikesData,
           commentLikesArray,
         })
-      ).then(() => dispatch(loadcomments(ccc.item.id)))
+      )
+        .then(() => dispatch(loadcomments(ccc.item.id)))
+        .then(() => setLikeLoading(false))
     );
   };
 
   const handleDislike = (item) => {
-    console.log(
-      item.dislikes.filter((zzz) => zzz.liker === user.id).length === 0
-    );
+    setDisLikeLoading(true);
+    setCommentIdLoading(item.id);
     const commentDislikesData = { commentId: item.id, liker: user.id };
     const commentDislikesArray = [...item.dislikes];
     const commentLikesData = { commentId: item.id, liker: user.id };
     const commentLikesArray = [...item.likes];
-    console.log("12313123123123", commentLikesArray);
 
     item.likes.filter((zzz) => zzz.liker === user.id).length !== 0 &&
       commentLikesArray.pop();
@@ -150,8 +152,51 @@ const Item = ({ navigation, route }) => {
           commentDislikesData,
           commentDislikesArray,
         })
-      ).then(() => dispatch(loadcomments(ccc.item.id)))
+      )
+        .then(() => dispatch(loadcomments(ccc.item.id)))
+        .then(() => setDisLikeLoading(false))
     );
+  };
+
+  const anim = useRef(new Animated.Value(0));
+
+  const shake = useCallback(() => {
+    // makes the sequence loop
+    Animated.loop(
+      // runs the animation array in sequence
+      Animated.sequence([
+        // shift element to the left by 2 units
+        Animated.timing(anim.current, {
+          toValue: -2,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+        // shift element to the right by 2 units
+        Animated.timing(anim.current, {
+          toValue: 2,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+        // bring the element back to its original position
+        Animated.timing(anim.current, {
+          toValue: 0,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+      ]),
+      // loops the above animation config 2 times
+      { iterations: 2 }
+    ).start();
+  }, []);
+
+  const handleRemove = (item) => {
+    setCommentIdDelete(item.id);
+    shake();
+    console.log("rrrrrrrrrrrr", item.id);
+    setDeleteComment(true);
+    dispatch(removeComment(item.id));
+
+    dispatch(loadcomments(ccc.item.id)).then(() => setDeleteComment(false));
   };
 
   const getHeader = () => {
@@ -205,27 +250,7 @@ const Item = ({ navigation, route }) => {
       </View>
     );
   };
-  const getFooter = () => {
-    return (
-      <View style={styles.postComment}>
-        <TextInput
-          style={styles.input}
-          multiline
-          onChangeText={(text) => setComment(text)}
-          placeholder="Add a comment ..."
-          placeholderTextColor={"#8BBCCC"}
-          value={comment}
-        />
-        <TouchableOpacity
-          onPress={handleComment}
-          style={styles.button}
-          disabled={comment === "" && true}
-        >
-          <Text style={styles.buttonText}>Post</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -279,17 +304,21 @@ const Item = ({ navigation, route }) => {
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Entypo
-                    name="arrow-bold-up"
-                    color={
-                      item.likes.filter((zzz) => zzz.liker === user.id)
-                        .length !== 0
-                        ? "#6a4e7e"
-                        : "#3d4c57"
-                    }
-                    size={26}
-                    style={{ transform: [{ rotate: "40deg" }] }}
-                  />
+                  {likeLoading && item.id === commentIdLoading ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <Entypo
+                      name="arrow-bold-up"
+                      color={
+                        item.likes.filter((zzz) => zzz.liker === user.id)
+                          .length !== 0
+                          ? "#6a4e7e"
+                          : "#3d4c57"
+                      }
+                      size={26}
+                      style={{ transform: [{ rotate: "40deg" }] }}
+                    />
+                  )}
                   <Text style={{ color: "white" }}>{item.likes.length}</Text>
                 </View>
               </TouchableOpacity>
@@ -299,31 +328,47 @@ const Item = ({ navigation, route }) => {
                 }}
               >
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Entypo
-                    name="arrow-bold-down"
-                    color={
-                      item.dislikes.filter((zzz) => zzz.liker === user.id)
-                        .length === 0
-                        ? "#3d4c57"
-                        : "#6a4e7e"
-                    }
-                    size={26}
-                    style={{ transform: [{ rotate: "40deg" }] }}
-                  />
+                  {disLikeLoading && item.id === commentIdLoading ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <Entypo
+                      name="arrow-bold-down"
+                      color={
+                        item.dislikes.filter((zzz) => zzz.liker === user.id)
+                          .length === 0
+                          ? "#3d4c57"
+                          : "#6a4e7e"
+                      }
+                      size={26}
+                      style={{ transform: [{ rotate: "40deg" }] }}
+                    />
+                  )}
                   <Text style={{ color: "white" }}>{item.dislikes.length}</Text>
                 </View>
               </TouchableOpacity>
+
               <TouchableOpacity
-                onPress={() => {
-                  dispatch(removeComment(item.id));
-                  dispatch(loadcomments(ccc.item.id));
-                }}
+                onPress={() => handleRemove(item)}
+                style={{ opacity: user.id === item.commenter ? 1 : 0 }}
+                disabled={user.id !== item.commenter && true}
               >
-                <MaterialCommunityIcons
-                  name="delete"
-                  color={"#669393"}
-                  size={26}
-                />
+                {deleteComment && item.id === commentIdDelete ? (
+                  <Animated.View
+                    style={{ transform: [{ translateX: anim.current }] }}
+                  >
+                    <MaterialCommunityIcons
+                      name="delete-empty"
+                      color={"#669393"}
+                      size={26}
+                    />
+                  </Animated.View>
+                ) : (
+                  <MaterialCommunityIcons
+                    name="delete"
+                    color={"#669393"}
+                    size={26}
+                  />
+                )}
               </TouchableOpacity>
             </View>
             <View
@@ -498,6 +543,3 @@ const styles = StyleSheet.create({
 });
 
 export default Item;
-function cleanArray(): any {
-  throw new Error("Function not implemented.");
-}

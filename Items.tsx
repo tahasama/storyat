@@ -17,6 +17,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import StoryModal from "./StoryModal";
 import { getDocs } from "@firebase/firestore";
 import { collection } from "firebase/firestore";
@@ -93,9 +96,31 @@ const Items = ({ navigation }) => {
               </Text>
             </TouchableOpacity>
             <View
+              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+            >
+              <MaterialCommunityIcons
+                name="hand-clap"
+                color={"#73481c"}
+                size={28}
+              />
+              <MaterialCommunityIcons
+                name="heart"
+                color={"#4c0000"}
+                size={28}
+              />
+              <MaterialCommunityIcons
+                name="heart-broken"
+                color={"#5900b2"}
+                size={28}
+              />
+              <Feather name="trending-down" color={"#305a63"} size={28} />
+              <FontAwesome name="comments" color={"#707070"} size={28} />
+            </View>
+            <View
               style={{
                 borderBottomColor: "grey",
                 borderBottomWidth: StyleSheet.hairlineWidth,
+                marginTop: 15,
               }}
             />
           </View>

@@ -33,6 +33,17 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
   return result;
 });
 
+export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
+  try {
+    const res = (await getDoc(doc(db, "stories", storyId))).data();
+
+    return res;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    Alert.alert("action failed please try again");
+  }
+});
+
 export const addStories = createAsyncThunk(
   "addStories",
   async ({ title, content, userId }: storyProps) => {
@@ -93,6 +104,7 @@ export interface storiesProps {
     writerId: string;
     timestamp: string;
     username: string;
+    story: any;
   };
 }
 
@@ -103,6 +115,7 @@ export const storiesInitialState = {
   writerId: "",
   timestamp: "",
   username: "",
+  story: {},
 };
 
 export const storiesSlice = createSlice({
@@ -117,10 +130,9 @@ export const storiesSlice = createSlice({
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
       state.result = action.payload;
     });
-    //     builder.addCase(addStories.fulfilled, (state, action) => {
-    // state=action.payload
-
-    //     });
+    builder.addCase(getStory.fulfilled, (state, action) => {
+      state.story = action.payload;
+    });
   },
 });
 

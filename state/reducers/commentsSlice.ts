@@ -24,6 +24,40 @@ interface commentProps {
   numOfReplies: number;
 }
 
+export const loadAllComments = createAsyncThunk(
+  "loadAllComments",
+  async (data: any) => {
+    const q = query(
+      collection(db, "comments"),
+      where("commenter", "==", data.userId)
+    );
+    const querySnapshot = await getDocs(q);
+    const promises = querySnapshot.docs.map(async (docs: any) => {
+      return docs.data();
+    });
+    const resultComments = await Promise.all(promises);
+    let xxx = [];
+    // resultComments.length !== 0 &&
+    const promisess = resultComments.map(async (ccc) => {
+      const res = await getDoc(doc(db, "stories", ccc.storyId));
+
+      const res2 = { ...res.data(), id: res.id };
+
+      console.log("res222......", res2);
+
+      xxx.push(...xxx, res2);
+    });
+    console.log("xxx.......", xxx);
+    const results = await Promise.all(promisess);
+    console.log("results...", results);
+    const setRes = new Set(xxx);
+    const arrRes = Array.from(setRes);
+    console.log("xxx1111.......", xxx);
+
+    return arrRes;
+  }
+);
+
 export const loadcomments = createAsyncThunk(
   "loadcomments",
   async (storyId: string) => {
@@ -156,6 +190,7 @@ export const removeComment = createAsyncThunk(
 export interface commentsProps {
   commentsStates: {
     result: any[];
+    resultComments: any[];
     comment: string;
     commenter: string;
     timestamp: string;
@@ -170,6 +205,7 @@ export interface commentsProps {
 
 export const commentsInitialState = {
   result: [],
+  resultComments: [],
   comment: "",
   commenter: "",
   timestamp: "",
@@ -198,6 +234,10 @@ export const commentsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(loadcomments.fulfilled, (state, action: any) => {
       state.result = action.payload;
+    });
+
+    builder.addCase(loadAllComments.fulfilled, (state, action: any) => {
+      state.resultComments = action.payload;
     });
     // builder.addCase(getNumOfReplies.fulfilled, (state, action) => {
     //   console.log("1234567", action.payload);

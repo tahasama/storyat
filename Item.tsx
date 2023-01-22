@@ -49,7 +49,7 @@ const Item = ({ navigation, route }) => {
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const dispatch = useAppDispatch();
-  const { result } = useAppSelector(getcommentsData);
+  const { result, resultComments } = useAppSelector(getcommentsData);
   const isFocused = useIsFocused();
 
   useEffect(() => {

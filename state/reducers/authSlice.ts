@@ -1,7 +1,3 @@
-
-
-
-
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   createUserWithEmailAndPassword,
@@ -29,8 +25,7 @@ export const registerUser = createAsyncThunk(
   async ({ email, password }: valueProps) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      return res.user
-     
+      return res.user;
     } catch (error: any) {
       return error;
     }
@@ -43,8 +38,7 @@ export const loginUser = createAsyncThunk(
     if (provider) {
       try {
         const res = await signInWithPopup(auth, provider);
-       return res.user
-     
+        return res.user;
       } catch (error: any) {
         return error;
       }
@@ -101,7 +95,7 @@ export const authSlice = createSlice({
       state.user = action.payload;
     },
     resetUser: (state, action) => {
-      state.user = '';
+      state.user = "";
     },
   },
   extraReducers: (builder) => {

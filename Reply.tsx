@@ -45,6 +45,11 @@ import {
 import { loadStories } from "./state/reducers/storiesSlice";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import {
+  addReplyNumberToComment,
+  substractReplyNumberToComment,
+} from "./state/reducers/commentsSlice";
+// import { addReplyNumberToComment } from "./state/reducers/commentsSlice";
 
 const Reply = ({ navigation, route }) => {
   const ccc = route.params;
@@ -63,6 +68,7 @@ const Reply = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const { result, replyLiked, replyDisliked, likes, dislikes } =
     useAppSelector(getrepliesData);
+  console.log("dddddddddddddddddd", ccc.item.id);
 
   useEffect(() => {
     dispatch(commentRoute(ccc.item.id));
@@ -83,16 +89,21 @@ const Reply = ({ navigation, route }) => {
       })
     )
       .then(() => setStatus("success"))
-      .then(() => setreply(""))
-      .then(() => Keyboard.dismiss()),
-      setTimeout(() => {
-        dispatch(loadreplies(ccc.item.id));
-      }, 250);
-  };
 
-  const handleOnpress = (item) => {
-    navigation.navigate("reply", { item: item });
-    setSelectedId(item.id);
+      .then(() =>
+        dispatch(
+          addReplyNumberToComment({
+            commentId: ccc.item.id,
+            numOfReplies: result.length,
+          })
+        )
+      )
+      .then(() => setreply(""))
+      .then(() => Keyboard.dismiss());
+
+    setTimeout(() => {
+      dispatch(loadreplies(ccc.item.id));
+    }, 250);
   };
 
   const handleLike = (item) => {
@@ -141,6 +152,7 @@ const Reply = ({ navigation, route }) => {
     item.dislikes.filter((zzz) => zzz.liker === user.id).length === 0
       ? replyDislikesArray.push(replyDislikesData)
       : replyDislikesArray.pop();
+
     dispatch(
       addreplyLike({
         replyLikesData,
@@ -194,9 +206,18 @@ const Reply = ({ navigation, route }) => {
     shake();
     console.log("rrrrrrrrrrrr", item.id);
     setDeletereply(true);
-    dispatch(removereply(item.id));
-
-    dispatch(loadreplies(ccc.item.id)).then(() => setDeletereply(false));
+    dispatch(removereply(item.id))
+      .then(() =>
+        dispatch(
+          substractReplyNumberToComment({
+            commentId: ccc.item.id,
+            numOfReplies: result.length,
+          })
+        )
+      )
+      .then(() =>
+        dispatch(loadreplies(ccc.item.id)).then(() => setDeletereply(false))
+      );
   };
 
   const getHeader = () => {
@@ -283,20 +304,6 @@ const Reply = ({ navigation, route }) => {
             <Text style={styles.reply}>{item.reply}</Text>
             <View style={styles.replyActions}>
               <TouchableOpacity
-                onPress={() => {
-                  handleOnpress(item);
-                }}
-              >
-                <Text
-                  style={[
-                    styles.reply,
-                    { color: "#727577", margin: 5, fontSize: 15 },
-                  ]}
-                >
-                  Reply
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
                 // disabled={replyLiked && true}
                 onPress={() => {
                   handleLike(item);
@@ -382,21 +389,9 @@ const Reply = ({ navigation, route }) => {
         }}
         extraData={selectedId}
         ListHeaderComponent={getHeader}
-        // ListFooterComponent={getFooter}
-        // ListFooterComponentStyle={{
-        //   backgroundColor: "#495C83",
-        //   borderRadius: 50,
-        //   padding: 26,
-        //   elevation: 4,
-        //   position: "absolute",
-        //   right: 20,
-        //   bottom: 60,
-        // }}
       />
       <View
         style={{
-          // backgroundColor: "#002626",
-          // borderRadius: 50,
           padding: 6,
           elevation: 4,
           position: "absolute",
@@ -430,10 +425,7 @@ const Reply = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: "#051e28",
-    // color: "yellow",
   },
   subContainer: { marginBottom: 10 },
   title: {
@@ -448,8 +440,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 40,
-    // padding: 40,
-    // minHeight: 200,
   },
   replyResponseContainer: {
     borderTopWidth: 1,
@@ -458,12 +448,7 @@ const styles = StyleSheet.create({
 
   replyContainer: {
     flexDirection: "column",
-    // paddingHorizontal: 20,
-    // paddingBottom: 20,
-    // marginTop: 20,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // backgroundColor: "red",
+
     paddingHorizontal: 20,
     marginTop: 20,
   },
@@ -477,6 +462,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
+    marginBottom: 15,
   },
   logo: {
     width: 50,
@@ -502,17 +488,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 50,
   },
-  postreply: {
-    // // flex: 0,
-    // flexDirection: "row",
-    // // position: "absolute",
-    // // bottom: 10,
-    // alignItems: "center",
-    // justifyContent: "space-around",
-    // // width: "100%",
-    // // marginHorizontal: -10,
-    // backgroundColor: "#051E28",
-  },
+  postreply: {},
   input: {
     height: 44,
     margin: 12,

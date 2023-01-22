@@ -34,15 +34,17 @@ const Index = () => {
       let result = [];
 
       if (userx) {
-        const q = query(
-          collection(db, "users"),
-          where("firebaseUserId", "==", userx.uid)
-        );
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc: any) =>
-          result.push({ ...doc.data(), id: doc.id })
-        );
-        dispatch(saveUser(result[0]));
+        setTimeout(async () => {
+          const q = query(
+            collection(db, "users"),
+            where("firebaseUserId", "==", userx.uid)
+          );
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc: any) =>
+            result.push({ ...doc.data(), id: doc.id })
+          );
+          dispatch(saveUser(result[0]));
+        }, 500);
       } else {
         console.log("no user bro");
       }

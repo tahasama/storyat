@@ -68,35 +68,37 @@ const Login = ({ navigation, route }) => {
       {loading && para !== "noSplash" ? (
         <Splash />
       ) : (
-        <View style={styles.container1}>
-          <View style={styles.inputContainer}>
-            <TextInput
-              placeholder="Email"
-              placeholderTextColor={"#8BBCCC"}
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor={"#8BBCCC"}
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              style={styles.input}
-              secureTextEntry
-            />
+        !user && (
+          <View style={styles.container1}>
+            <View style={styles.inputContainer}>
+              <TextInput
+                placeholder="Email"
+                placeholderTextColor={"#8BBCCC"}
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="Password"
+                placeholderTextColor={"#8BBCCC"}
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                style={styles.input}
+                secureTextEntry
+              />
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={handleLogin} style={styles.button1}>
+                <Text style={styles.buttonText}>Login</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleSignUp} style={styles.button2}>
+                <Text style={styles.buttonText}>Register</Text>
+              </TouchableOpacity>
+              <GoogleLogin />
+              <FaceBookLogin />
+            </View>
           </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={handleLogin} style={styles.button1}>
-              <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleSignUp} style={styles.button2}>
-              <Text style={styles.buttonText}>Register</Text>
-            </TouchableOpacity>
-            <GoogleLogin />
-            <FaceBookLogin />
-          </View>
-        </View>
+        )
       )}
     </View>
   );

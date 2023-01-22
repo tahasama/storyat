@@ -11,6 +11,8 @@ import {
   Modal,
   Alert,
   Image,
+  ActivityIndicator,
+  Dimensions,
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -26,12 +28,14 @@ import { collection } from "firebase/firestore";
 import { db } from "./firebase";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
+import { useIsFocused } from "@react-navigation/native";
 
 const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { menuStateValue } = useAppSelector(getHeaderData);
   const { result } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
+  const isFocused = useIsFocused();
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
@@ -39,8 +43,8 @@ const Items = ({ navigation }) => {
   };
 
   useEffect(() => {
-    dispatch(loadStories());
-  }, []);
+    isFocused && dispatch(loadStories());
+  }, [isFocused]);
 
   useEffect(() => {
     dispatch(menuState(false));
@@ -49,87 +53,123 @@ const Items = ({ navigation }) => {
   useEffect(() => {
     menuStateValue ? navigation.openDrawer() : navigation.closeDrawer();
   }, [menuStateValue]);
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={result}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <TouchableOpacity
-              onPress={() => {
-                handleOnpress(item);
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
+      {result.length === 0 ? (
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            transform: [{ scale: 3 }],
+          }}
+        >
+          <ActivityIndicator size="large" />
+        </View>
+      ) : (
+        <FlatList
+          data={result}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <TouchableOpacity
+                onPress={() => {
+                  handleOnpress(item);
                 }}
               >
-                <Image
-                  source={{
-                    uri: item.avatar,
-                  }}
+                <View
                   style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 50,
-                    marginHorizontal: 10,
-                    marginVertical: 18,
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
                   }}
-                />
-                <Text style={{ fontSize: 16, color: "white" }}>
-                  {item.username}
+                >
+                  <Image
+                    source={{
+                      uri: item.avatar,
+                    }}
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: 50,
+                      marginHorizontal: 10,
+                      marginVertical: 18,
+                    }}
+                  />
+                  <Text style={{ fontSize: 16, color: "white" }}>
+                    {item.username}
+                  </Text>
+                </View>
+                <Text style={styles.title}>{item.title}</Text>
+                <Text
+                  style={[
+                    styles.title,
+                    { marginHorizontal: 20, color: "#9fa3a7", fontSize: 20 },
+                  ]}
+                  numberOfLines={2}
+                >
+                  {item.content}
                 </Text>
-              </View>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text
-                style={[
-                  styles.title,
-                  { marginHorizontal: 20, color: "#9fa3a7", fontSize: 20 },
-                ]}
-                numberOfLines={2}
+              </TouchableOpacity>
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-evenly" }}
               >
-                {item.content}
-              </Text>
-            </TouchableOpacity>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-            >
-              <MaterialCommunityIcons
-                name="hand-clap"
-                color={"#73481c"}
-                size={28}
+                <MaterialCommunityIcons
+                  name="hand-clap"
+                  color={"#73481c"}
+                  size={28}
+                />
+                <MaterialCommunityIcons
+                  name="heart"
+                  color={"#4c0000"}
+                  size={28}
+                />
+                <MaterialCommunityIcons
+                  name="heart-broken"
+                  color={"#5900b2"}
+                  size={28}
+                />
+                <Feather name="trending-down" color={"#305a63"} size={28} />
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    // justifyContent: "space-between",
+                  }}
+                >
+                  <FontAwesome name="comments" color={"#707070"} size={28} />
+
+                  {item.numOfComments !== 0 && (
+                    <Text
+                      style={{
+                        color: "white",
+                        padding: 0,
+                        marginHorizontal: 5,
+                      }}
+                    >
+                      {item.numOfComments}
+                    </Text>
+                  )}
+                </View>
+              </View>
+              <View
+                style={{
+                  borderBottomColor: "grey",
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                  marginTop: 15,
+                }}
               />
-              <MaterialCommunityIcons
-                name="heart"
-                color={"#4c0000"}
-                size={28}
-              />
-              <MaterialCommunityIcons
-                name="heart-broken"
-                color={"#5900b2"}
-                size={28}
-              />
-              <Feather name="trending-down" color={"#305a63"} size={28} />
-              <FontAwesome name="comments" color={"#707070"} size={28} />
             </View>
-            <View
-              style={{
-                borderBottomColor: "grey",
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                marginTop: 15,
-              }}
-            />
-          </View>
-        )}
-        keyExtractor={(item) => {
-          return item.id;
-        }}
-        extraData={selectedId}
-      />
+          )}
+          keyExtractor={(item) => {
+            return item.id;
+          }}
+          extraData={selectedId}
+        />
+      )}
 
       <View style={{ flex: 1 }}>
         <StoryModal />

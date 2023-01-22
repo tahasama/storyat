@@ -16,20 +16,7 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
-import {
-  addDoc,
-  arrayUnion,
-  collection,
-  collectionGroup,
-  doc,
-  FieldValue,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "./firebase";
+
 import { getHeaderData, storyRoute } from "./state/reducers/headerSlice";
 import {
   getcommentsData,
@@ -37,20 +24,21 @@ import {
   addcomments,
   removeComment,
   addCommentLike,
-  isCommentLiked,
-  isCommentDisliked,
   addCommentDislike,
-  getComment,
 } from "./state/reducers/commentsSlice";
-import { loadStories } from "./state/reducers/storiesSlice";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import {} from "./state/reducers/repliesSlice";
+import {
+  addCommentNumberToStory,
+  substractCommentNumberToStory,
+} from "./state/reducers/storiesSlice";
+import { useIsFocused } from "@react-navigation/native";
 
 const Item = ({ navigation, route }) => {
   const ccc = route.params;
   const { user } = useAppSelector(getAuthData);
 
-  const { storyRouteValue } = useAppSelector(getHeaderData);
   const [status, setStatus] = useState("");
   const [commentIdLoading, setCommentIdLoading] = useState("");
 
@@ -61,16 +49,17 @@ const Item = ({ navigation, route }) => {
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const dispatch = useAppDispatch();
-  const { result, commentLiked, commentDisliked, likes, dislikes } =
-    useAppSelector(getcommentsData);
+  const { result } = useAppSelector(getcommentsData);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     dispatch(storyRoute(ccc.item.id));
   }, [ccc.item.id]);
 
   useEffect(() => {
-    dispatch(loadcomments(ccc.item.id));
-  }, []);
+    isFocused && dispatch(loadcomments(ccc.item.id));
+    // result.map((nnn) => console.log("lllll", nnn.id));
+  }, [isFocused]);
 
   const handleComment = async () => {
     dispatch(
@@ -80,14 +69,23 @@ const Item = ({ navigation, route }) => {
         storyId: ccc.item.id,
         likes: [],
         dislikes: [],
+        numOfReplies: 0,
       })
     )
       .then(() => setStatus("success"))
+      .then(() =>
+        dispatch(
+          addCommentNumberToStory({
+            storyId: ccc.item.id,
+            numOfComments: result.length,
+          })
+        )
+      )
       .then(() => setComment(""))
-      .then(() => Keyboard.dismiss()),
-      setTimeout(() => {
-        dispatch(loadcomments(ccc.item.id));
-      }, 250);
+      .then(() => Keyboard.dismiss());
+    setTimeout(() => {
+      dispatch(loadcomments(ccc.item.id));
+    }, 250);
   };
 
   const handleOnpress = (item) => {
@@ -194,7 +192,14 @@ const Item = ({ navigation, route }) => {
     shake();
     console.log("rrrrrrrrrrrr", item.id);
     setDeleteComment(true);
-    dispatch(removeComment(item.id));
+    dispatch(removeComment(item.id)).then(() =>
+      dispatch(
+        substractCommentNumberToStory({
+          storyId: ccc.item.id,
+          numOfComments: result.length,
+        })
+      )
+    );
 
     dispatch(loadcomments(ccc.item.id)).then(() => setDeleteComment(false));
   };
@@ -288,14 +293,43 @@ const Item = ({ navigation, route }) => {
                   handleOnpress(item);
                 }}
               >
-                <Text
-                  style={[
-                    styles.comment,
-                    { color: "#727577", margin: 5, fontSize: 15 },
-                  ]}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginVertical: 15,
+                    width: 110,
+                  }}
                 >
-                  Reply
-                </Text>
+                  <Text
+                    style={{
+                      // color: "#727577",
+                      // marginVertical: 5,
+                      fontSize: 15,
+                      color: "#9BA5A9",
+                      padding: 0,
+                      margin: 0,
+                    }}
+                  >
+                    Reply
+                  </Text>
+                  {item.numOfReplies !== 0 && (
+                    <Text
+                      style={{
+                        color: "#727577",
+                        fontSize: 15,
+                        padding: 0,
+                        margin: 0,
+                      }}
+                    >
+                      / view
+                    </Text>
+                  )}
+                  <Text style={{ color: "white", padding: 0, margin: 0 }}>
+                    {item.numOfReplies}
+                  </Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity
                 // disabled={commentLiked && true}

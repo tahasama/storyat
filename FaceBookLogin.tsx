@@ -10,7 +10,7 @@ import { useEffect } from "react";
 import * as AuthSession from "expo-auth-session";
 
 import { useAuthRequest } from "expo-auth-session/build/providers/Facebook";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebase";
 
 const GoogleLogin = () => {
@@ -25,14 +25,21 @@ const GoogleLogin = () => {
       const auth = getAuth();
       const credential = FacebookAuthProvider.credential(access_token);
       signInWithCredential(auth, credential).then(async (cred) => {
+        const q = query(
+          collection(db, "users"),
+          where("firebaseUserId", "==", cred.user.uid)
+        );
+        const querySnapshot = (await getDocs(q)).docs.length;
+        console.log("333333333", querySnapshot);
         try {
-          await addDoc(collection(db, "users"), {
-            username: cred.user.displayName,
-            firebaseUserId: cred.user.uid,
-            writer: cred.user.email,
-            timestamp: Date.now(),
-            avatar: "",
-          });
+          querySnapshot === 0 &&
+            (await addDoc(collection(db, "users"), {
+              username: cred.user.displayName,
+              firebaseUserId: cred.user.uid,
+              writer: cred.user.email,
+              timestamp: Date.now(),
+              avatar: "",
+            }));
         } catch (e) {
           console.error("Error adding document: ", e);
           Alert.alert("action failed please try again");

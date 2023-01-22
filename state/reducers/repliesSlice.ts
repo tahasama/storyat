@@ -65,6 +65,7 @@ export const addreplies = createAsyncThunk(
         timestamp: Date.now(),
         likes: [],
         dislikes: [],
+        numOfComments: 0,
       });
       return res;
     } catch (e) {

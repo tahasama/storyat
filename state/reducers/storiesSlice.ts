@@ -1,5 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { Alert } from "react-native";
 import { db } from "../../firebase";
 
@@ -35,8 +42,41 @@ export const addStories = createAsyncThunk(
         content: content,
         writerId: userId,
         timestamp: Date.now(),
+        numOfComments: 0,
       });
 
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
+export const addCommentNumberToStory = createAsyncThunk(
+  "addCommentNumberToStory",
+  async (infos: any) => {
+    console.log("infos.....", infos);
+    try {
+      const res = await updateDoc(doc(db, "stories", infos.storyId), {
+        numOfComments: infos.numOfComments + 1,
+      });
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
+export const substractCommentNumberToStory = createAsyncThunk(
+  "substractCommentNumberToStory",
+  async (infos: any) => {
+    console.log("infos.....", infos);
+    try {
+      const res = await updateDoc(doc(db, "stories", infos.storyId), {
+        numOfComments: infos.numOfComments - 1,
+      });
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);

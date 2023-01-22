@@ -8,7 +8,7 @@ import React from "react";
 import { useEffect } from "react";
 
 import { useIdTokenAuthRequest } from "expo-auth-session/build/providers/Google";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "./firebase";
 
 const GoogleLogin = () => {
@@ -27,14 +27,34 @@ const GoogleLogin = () => {
       const auth = getAuth();
       const credential = GoogleAuthProvider.credential(id_token);
       signInWithCredential(auth, credential).then(async (cred) => {
+        // try {
+        //   await addDoc(collection(db, "users"), {
+        //     username: cred.user.displayName,
+        //     firebaseUserId: cred.user.uid,
+        //     writer: cred.user.email,
+        //     timestamp: Date.now(),
+        //     avatar: `https://picsum.photos/id/${PicId()}/200/300`,
+        //   });
+        // } catch (e) {
+        //   console.error("Error adding document: ", e);
+        //   Alert.alert("action failed please try again");
+        // }
+        const q = query(
+          collection(db, "users"),
+          where("firebaseUserId", "==", cred.user.uid)
+        );
+        const querySnapshot = (await getDocs(q)).docs.length;
+        console.log("333333333", querySnapshot);
+
         try {
-          await addDoc(collection(db, "users"), {
-            username: cred.user.displayName,
-            firebaseUserId: cred.user.uid,
-            writer: cred.user.email,
-            timestamp: Date.now(),
-            avatar: `https://picsum.photos/id/${PicId()}/200/300`,
-          });
+          querySnapshot === 0 &&
+            (await addDoc(collection(db, "users"), {
+              username: cred.user.displayName,
+              firebaseUserId: cred.user.uid,
+              writer: cred.user.email,
+              timestamp: Date.now(),
+              avatar: `https://picsum.photos/id/${PicId()}/200/300`,
+            }));
         } catch (e) {
           console.error("Error adding document: ", e);
           Alert.alert("action failed please try again");

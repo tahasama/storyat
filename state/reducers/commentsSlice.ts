@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { compose, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addDoc,
   collection,
@@ -21,6 +21,7 @@ interface commentProps {
   comment: string;
   likes: any[];
   dislikes: any[];
+  numOfReplies: number;
 }
 
 export const loadcomments = createAsyncThunk(
@@ -39,6 +40,7 @@ export const loadcomments = createAsyncThunk(
         const avatar = await (
           await getDoc(doc(db, "users", docs.data().commenter))
         ).data().avatar;
+
         return {
           ...docs.data(),
           id: docs.id,
@@ -65,6 +67,7 @@ export const addcomments = createAsyncThunk(
         timestamp: Date.now(),
         likes: [],
         dislikes: [],
+        numOfReplies: 0,
       });
       return res;
     } catch (e) {
@@ -74,11 +77,30 @@ export const addcomments = createAsyncThunk(
   }
 );
 
-export const getComment = createAsyncThunk(
-  "getComment",
-  async (commentId: any) => {
+export const addReplyNumberToComment = createAsyncThunk(
+  "addReplyNumberToComment",
+  async (infos: any) => {
+    console.log("infos.....", infos);
     try {
-      const res = (await getDoc(doc(db, "comments", commentId))).data();
+      const res = await updateDoc(doc(db, "comments", infos.commentId), {
+        numOfReplies: infos.numOfReplies + 1,
+      });
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
+export const substractReplyNumberToComment = createAsyncThunk(
+  "addReplyNumberToComment",
+  async (infos: any) => {
+    console.log("infos.....", infos);
+    try {
+      const res = await updateDoc(doc(db, "comments", infos.commentId), {
+        numOfReplies: infos.numOfReplies - 1,
+      });
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -142,6 +164,7 @@ export interface commentsProps {
     commentLiked: boolean;
     commentDisliked: boolean;
     cleanArray: any[];
+    numOfReplies: number;
   };
 }
 
@@ -155,6 +178,7 @@ export const commentsInitialState = {
   commentLiked: false,
   commentDisliked: false,
   cleanArray: [],
+  numOfReplies: 0,
 };
 
 export const commentsSlice = createSlice({
@@ -175,11 +199,10 @@ export const commentsSlice = createSlice({
     builder.addCase(loadcomments.fulfilled, (state, action: any) => {
       state.result = action.payload;
     });
-    builder.addCase(getComment.fulfilled, (state, action) => {
-      state.likes = action.payload.likes;
-      console.log("1234567", action.payload.likes);
-      state.dislikes = action.payload.dislikes;
-    });
+    // builder.addCase(getNumOfReplies.fulfilled, (state, action) => {
+    //   console.log("1234567", action.payload);
+    //   //   state.n = action.payload;
+    // });
   },
 });
 

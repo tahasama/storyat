@@ -97,7 +97,11 @@ const Item = ({ navigation, route }) => {
     setCommentIdLoading(item.id);
     setLikeLoading(true);
     console.log(item.likes.filter((zzz) => zzz.liker === user.id).length === 0);
-    const commentLikesData = { commentId: item.id, liker: user.id };
+    const commentLikesData = {
+      commentId: item.id,
+      liker: user.id,
+      storyId: item.storyId,
+    };
     const commentLikesArray = [...item.likes];
     const commentDislikesData = { commentId: item.id, liker: user.id };
     const commentDislikesArray = [...item.dislikes];

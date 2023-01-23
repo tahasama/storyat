@@ -24,6 +24,56 @@ interface commentProps {
   numOfReplies: number;
 }
 
+export const AllComments = createAsyncThunk(
+  "AllComments",
+  async (data: any) => {
+    const querySnapshot = await getDocs(collection(db, "comments"));
+    const promises = querySnapshot.docs.map(async (docs: any) => {
+      return { ...docs.data(), id: docs.id };
+    });
+    const resultAllComment = await Promise.all(promises);
+    console.log("cdcdcddcd", data);
+    console.log("cdcdcddcd22222222", resultAllComment);
+    let xxx = [];
+
+    const votedComments = resultAllComment
+      .map((x) => x.likes.filter((y) => y.liker === data))
+      .flat()
+      .map((y) => y.storyId);
+    const promisess = votedComments.map(async (ccc) => {
+      console.log("44444444", ccc);
+      const res = await getDoc(doc(db, "stories", ccc));
+      const avatar = await (
+        await getDoc(doc(db, "users", res.data().writerId))
+      ).data().avatar;
+      console.log("ssssaaaaaffffvvvv", avatar);
+      const username = await (
+        await getDoc(doc(db, "users", res.data().writerId))
+      ).data().username;
+      // const avatars = await Promise.all(avatar);
+      // console.log("ssssaaaaaffffvvvv55555", avatars);
+
+      const res2 = {
+        ...res.data(),
+        id: res.id,
+        avatar: avatar,
+        username: username,
+      };
+      console.log("11111", res2);
+
+      xxx.push(...xxx, res2);
+    });
+    const results = await Promise.all(promisess);
+
+    const setRes = new Set(xxx);
+
+    const arrRes = Array.from(setRes);
+    console.log("22222", arrRes);
+
+    return arrRes;
+  }
+);
+
 export const loadAllComments = createAsyncThunk(
   "loadAllComments",
   async (data: any) => {
@@ -40,19 +90,32 @@ export const loadAllComments = createAsyncThunk(
     // resultComments.length !== 0 &&
     const promisess = resultComments.map(async (ccc) => {
       const res = await getDoc(doc(db, "stories", ccc.storyId));
+      const avatar = await (
+        await getDoc(doc(db, "users", res.data().writerId))
+      ).data().avatar;
+      console.log("ssssaaaaaffffvvvv", avatar);
+      const username = await (
+        await getDoc(doc(db, "users", res.data().writerId))
+      ).data().username;
+      // const avatars = await Promise.all(avatar);
+      // console.log("ssssaaaaaffffvvvv55555", avatars);
 
-      const res2 = { ...res.data(), id: res.id };
-
-      console.log("res222......", res2);
+      const res2 = {
+        ...res.data(),
+        id: res.id,
+        avatar: avatar,
+        username: username,
+      };
+      console.log("11111", res2);
 
       xxx.push(...xxx, res2);
     });
-    console.log("xxx.......", xxx);
     const results = await Promise.all(promisess);
-    console.log("results...", results);
+
     const setRes = new Set(xxx);
+
     const arrRes = Array.from(setRes);
-    console.log("xxx1111.......", xxx);
+    console.log("22222", arrRes);
 
     return arrRes;
   }
@@ -200,6 +263,7 @@ export interface commentsProps {
     commentDisliked: boolean;
     cleanArray: any[];
     numOfReplies: number;
+    votedComments: any[];
   };
 }
 
@@ -215,6 +279,7 @@ export const commentsInitialState = {
   commentDisliked: false,
   cleanArray: [],
   numOfReplies: 0,
+  votedComments: [],
 };
 
 export const commentsSlice = createSlice({
@@ -239,10 +304,9 @@ export const commentsSlice = createSlice({
     builder.addCase(loadAllComments.fulfilled, (state, action: any) => {
       state.resultComments = action.payload;
     });
-    // builder.addCase(getNumOfReplies.fulfilled, (state, action) => {
-    //   console.log("1234567", action.payload);
-    //   //   state.n = action.payload;
-    // });
+    builder.addCase(AllComments.fulfilled, (state, action) => {
+      state.votedComments = action.payload;
+    });
   },
 });
 

@@ -34,6 +34,7 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
 });
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
+  console.log("9898989898989898989", storyId);
   try {
     const res = (await getDoc(doc(db, "stories", storyId))).data();
 
@@ -54,6 +55,10 @@ export const addStories = createAsyncThunk(
         writerId: userId,
         timestamp: Date.now(),
         numOfComments: 0,
+        applauds: [],
+        compassions: [],
+        brokens: [],
+        justNos: [],
       });
 
       return res;
@@ -96,6 +101,67 @@ export const substractCommentNumberToStory = createAsyncThunk(
   }
 );
 
+export const voteApplaud = createAsyncThunk(
+  "voteApplaud",
+  async (infos: any) => {
+    console.log("infos.....", infos);
+    try {
+      const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
+        applauds: infos.voteArray,
+      });
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
+export const voteCompassion = createAsyncThunk(
+  "voteApplaud",
+  async (infos: any) => {
+    console.log("infos.....", infos);
+    try {
+      const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
+        compassions: infos.voteArray,
+      });
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
+export const voteBroken = createAsyncThunk(
+  "voteApplaud",
+  async (infos: any) => {
+    console.log("infos.....", infos);
+    try {
+      const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
+        brokens: infos.voteArray,
+      });
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
+export const voteWow = createAsyncThunk("voteApplaud", async (infos: any) => {
+  console.log("infos.....", infos);
+  try {
+    const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
+      justNos: infos.voteArray,
+    });
+    return res;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    Alert.alert("action failed please try again");
+  }
+});
+
 export interface storiesProps {
   storiesStates: {
     result: any[];
@@ -105,6 +171,10 @@ export interface storiesProps {
     timestamp: string;
     username: string;
     story: any;
+    applaudState: boolean;
+    compassionState: boolean;
+    brokenState: boolean;
+    wowState: boolean;
   };
 }
 
@@ -116,6 +186,10 @@ export const storiesInitialState = {
   timestamp: "",
   username: "",
   story: {},
+  applaudState: false,
+  compassionState: false,
+  brokenState: false,
+  wowState: false,
 };
 
 export const storiesSlice = createSlice({
@@ -124,6 +198,18 @@ export const storiesSlice = createSlice({
   reducers: {
     getUserName: (state, action) => {
       state.username = action.payload;
+    },
+    updateApplaudState: (state, action) => {
+      state.applaudState = action.payload;
+    },
+    updateCompassionState: (state, action) => {
+      state.compassionState = action.payload;
+    },
+    updateBrokenState: (state, action) => {
+      state.brokenState = action.payload;
+    },
+    updateWowState: (state, action) => {
+      state.wowState = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -137,5 +223,11 @@ export const storiesSlice = createSlice({
 });
 
 export const getstoriesData = (state: storiesProps) => state.storiesStates;
-export const { getUserName } = storiesSlice.actions;
+export const {
+  getUserName,
+  updateApplaudState,
+  updateCompassionState,
+  updateBrokenState,
+  updateWowState,
+} = storiesSlice.actions;
 export default storiesSlice.reducer;

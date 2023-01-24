@@ -27,15 +27,26 @@ import { getDocs } from "@firebase/firestore";
 import { collection } from "firebase/firestore";
 import { db } from "./firebase";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
-import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
+import {
+  getstoriesData,
+  loadStories,
+  updateWowState,
+  voteApplaud,
+  voteBroken,
+  voteCompassion,
+  voteWow,
+} from "./state/reducers/storiesSlice";
 import { useIsFocused } from "@react-navigation/native";
 
 const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
+  const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
   const { result } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
+  const { applaudState, compassionState, brokenState, wowState } =
+    useAppSelector(getstoriesData);
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
@@ -55,6 +66,86 @@ const Items = ({ navigation }) => {
   }, [menuStateValue]);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
+
+  const handleApplauded = (item) => {
+    console.log("sdsdsds", item);
+    const voteData = {
+      voter: user.id,
+      storyId: item.id,
+    };
+    const voteArray = [...item.applauds];
+    item.applauds.filter((zzz) => zzz.voter === user.id).length === 0
+      ? voteArray.push(voteData)
+      : voteArray.pop();
+    dispatch(
+      voteApplaud({
+        voteData,
+        voteArray,
+      })
+    ).then(() => dispatch(loadStories()));
+  };
+  const handleFeelingIt = (item) => {
+    console.log(
+      "99999999999999",
+      // item.compassions.filter((zzz) => zzz.voter === user.id)
+      item.compassions.filter((zzz) => zzz.voter === user.id).length === 0
+    );
+    console.log(
+      "88888888888888",
+      item.compassions.filter((zzz) => zzz.storyId === item.id)
+    );
+    const voteData = {
+      voter: user.id,
+      storyId: item.id,
+    };
+    const voteArray = [...item.compassions];
+
+    item.compassions.filter((zzz) => zzz.voter === user.id).length === 0
+      ? voteArray.push(voteData)
+      : voteArray.pop();
+
+    console.log("sdsdsds", voteArray);
+
+    dispatch(
+      voteCompassion({
+        voteData,
+        voteArray,
+      })
+    ).then(() => dispatch(loadStories()));
+  };
+  const handleHeartBreaking = (item) => {
+    const voteData = {
+      voter: user.id,
+      storyId: item.id,
+    };
+    const voteArray = [...item.brokens];
+    item.brokens.filter((zzz) => zzz.voter === user.id).length === 0
+      ? voteArray.push(voteData)
+      : voteArray.pop();
+    dispatch(
+      voteBroken({
+        voteData,
+        voteArray,
+      })
+    ).then(() => dispatch(loadStories()));
+  };
+  const handleCantDealWithThis = (item) => {
+    console.log("sdsdsds", item);
+    const voteData = {
+      voter: user.id,
+      storyId: item.id,
+    };
+    const voteArray = [...item.justNos];
+    item.justNos.filter((zzz) => zzz.voter === user.id).length === 0
+      ? voteArray.push(voteData)
+      : voteArray.pop();
+    dispatch(
+      voteWow({
+        voteData,
+        voteArray,
+      })
+    ).then(() => dispatch(loadStories()));
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -116,24 +207,58 @@ const Items = ({ navigation }) => {
               <View
                 style={{ flexDirection: "row", justifyContent: "space-evenly" }}
               >
-                <MaterialCommunityIcons
-                  name="hand-clap"
-                  color={"#73481c"}
-                  size={28}
-                />
-                <MaterialCommunityIcons
-                  name="heart"
-                  color={"#4c0000"}
-                  size={28}
-                />
-                <MaterialCommunityIcons
-                  name="heart-broken"
-                  color={"#5900b2"}
-                  size={28}
-                />
-                <Feather name="trending-down" color={"#305a63"} size={28} />
+                <TouchableOpacity onPress={() => handleApplauded(item)}>
+                  <MaterialCommunityIcons
+                    name="hand-clap"
+                    color={
+                      item.applauds.filter((zzz) => zzz.voter === user.id)
+                        .length !== 0
+                        ? "#73481c"
+                        : "#707070"
+                    }
+                    size={28}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleFeelingIt(item)}>
+                  <MaterialCommunityIcons
+                    name="heart"
+                    color={
+                      item.compassions.filter((zzz) => zzz.voter === user.id)
+                        .length !== 0
+                        ? "#4c0000"
+                        : "#707070"
+                    }
+                    size={28}
+                  />
+                </TouchableOpacity>
 
-                <View
+                <TouchableOpacity onPress={() => handleHeartBreaking(item)}>
+                  <MaterialCommunityIcons
+                    name="heart-broken"
+                    color={
+                      item.brokens.filter((zzz) => zzz.voter === user.id)
+                        .length !== 0
+                        ? "#5900b2"
+                        : "#707070"
+                    }
+                    size={28}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleCantDealWithThis(item)}>
+                  <Feather
+                    name="trending-down"
+                    color={
+                      item.justNos.filter((zzz) => zzz.voter === user.id)
+                        .length !== 0
+                        ? "#305a63"
+                        : "#707070"
+                    }
+                    size={28}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => handleOnpress(item)}
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
@@ -153,7 +278,7 @@ const Items = ({ navigation }) => {
                       {item.numOfComments}
                     </Text>
                   )}
-                </View>
+                </TouchableOpacity>
               </View>
               <View
                 style={{

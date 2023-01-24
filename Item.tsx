@@ -17,7 +17,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
 
-import { getHeaderData, storyRoute } from "./state/reducers/headerSlice";
+import { storyRoute } from "./state/reducers/headerSlice";
 import {
   getcommentsData,
   loadcomments,
@@ -27,16 +27,29 @@ import {
   addCommentDislike,
 } from "./state/reducers/commentsSlice";
 import Entypo from "@expo/vector-icons/Entypo";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import {} from "./state/reducers/repliesSlice";
 import {
   addCommentNumberToStory,
   substractCommentNumberToStory,
 } from "./state/reducers/storiesSlice";
+
+import { useSelector, useDispatch } from "react-redux";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import StoryModal from "./StoryModal";
+import { getDocs } from "@firebase/firestore";
+import { collection } from "firebase/firestore";
+import { db } from "./firebase";
+import { getHeaderData, menuState } from "./state/reducers/headerSlice";
+import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
 import { useIsFocused } from "@react-navigation/native";
+import GetHeader from "./GetHeader";
 
 const Item = ({ navigation, route }) => {
   const ccc = route.params;
+  console.log("999999999999999999999", ccc);
   const { user } = useAppSelector(getAuthData);
 
   const [status, setStatus] = useState("");
@@ -208,57 +221,102 @@ const Item = ({ navigation, route }) => {
     dispatch(loadcomments(ccc.item.id)).then(() => setDeleteComment(false));
   };
 
-  const getHeader = () => {
-    return (
-      <View style={styles.subContainer}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "flex-start",
-            alignItems: "center",
-          }}
-        >
-          <Image
-            source={{
-              uri: ccc.item.avatar,
-            }}
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: 50,
-              marginHorizontal: 10,
-              marginVertical: 18,
-            }}
-          />
-          <Text style={{ fontSize: 16, color: "white" }}>
-            {ccc.item.username}
-          </Text>
-        </View>
-        <Text style={styles.title}>{ccc.item.title}</Text>
-        <Text style={styles.content}>
-          {"\t"}
+  // const getHeader = () => {
+  //   return (
+  //     <View style={styles.subContainer}>
+  //       <View
+  //         style={{
+  //           flexDirection: "row",
+  //           justifyContent: "flex-start",
+  //           alignItems: "center",
+  //         }}
+  //       >
+  //         <Image
+  //           source={{
+  //             uri: ccc.item.avatar,
+  //           }}
+  //           style={{
+  //             width: 30,
+  //             height: 30,
+  //             borderRadius: 50,
+  //             marginHorizontal: 10,
+  //             marginVertical: 18,
+  //           }}
+  //         />
+  //         <Text style={{ fontSize: 16, color: "white" }}>
+  //           {ccc.item.username}
+  //         </Text>
+  //       </View>
+  //       <Text style={styles.title}>{ccc.item.title}</Text>
+  //       <Text style={styles.content}>
+  //         {"\t"}
 
-          {ccc.item.content}
-        </Text>
-        <View
-          style={{
-            borderBottomColor: "grey",
-            borderBottomWidth: StyleSheet.hairlineWidth,
-          }}
-        />
-        <Text
-          style={{
-            color: "#7f6c33",
-            fontSize: 14,
-            marginLeft: 5,
-            marginTop: 3,
-          }}
-        >
-          Comments :
-        </Text>
-      </View>
-    );
-  };
+  //         {ccc.item.content}
+  //       </Text>
+  //       <View
+  //         style={{
+  //           borderBottomColor: "grey",
+  //           borderBottomWidth: StyleSheet.hairlineWidth,
+  //         }}
+  //       />
+  //       <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+  //         <TouchableOpacity>
+  //           <MaterialCommunityIcons
+  //             name="hand-clap"
+  //             color={"#73481c"}
+  //             size={28}
+  //           />
+  //         </TouchableOpacity>
+  //         <TouchableOpacity>
+  //           <MaterialCommunityIcons name="heart" color={"#4c0000"} size={28} />
+  //         </TouchableOpacity>
+
+  //         <TouchableOpacity>
+  //           <MaterialCommunityIcons
+  //             name="heart-broken"
+  //             color={"#5900b2"}
+  //             size={28}
+  //           />
+  //         </TouchableOpacity>
+  //         <TouchableOpacity>
+  //           <Feather name="trending-down" color={"#305a63"} size={28} />
+  //         </TouchableOpacity>
+
+  //         <TouchableOpacity
+  //           style={{
+  //             flexDirection: "row",
+  //             alignItems: "center",
+  //             // justifyContent: "space-between",
+  //           }}
+  //         >
+  //           <FontAwesome name="comments" color={"#707070"} size={28} />
+
+  //           {/* {item.numOfComments !== 0 && (
+  //                   <Text
+  //                     style={{
+  //                       color: "white",
+  //                       padding: 0,
+  //                       marginHorizontal: 5,
+  //                     }}
+  //                   >
+  //                     {item.numOfComments}
+  //                   </Text>
+  //                 )} */}
+  //         </TouchableOpacity>
+  //       </View>
+  //       <Text
+  //         style={{
+  //           color: "#7f6c33",
+  //           fontSize: 14,
+  //           marginLeft: 5,
+  //           marginTop: 3,
+  //         }}
+  //       >
+  //         Comments :
+  //       </Text>
+  //     </View>
+  //   );
+  // };
 
   return (
     <View style={styles.container}>
@@ -421,7 +479,7 @@ const Item = ({ navigation, route }) => {
           return item.id;
         }}
         extraData={selectedId}
-        ListHeaderComponent={getHeader}
+        ListHeaderComponent={GetHeader({ navigation, route })}
         // ListFooterComponent={getFooter}
         // ListFooterComponentStyle={{
         //   backgroundColor: "#495C83",

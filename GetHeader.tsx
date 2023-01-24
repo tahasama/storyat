@@ -62,6 +62,30 @@ const GetHeader = ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState(null);
   const { applaudState, compassionState, brokenState, wowState } =
     useAppSelector(getstoriesData);
+
+  useEffect(() => {
+    dispatch(
+      updateApplaudState(
+        ccc.item.applauds.filter((zzz) => zzz.voter === user.id).length === 0
+      )
+    );
+    dispatch(
+      updateCompassionState(
+        ccc.item.compassions.filter((zzz) => zzz.voter === user.id).length === 0
+      )
+    );
+    dispatch(
+      updateBrokenState(
+        ccc.item.brokens.filter((zzz) => zzz.voter === user.id).length === 0
+      )
+    );
+    dispatch(
+      updateWowState(
+        ccc.item.justNos.filter((zzz) => zzz.voter === user.id).length === 0
+      )
+    );
+  }, []);
+
   console.log(
     "applaudState",
     applaudState,
@@ -79,12 +103,6 @@ const GetHeader = ({ navigation, route }) => {
   };
 
   const handleApplauded = (item) => {
-    dispatch(
-      updateApplaudState(
-        item.applauds.filter((zzz) => zzz.voter === user.id).length === 0
-      )
-    );
-
     const voteData = {
       voter: user.id,
       storyId: item.id,
@@ -99,11 +117,6 @@ const GetHeader = ({ navigation, route }) => {
     ).then(() => dispatch(updateApplaudState(!applaudState)));
   };
   const handleFeelingIt = (item) => {
-    dispatch(
-      updateCompassionState(
-        item.compassions.filter((zzz) => zzz.voter === user.id).length === 0
-      )
-    );
     const voteData = {
       voter: user.id,
       storyId: item.id,
@@ -121,11 +134,6 @@ const GetHeader = ({ navigation, route }) => {
     ).then(() => dispatch(updateCompassionState(!compassionState)));
   };
   const handleHeartBreaking = (item) => {
-    dispatch(
-      updateBrokenState(
-        item.brokens.filter((zzz) => zzz.voter === user.id).length === 0
-      )
-    );
     const voteData = {
       voter: user.id,
       storyId: item.id,
@@ -140,11 +148,6 @@ const GetHeader = ({ navigation, route }) => {
     ).then(() => dispatch(updateBrokenState(!brokenState)));
   };
   const handleCantDealWithThis = (item) => {
-    dispatch(
-      updateWowState(
-        item.justNos.filter((zzz) => zzz.voter === user.id).length === 0
-      )
-    );
     const voteData = {
       voter: user.id,
       storyId: item.id,

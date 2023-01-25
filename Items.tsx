@@ -45,6 +45,7 @@ const Items = ({ navigation }) => {
   const { result } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
+  const [first, setFirst] = useState([]);
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
@@ -57,7 +58,9 @@ const Items = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(menuState(false));
-  }, []);
+    let arr = [...result];
+    setFirst(arr.sort(() => Math.random() + 0.5));
+  }, [result]);
 
   useEffect(() => {
     menuStateValue ? navigation.openDrawer() : navigation.closeDrawer();
@@ -147,7 +150,7 @@ const Items = ({ navigation }) => {
         </View>
       ) : (
         <FlatList
-          data={result}
+          data={first}
           renderItem={({ item }) => (
             <View style={styles.item}>
               <TouchableOpacity

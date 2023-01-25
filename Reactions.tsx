@@ -67,16 +67,43 @@ const Reactions = () => {
 
   useEffect(() => {
     reaction === "Applauded" &&
-      setFirst(result.filter((x) => x.applauds.length !== 0));
+      setFirst(
+        result
+          .filter((x) => x.applauds.length !== 0)
+          .sort((a, b) => b.applauds.length - a.applauds.length)
+      );
     reaction === "Enjoyed" &&
-      setFirst(result.filter((x) => x.compassions.length !== 0));
+      setFirst(
+        result
+          .filter((x) => x.compassions.length !== 0)
+          .sort((a, b) => b.compassions.length - a.compassions.length)
+      );
     reaction === "I feel you" &&
-      setFirst(result.filter((x) => x.brokens.length !== 0));
+      setFirst(
+        result
+          .filter((x) => x.brokens.length !== 0)
+          .sort((a, b) => b.brokens.length - a.brokens.length)
+      );
     reaction === "Can't deal with this" &&
-      setFirst(result.filter((x) => x.justNos.length !== 0));
+      setFirst(
+        result
+          .filter((x) => x.justNos.length !== 0)
+          .sort((a, b) => b.justNos.length - a.justNos.length)
+      );
+
+    reaction === "Newest Stories" &&
+      setFirst(
+        result
+          .filter((x) => x.timestamp)
+          .sort((a, b) => {
+            return b.timestamp - a.timestamp;
+          })
+      );
   }, []);
 
   console.log("FFFFFFF", reaction, "GGGGGGG", first);
+
+  const fff = [];
 
   useEffect(() => {
     dispatch(menuState(false));
@@ -201,7 +228,9 @@ const Reactions = () => {
                     {item.username}
                   </Text>
                 </View>
-                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.title}>
+                  {item.title} - {item.compassions.length}
+                </Text>
                 <Text
                   style={[
                     styles.title,

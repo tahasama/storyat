@@ -34,7 +34,7 @@ const MenuButton = () => {
           {
             route.name !== "lll"
               ? navigation.dispatch(popAction)
-              : dispatch(menuState(true));
+              : dispatch(menuState(!menuStateValue));
             // route.name === "item" && dispatch(commentRoute("")),
             //   route.name === "item" && dispatch(storyRoute(""));
           }

@@ -66,6 +66,15 @@ const Lll = ({ navigation }) => {
           }}
         />
         <Drawer.Screen
+          name="Newest Stories"
+          component={Reactions}
+          listeners={{
+            drawerItemPress: () => {
+              dispatch(menuState(!menuStateValue));
+            },
+          }}
+        />
+        <Drawer.Screen
           name="Applauded"
           component={Reactions}
           listeners={{

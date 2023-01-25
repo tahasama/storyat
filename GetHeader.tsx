@@ -35,6 +35,7 @@ import {
   updateApplaudState,
   updateBrokenState,
   updateCompassionState,
+  updateNumOfCommentState,
   updateWowState,
   voteApplaud,
   voteBroken,
@@ -60,8 +61,13 @@ const GetHeader = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
-  const { applaudState, compassionState, brokenState, wowState } =
-    useAppSelector(getstoriesData);
+  const {
+    applaudState,
+    compassionState,
+    brokenState,
+    wowState,
+    NumOfCommentState,
+  } = useAppSelector(getstoriesData);
 
   useEffect(() => {
     dispatch(
@@ -84,18 +90,8 @@ const GetHeader = ({ navigation, route }) => {
         ccc.item.justNos.filter((zzz) => zzz.voter === user.id).length === 0
       )
     );
+    dispatch(updateNumOfCommentState(ccc.item.numOfComments));
   }, []);
-
-  console.log(
-    "applaudState",
-    applaudState,
-    "compassionState",
-    compassionState,
-    "brokenState",
-    brokenState,
-    "wowState",
-    wowState
-  );
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
@@ -123,8 +119,6 @@ const GetHeader = ({ navigation, route }) => {
     };
     const voteArray = [...item.compassions];
     compassionState ? voteArray.push(voteData) : voteArray.pop();
-
-    console.log("sdsdsds", voteArray);
 
     dispatch(
       voteCompassion({
@@ -240,7 +234,7 @@ const GetHeader = ({ navigation, route }) => {
         >
           <FontAwesome name="comments" color={"#707070"} size={28} />
 
-          {ccc.item.numOfComments !== 0 && (
+          {NumOfCommentState !== 0 && (
             <Text
               style={{
                 color: "white",
@@ -248,7 +242,7 @@ const GetHeader = ({ navigation, route }) => {
                 marginHorizontal: 5,
               }}
             >
-              {ccc.item.numOfComments}
+              {NumOfCommentState}
             </Text>
           )}
         </TouchableOpacity>

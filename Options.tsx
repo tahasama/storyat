@@ -46,8 +46,6 @@ const Options = () => {
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
 
-  useEffect(() => {}, []);
-
   return (
     <View style={styles.centeredView}>
       {modalVisible && <StatusBar hidden />}

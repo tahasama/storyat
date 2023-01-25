@@ -32,8 +32,7 @@ export const AllComments = createAsyncThunk(
       return { ...docs.data(), id: docs.id };
     });
     const resultAllComment = await Promise.all(promises);
-    console.log("cdcdcddcd", data);
-    console.log("cdcdcddcd22222222", resultAllComment);
+
     let xxx = [];
 
     const votedComments = resultAllComment
@@ -41,17 +40,13 @@ export const AllComments = createAsyncThunk(
       .flat()
       .map((y) => y.storyId);
     const promisess = votedComments.map(async (ccc) => {
-      console.log("44444444", ccc);
       const res = await getDoc(doc(db, "stories", ccc));
       const avatar = await (
         await getDoc(doc(db, "users", res.data().writerId))
       ).data().avatar;
-      console.log("ssssaaaaaffffvvvv", avatar);
       const username = await (
         await getDoc(doc(db, "users", res.data().writerId))
       ).data().username;
-      // const avatars = await Promise.all(avatar);
-      // console.log("ssssaaaaaffffvvvv55555", avatars);
 
       const res2 = {
         ...res.data(),
@@ -59,8 +54,6 @@ export const AllComments = createAsyncThunk(
         avatar: avatar,
         username: username,
       };
-      console.log("11111", res2);
-
       xxx.push(...xxx, res2);
     });
     const results = await Promise.all(promisess);
@@ -68,7 +61,6 @@ export const AllComments = createAsyncThunk(
     const setRes = new Set(xxx);
 
     const arrRes = Array.from(setRes);
-    console.log("22222", arrRes);
 
     return arrRes;
   }
@@ -87,18 +79,15 @@ export const loadAllComments = createAsyncThunk(
     });
     const resultComments = await Promise.all(promises);
     let xxx = [];
-    // resultComments.length !== 0 &&
+
     const promisess = resultComments.map(async (ccc) => {
       const res = await getDoc(doc(db, "stories", ccc.storyId));
       const avatar = await (
         await getDoc(doc(db, "users", res.data().writerId))
       ).data().avatar;
-      console.log("ssssaaaaaffffvvvv", avatar);
       const username = await (
         await getDoc(doc(db, "users", res.data().writerId))
       ).data().username;
-      // const avatars = await Promise.all(avatar);
-      // console.log("ssssaaaaaffffvvvv55555", avatars);
 
       const res2 = {
         ...res.data(),
@@ -106,7 +95,6 @@ export const loadAllComments = createAsyncThunk(
         avatar: avatar,
         username: username,
       };
-      console.log("11111", res2);
 
       xxx.push(...xxx, res2);
     });
@@ -115,7 +103,6 @@ export const loadAllComments = createAsyncThunk(
     const setRes = new Set(xxx);
 
     const arrRes = Array.from(setRes);
-    console.log("22222", arrRes);
 
     return arrRes;
   }
@@ -177,7 +164,6 @@ export const addcomments = createAsyncThunk(
 export const addReplyNumberToComment = createAsyncThunk(
   "addReplyNumberToComment",
   async (infos: any) => {
-    console.log("infos.....", infos);
     try {
       const res = await updateDoc(doc(db, "comments", infos.commentId), {
         numOfReplies: infos.numOfReplies + 1,
@@ -193,7 +179,6 @@ export const addReplyNumberToComment = createAsyncThunk(
 export const substractReplyNumberToComment = createAsyncThunk(
   "addReplyNumberToComment",
   async (infos: any) => {
-    console.log("infos.....", infos);
     try {
       const res = await updateDoc(doc(db, "comments", infos.commentId), {
         numOfReplies: infos.numOfReplies - 1,

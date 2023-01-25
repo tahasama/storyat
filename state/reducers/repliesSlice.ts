@@ -175,7 +175,6 @@ export const repliesSlice = createSlice({
     });
     builder.addCase(getreply.fulfilled, (state, action) => {
       state.likes = action.payload.likes;
-      console.log("1234567", action.payload.likes);
       state.dislikes = action.payload.dislikes;
     });
   },

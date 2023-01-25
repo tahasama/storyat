@@ -130,16 +130,15 @@ const Item = ({ navigation, route }) => {
         commentDislikesData,
         commentDislikesArray,
       })
-    ).then(() =>
-      dispatch(
-        addCommentLike({
-          commentLikesData,
-          commentLikesArray,
-        })
-      )
-        .then(() => dispatch(loadcomments(ccc.item.id)))
-        .then(() => setLikeLoading(false))
     );
+    dispatch(
+      addCommentLike({
+        commentLikesData,
+        commentLikesArray,
+      })
+    );
+    dispatch(loadcomments(ccc.item.id));
+    setLikeLoading(false);
   };
 
   const handleDislike = (item) => {
@@ -161,16 +160,15 @@ const Item = ({ navigation, route }) => {
         commentLikesData,
         commentLikesArray,
       })
-    ).then(() =>
-      dispatch(
-        addCommentDislike({
-          commentDislikesData,
-          commentDislikesArray,
-        })
-      )
-        .then(() => dispatch(loadcomments(ccc.item.id)))
-        .then(() => setDisLikeLoading(false))
     );
+    dispatch(
+      addCommentDislike({
+        commentDislikesData,
+        commentDislikesArray,
+      })
+    );
+    dispatch(loadcomments(ccc.item.id));
+    setDisLikeLoading(false);
   };
 
   const anim = useRef(new Animated.Value(0));

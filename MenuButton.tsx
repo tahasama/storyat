@@ -26,6 +26,8 @@ const MenuButton = () => {
   const popAction = StackActions.pop(1);
 
   // useEffect(() => {}, [route.name]);
+
+  console.log("ddddddddddddd", menuStateValue);
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity

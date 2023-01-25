@@ -68,7 +68,6 @@ const Reply = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const { result, replyLiked, replyDisliked, likes, dislikes } =
     useAppSelector(getrepliesData);
-  console.log("dddddddddddddddddd", ccc.item.id);
 
   useEffect(() => {
     dispatch(commentRoute(ccc.item.id));
@@ -109,7 +108,6 @@ const Reply = ({ navigation, route }) => {
   const handleLike = (item) => {
     setreplyIdLoading(item.id);
     setLikeLoading(true);
-    console.log(item.likes.filter((zzz) => zzz.liker === user.id).length === 0);
     const replyLikesData = { replyId: item.id, liker: user.id };
     const replyLikesArray = [...item.likes];
     const replyDislikesData = { replyId: item.id, liker: user.id };
@@ -204,7 +202,6 @@ const Reply = ({ navigation, route }) => {
   const handleRemove = (item) => {
     setreplyIdDelete(item.id);
     shake();
-    console.log("rrrrrrrrrrrr", item.id);
     setDeletereply(true);
     dispatch(removereply(item.id))
       .then(() =>

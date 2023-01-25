@@ -34,7 +34,6 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
 });
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
-  console.log("9898989898989898989", storyId);
   try {
     const res = (await getDoc(doc(db, "stories", storyId))).data();
 
@@ -72,7 +71,6 @@ export const addStories = createAsyncThunk(
 export const addCommentNumberToStory = createAsyncThunk(
   "addCommentNumberToStory",
   async (infos: any) => {
-    console.log("infos.....", infos);
     try {
       const res = await updateDoc(doc(db, "stories", infos.storyId), {
         numOfComments: infos.numOfComments + 1,
@@ -88,7 +86,6 @@ export const addCommentNumberToStory = createAsyncThunk(
 export const substractCommentNumberToStory = createAsyncThunk(
   "substractCommentNumberToStory",
   async (infos: any) => {
-    console.log("infos.....", infos);
     try {
       const res = await updateDoc(doc(db, "stories", infos.storyId), {
         numOfComments: infos.numOfComments - 1,
@@ -104,7 +101,6 @@ export const substractCommentNumberToStory = createAsyncThunk(
 export const voteApplaud = createAsyncThunk(
   "voteApplaud",
   async (infos: any) => {
-    console.log("infos.....", infos);
     try {
       const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
         applauds: infos.voteArray,
@@ -120,7 +116,6 @@ export const voteApplaud = createAsyncThunk(
 export const voteCompassion = createAsyncThunk(
   "voteApplaud",
   async (infos: any) => {
-    console.log("infos.....", infos);
     try {
       const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
         compassions: infos.voteArray,
@@ -136,7 +131,6 @@ export const voteCompassion = createAsyncThunk(
 export const voteBroken = createAsyncThunk(
   "voteApplaud",
   async (infos: any) => {
-    console.log("infos.....", infos);
     try {
       const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
         brokens: infos.voteArray,
@@ -150,7 +144,6 @@ export const voteBroken = createAsyncThunk(
 );
 
 export const voteWow = createAsyncThunk("voteApplaud", async (infos: any) => {
-  console.log("infos.....", infos);
   try {
     const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
       justNos: infos.voteArray,
@@ -175,6 +168,7 @@ export interface storiesProps {
     compassionState: boolean;
     brokenState: boolean;
     wowState: boolean;
+    NumOfCommentState: number;
   };
 }
 
@@ -190,6 +184,7 @@ export const storiesInitialState = {
   compassionState: false,
   brokenState: false,
   wowState: false,
+  NumOfCommentState: 0,
 };
 
 export const storiesSlice = createSlice({
@@ -211,6 +206,9 @@ export const storiesSlice = createSlice({
     updateWowState: (state, action) => {
       state.wowState = action.payload;
     },
+    updateNumOfCommentState: (state, action) => {
+      state.NumOfCommentState = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
@@ -229,5 +227,6 @@ export const {
   updateCompassionState,
   updateBrokenState,
   updateWowState,
+  updateNumOfCommentState,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

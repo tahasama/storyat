@@ -25,18 +25,15 @@ const Actions = () => {
   const { user } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
 
-  // console.log(result.filter((xxx) => xxx.writerId === user.id));
-
   function MyStories({ navigation }) {
     let myStories = result.filter((xxx) => xxx.writerId === user.id);
     const handleOnpress = (item) => {
-      console.log("fafafadfadf", item);
-      // navigation.navigate("item", { item: item });
-      // setSelectedId(item.id);
+      navigation.navigate("item", { item: item });
+      setSelectedId(item.id);
     };
     return (
       <SafeAreaView style={styles.container}>
-        {result.length === 0 ? (
+        {result.length === undefined ? (
           <View
             style={{
               alignItems: "center",
@@ -133,7 +130,6 @@ const Actions = () => {
 
     // let myComments = resultAll.filter((xxx) => xxx.commenter === user.id);
     // myComments.map((vvv) => dispatch(getStory(vvv.storyId)));
-    // console.log("699699", outputArray);
 
     const handleOnpress = (item) => {
       navigation.navigate("item", { item: item });
@@ -141,7 +137,7 @@ const Actions = () => {
     };
     return (
       <SafeAreaView style={styles.container}>
-        {outputArray.length === 0 ? (
+        {outputArray.length === undefined ? (
           <View
             style={{
               alignItems: "center",
@@ -233,13 +229,11 @@ const Actions = () => {
   function MyVotedComments({ navigation }) {
     const { votedComments } = useAppSelector(getcommentsData);
     const dispatch = useAppDispatch();
-    console.log("fafafadfadf999999999", votedComments);
 
     useEffect(() => {
       dispatch(AllComments(user.id));
       setTimeout(() => {}, 1000);
     }, []);
-    console.log("rererererererer", votedComments);
 
     const outputArray = votedComments.reduce((acc, curr) => {
       if (!acc.find((obj) => obj.id === curr.id)) {
@@ -255,7 +249,7 @@ const Actions = () => {
 
     return (
       <SafeAreaView style={styles.container}>
-        {outputArray.length === 0 ? (
+        {outputArray.length === undefined ? (
           <View
             style={{
               alignItems: "center",

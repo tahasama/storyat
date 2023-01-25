@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
+import { useIsFocused } from "@react-navigation/native";
 
 const Drawer = createDrawerNavigator();
 
@@ -35,10 +36,11 @@ function SettingsScreen({ navigation }) {
 const Lll = ({ navigation }) => {
   const { menuStateValue } = useAppSelector(getHeaderData);
   const dispatch = useAppDispatch();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    dispatch(menuState(false));
-  }, []);
+    isFocused && dispatch(menuState(false));
+  }, [isFocused]);
 
   return (
     <>

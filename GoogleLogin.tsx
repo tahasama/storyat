@@ -44,7 +44,6 @@ const GoogleLogin = () => {
           where("firebaseUserId", "==", cred.user.uid)
         );
         const querySnapshot = (await getDocs(q)).docs.length;
-        console.log("333333333", querySnapshot);
 
         try {
           querySnapshot === 0 &&

@@ -68,7 +68,6 @@ const Items = ({ navigation }) => {
   const windowHeight = Dimensions.get("window").height;
 
   const handleApplauded = (item) => {
-    console.log("sdsdsds", item);
     const voteData = {
       voter: user.id,
       storyId: item.id,
@@ -85,15 +84,6 @@ const Items = ({ navigation }) => {
     ).then(() => dispatch(loadStories()));
   };
   const handleFeelingIt = (item) => {
-    console.log(
-      "99999999999999",
-      // item.compassions.filter((zzz) => zzz.voter === user.id)
-      item.compassions.filter((zzz) => zzz.voter === user.id).length === 0
-    );
-    console.log(
-      "88888888888888",
-      item.compassions.filter((zzz) => zzz.storyId === item.id)
-    );
     const voteData = {
       voter: user.id,
       storyId: item.id,
@@ -103,8 +93,6 @@ const Items = ({ navigation }) => {
     item.compassions.filter((zzz) => zzz.voter === user.id).length === 0
       ? voteArray.push(voteData)
       : voteArray.pop();
-
-    console.log("sdsdsds", voteArray);
 
     dispatch(
       voteCompassion({
@@ -130,7 +118,6 @@ const Items = ({ navigation }) => {
     ).then(() => dispatch(loadStories()));
   };
   const handleCantDealWithThis = (item) => {
-    console.log("sdsdsds", item);
     const voteData = {
       voter: user.id,
       storyId: item.id,

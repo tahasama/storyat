@@ -1,3 +1,5 @@
+import { useNavigation, useRoute } from "@react-navigation/native";
+
 import React, { useEffect, useState } from "react";
 import {
   FlatList,
@@ -37,14 +39,22 @@ import {
   voteWow,
 } from "./state/reducers/storiesSlice";
 import { useIsFocused } from "@react-navigation/native";
+import { useDrawerStatus } from "@react-navigation/drawer";
 
-const Items = ({ navigation }) => {
+const Reactions = () => {
+  const route = useRoute();
+
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
   const { result } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
+  const navigation = useNavigation<any>();
+  const [first, setFirst] = useState([]);
+  const ddd = useDrawerStatus();
+
+  const reaction = route.name;
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
@@ -52,8 +62,21 @@ const Items = ({ navigation }) => {
   };
 
   useEffect(() => {
-    isFocused && dispatch(loadStories());
-  }, [isFocused]);
+    ddd === "closed" && dispatch(menuState(false));
+  }, [ddd]);
+
+  useEffect(() => {
+    reaction === "Applauded" &&
+      setFirst(result.filter((x) => x.applauds.length !== 0));
+    reaction === "Enjoyed" &&
+      setFirst(result.filter((x) => x.compassions.length !== 0));
+    reaction === "I feel you" &&
+      setFirst(result.filter((x) => x.brokens.length !== 0));
+    reaction === "Can't deal with this" &&
+      setFirst(result.filter((x) => x.justNos.length !== 0));
+  }, []);
+
+  console.log("FFFFFFF", reaction, "GGGGGGG", first);
 
   useEffect(() => {
     dispatch(menuState(false));
@@ -147,7 +170,7 @@ const Items = ({ navigation }) => {
         </View>
       ) : (
         <FlatList
-          data={result}
+          data={first}
           renderItem={({ item }) => (
             <View style={styles.item}>
               <TouchableOpacity
@@ -340,4 +363,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Items;
+export default Reactions;

@@ -27,7 +27,6 @@ const MenuButton = () => {
 
   // useEffect(() => {}, [route.name]);
 
-  console.log("ddddddddddddd", menuStateValue);
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity

@@ -10,6 +10,7 @@ import { getAuthData } from "./state/reducers/authSlice";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 import { useIsFocused } from "@react-navigation/native";
+import Reactions from "./Reactions";
 
 const Drawer = createDrawerNavigator();
 
@@ -65,8 +66,35 @@ const Lll = ({ navigation }) => {
           }}
         />
         <Drawer.Screen
-          name="setting"
-          component={SettingsScreen}
+          name="Applauded"
+          component={Reactions}
+          listeners={{
+            drawerItemPress: () => {
+              dispatch(menuState(!menuStateValue));
+            },
+          }}
+        />
+        <Drawer.Screen
+          name="Enjoyed"
+          component={Reactions}
+          listeners={{
+            drawerItemPress: () => {
+              dispatch(menuState(!menuStateValue));
+            },
+          }}
+        />
+        <Drawer.Screen
+          name="I feel you"
+          component={Reactions}
+          listeners={{
+            drawerItemPress: () => {
+              dispatch(menuState(!menuStateValue));
+            },
+          }}
+        />
+        <Drawer.Screen
+          name="Can't deal with this"
+          component={Reactions}
           listeners={{
             drawerItemPress: () => {
               dispatch(menuState(!menuStateValue));

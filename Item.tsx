@@ -49,7 +49,6 @@ import GetHeader from "./GetHeader";
 
 const Item = ({ navigation, route }) => {
   const ccc = route.params;
-  console.log("999999999999999999999", ccc);
   const { user } = useAppSelector(getAuthData);
 
   const [status, setStatus] = useState("");
@@ -71,7 +70,6 @@ const Item = ({ navigation, route }) => {
 
   useEffect(() => {
     isFocused && dispatch(loadcomments(ccc.item.id));
-    // result.map((nnn) => console.log("lllll", nnn.id));
   }, [isFocused]);
 
   const handleComment = async () => {
@@ -109,7 +107,6 @@ const Item = ({ navigation, route }) => {
   const handleLike = (item) => {
     setCommentIdLoading(item.id);
     setLikeLoading(true);
-    console.log(item.likes.filter((zzz) => zzz.liker === user.id).length === 0);
     const commentLikesData = {
       commentId: item.id,
       liker: user.id,
@@ -205,7 +202,6 @@ const Item = ({ navigation, route }) => {
   const handleRemove = (item) => {
     setCommentIdDelete(item.id);
     shake();
-    console.log("rrrrrrrrrrrr", item.id);
     setDeleteComment(true);
     dispatch(removeComment(item.id)).then(() =>
       dispatch(

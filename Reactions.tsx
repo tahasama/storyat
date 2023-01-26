@@ -42,8 +42,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { useDrawerStatus } from "@react-navigation/drawer";
 
 const Reactions = () => {
-  const route = useRoute();
-
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
@@ -53,8 +51,7 @@ const Reactions = () => {
   const navigation = useNavigation<any>();
   const [first, setFirst] = useState([]);
   const ddd = useDrawerStatus();
-
-  const reaction = route.name;
+  const pageName = useRoute().name;
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
@@ -62,46 +59,50 @@ const Reactions = () => {
   };
 
   useEffect(() => {
+    isFocused && dispatch(loadStories({ pageName: pageName }));
+  }, [isFocused]);
+
+  useEffect(() => {
     ddd === "closed" && dispatch(menuState(false));
   }, [ddd]);
 
-  useEffect(() => {
-    reaction === "Applauded" &&
-      setFirst(
-        result
-          .filter((x) => x.applauds.length !== 0)
-          .sort((a, b) => b.applauds.length - a.applauds.length)
-      );
-    reaction === "Enjoyed" &&
-      setFirst(
-        result
-          .filter((x) => x.compassions.length !== 0)
-          .sort((a, b) => b.compassions.length - a.compassions.length)
-      );
-    reaction === "I feel you" &&
-      setFirst(
-        result
-          .filter((x) => x.brokens.length !== 0)
-          .sort((a, b) => b.brokens.length - a.brokens.length)
-      );
-    reaction === "Can't deal with this" &&
-      setFirst(
-        result
-          .filter((x) => x.justNos.length !== 0)
-          .sort((a, b) => b.justNos.length - a.justNos.length)
-      );
+  // useEffect(() => {
+  //   reaction === "Applauded" &&
+  //     setFirst(
+  //       result
+  //         .filter((x) => x.applauds.length !== 0)
+  //         .sort((a, b) => b.applauds.length - a.applauds.length)
+  //     );
+  //   reaction === "Enjoyed" &&
+  //     setFirst(
+  //       result
+  //         .filter((x) => x.compassions.length !== 0)
+  //         .sort((a, b) => b.compassions.length - a.compassions.length)
+  //     );
+  //   reaction === "I feel you" &&
+  //     setFirst(
+  //       result
+  //         .filter((x) => x.brokens.length !== 0)
+  //         .sort((a, b) => b.brokens.length - a.brokens.length)
+  //     );
+  //   reaction === "Can't deal with this" &&
+  //     setFirst(
+  //       result
+  //         .filter((x) => x.justNos.length !== 0)
+  //         .sort((a, b) => b.justNos.length - a.justNos.length)
+  //     );
 
-    reaction === "Newest Stories" &&
-      setFirst(
-        result
-          .filter((x) => x.timestamp)
-          .sort((a, b) => {
-            return b.timestamp - a.timestamp;
-          })
-      );
-  }, []);
+  //   reaction === "Newest Stories" &&
+  //     setFirst(
+  //       result
+  //         .filter((x) => x.timestamp)
+  //         .sort((a, b) => {
+  //           return b.timestamp - a.timestamp;
+  //         })
+  //     );
+  // }, []);
 
-  console.log("FFFFFFF", reaction, "GGGGGGG", first);
+  console.log("FFFFFFF", result, "GGGGGGG");
 
   const fff = [];
 
@@ -129,7 +130,8 @@ const Reactions = () => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories()));
+    );
+    // .then(() => dispatch(loadStories()));
   };
   const handleFeelingIt = (item) => {
     const voteData = {
@@ -147,7 +149,8 @@ const Reactions = () => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories()));
+    );
+    // .then(() => dispatch(loadStories()));
   };
   const handleHeartBreaking = (item) => {
     const voteData = {
@@ -163,7 +166,8 @@ const Reactions = () => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories()));
+    );
+    // .then(() => dispatch(loadStories()));
   };
   const handleCantDealWithThis = (item) => {
     const voteData = {
@@ -179,7 +183,8 @@ const Reactions = () => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories()));
+    );
+    // .then(() => dispatch(loadStories()));
   };
 
   return (
@@ -197,7 +202,7 @@ const Reactions = () => {
         </View>
       ) : (
         <FlatList
-          data={first}
+          data={result}
           renderItem={({ item }) => (
             <View style={styles.item}>
               <TouchableOpacity

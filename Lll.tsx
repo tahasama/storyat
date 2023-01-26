@@ -37,11 +37,11 @@ function SettingsScreen({ navigation }) {
 const Lll = ({ navigation }) => {
   const { menuStateValue } = useAppSelector(getHeaderData);
   const dispatch = useAppDispatch();
-  const isFocused = useIsFocused();
+  // const isFocused = useIsFocused();
 
   useEffect(() => {
-    isFocused && dispatch(menuState(false));
-  }, [isFocused]);
+    dispatch(menuState(false));
+  }, []);
 
   return (
     <>
@@ -66,7 +66,7 @@ const Lll = ({ navigation }) => {
           }}
         />
         <Drawer.Screen
-          name="Newest Stories"
+          name="timestamp"
           component={Reactions}
           listeners={{
             drawerItemPress: () => {
@@ -75,7 +75,7 @@ const Lll = ({ navigation }) => {
           }}
         />
         <Drawer.Screen
-          name="Applauded"
+          name="applauds"
           component={Reactions}
           listeners={{
             drawerItemPress: () => {
@@ -84,7 +84,7 @@ const Lll = ({ navigation }) => {
           }}
         />
         <Drawer.Screen
-          name="Enjoyed"
+          name="compassions"
           component={Reactions}
           listeners={{
             drawerItemPress: () => {
@@ -93,7 +93,7 @@ const Lll = ({ navigation }) => {
           }}
         />
         <Drawer.Screen
-          name="I feel you"
+          name="brokens"
           component={Reactions}
           listeners={{
             drawerItemPress: () => {
@@ -102,7 +102,7 @@ const Lll = ({ navigation }) => {
           }}
         />
         <Drawer.Screen
-          name="Can't deal with this"
+          name="justNos"
           component={Reactions}
           listeners={{
             drawerItemPress: () => {

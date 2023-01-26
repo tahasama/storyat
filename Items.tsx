@@ -36,7 +36,7 @@ import {
   voteCompassion,
   voteWow,
 } from "./state/reducers/storiesSlice";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useRoute } from "@react-navigation/native";
 
 const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
@@ -46,6 +46,7 @@ const Items = ({ navigation }) => {
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [first, setFirst] = useState([]);
+  const pageName = useRoute().name;
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
@@ -53,8 +54,8 @@ const Items = ({ navigation }) => {
   };
 
   useEffect(() => {
-    isFocused && dispatch(loadStories());
-  }, [isFocused]);
+    dispatch(loadStories({ pageName: pageName }));
+  }, []);
 
   useEffect(() => {
     dispatch(menuState(false));
@@ -82,7 +83,8 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories()));
+    );
+    // .then(() => dispatch(loadStories()));
   };
   const handleFeelingIt = (item) => {
     const voteData = {
@@ -100,7 +102,8 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories()));
+    );
+    // .then(() => dispatch(loadStories()));
   };
   const handleHeartBreaking = (item) => {
     const voteData = {
@@ -116,7 +119,8 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories()));
+    );
+    // .then(() => dispatch(loadStories()));
   };
   const handleCantDealWithThis = (item) => {
     const voteData = {
@@ -132,7 +136,8 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories()));
+    );
+    // .then(() => dispatch(loadStories()));
   };
 
   return (

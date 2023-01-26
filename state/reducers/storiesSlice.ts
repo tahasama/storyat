@@ -5,7 +5,11 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
+  orderBy,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { Alert } from "react-native";
 import { db } from "../../firebase";
@@ -18,20 +22,37 @@ interface storyProps {
   content: string;
 }
 
-export const loadStories = createAsyncThunk("loadStories", async () => {
-  const querySnapshot = await getDocs(collection(db, "stories"));
-  const promises = querySnapshot.docs.map(async (docs: any) => {
-    const username = await (
-      await getDoc(doc(db, "users", docs.data().writerId))
-    ).data().username;
-    const avatar = await (
-      await getDoc(doc(db, "users", docs.data().writerId))
-    ).data().avatar;
-    return { ...docs.data(), id: docs.id, username: username, avatar: avatar };
-  });
-  const result = await Promise.all(promises);
-  return result;
-});
+export const loadStories = createAsyncThunk(
+  "loadStories",
+  async ({ pageName }: any) => {
+    console.log("zxzxzxzx", `"${pageName}"`, "ghhggh", pageName === "items");
+    const yo = collection(db, "stories");
+    const q = query(
+      yo,
+      where(pageName, "!=", []),
+      orderBy(pageName, "desc")
+      // limit(2)
+    );
+
+    const querySnapshot = await getDocs(pageName !== "items" ? q : yo);
+    const promises = querySnapshot.docs.map(async (docs: any) => {
+      const username = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().username;
+      const avatar = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().avatar;
+      return {
+        ...docs.data(),
+        id: docs.id,
+        username: username,
+        avatar: avatar,
+      };
+    });
+    const result = await Promise.all(promises);
+    return result;
+  }
+);
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
   try {

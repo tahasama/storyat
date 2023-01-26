@@ -54,13 +54,13 @@ const Items = ({ navigation }) => {
   };
 
   useEffect(() => {
-    dispatch(loadStories({ pageName: pageName }));
-  }, []);
+    isFocused && dispatch(loadStories({ pageName: pageName }));
+  }, [isFocused]);
 
   useEffect(() => {
     dispatch(menuState(false));
     let arr = [...result];
-    setFirst(arr.sort(() => Math.random() + 0.5));
+    setFirst(arr.sort(() => Math.random() + 0.8));
   }, [result]);
 
   useEffect(() => {
@@ -83,8 +83,7 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    );
-    // .then(() => dispatch(loadStories()));
+    ).then(() => dispatch(loadStories({ pageName: pageName })));
   };
   const handleFeelingIt = (item) => {
     const voteData = {
@@ -102,8 +101,7 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    );
-    // .then(() => dispatch(loadStories()));
+    ).then(() => dispatch(loadStories({ pageName: pageName })));
   };
   const handleHeartBreaking = (item) => {
     const voteData = {
@@ -119,8 +117,7 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    );
-    // .then(() => dispatch(loadStories()));
+    ).then(() => dispatch(loadStories({ pageName: pageName })));
   };
   const handleCantDealWithThis = (item) => {
     const voteData = {
@@ -136,8 +133,7 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    );
-    // .then(() => dispatch(loadStories()));
+    ).then(() => dispatch(loadStories({ pageName: pageName })));
   };
 
   return (

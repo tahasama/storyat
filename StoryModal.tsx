@@ -22,6 +22,7 @@ import {
   getstoriesData,
   loadStories,
 } from "./state/reducers/storiesSlice";
+import { useRoute } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -35,6 +36,7 @@ const StoryModal = () => {
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
+  const pageName = useRoute().name;
 
   const handleStory = async () => {
     content !== "" && title !== ""
@@ -42,7 +44,7 @@ const StoryModal = () => {
           setStatus("success")
         ),
         setTimeout(() => {
-          dispatch(loadStories());
+          dispatch(loadStories({ pageName: pageName }));
         }, 250))
       : title === "" && content !== ""
       ? setTitleError(true)

@@ -10,7 +10,7 @@ import { getAuthData } from "./state/reducers/authSlice";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 import { useIsFocused } from "@react-navigation/native";
-import Reactions from "./Reactions";
+// import Reactions from "./Reactions";
 
 const Drawer = createDrawerNavigator();
 
@@ -67,7 +67,7 @@ const Lll = ({ navigation }) => {
         />
         <Drawer.Screen
           name="timestamp"
-          component={Reactions}
+          component={Items}
           listeners={{
             drawerItemPress: () => {
               dispatch(menuState(!menuStateValue));
@@ -76,7 +76,7 @@ const Lll = ({ navigation }) => {
         />
         <Drawer.Screen
           name="applauds"
-          component={Reactions}
+          component={Items}
           listeners={{
             drawerItemPress: () => {
               dispatch(menuState(!menuStateValue));
@@ -85,7 +85,7 @@ const Lll = ({ navigation }) => {
         />
         <Drawer.Screen
           name="compassions"
-          component={Reactions}
+          component={Items}
           listeners={{
             drawerItemPress: () => {
               dispatch(menuState(!menuStateValue));
@@ -94,7 +94,7 @@ const Lll = ({ navigation }) => {
         />
         <Drawer.Screen
           name="brokens"
-          component={Reactions}
+          component={Items}
           listeners={{
             drawerItemPress: () => {
               dispatch(menuState(!menuStateValue));
@@ -103,7 +103,7 @@ const Lll = ({ navigation }) => {
         />
         <Drawer.Screen
           name="justNos"
-          component={Reactions}
+          component={Items}
           listeners={{
             drawerItemPress: () => {
               dispatch(menuState(!menuStateValue));

@@ -22,15 +22,40 @@ import Options from "./Options";
 import Profile from "./Profile";
 import Actions from "./Actions";
 // import { StoryModal } from "./Modal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Value } from "react-native-reanimated";
+import * as SecureStore from "expo-secure-store";
 
 const Index = () => {
   const Stack = createNativeStackNavigator();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(true);
-  // const navigation = useNavigation();
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (userx) => {
+  const [value, setValue] = useState<any>();
+  // const navigation = useNavigation();\
+
+  const storeData = async (key, value) => {
+    try {
+      const userString = JSON.stringify(value);
+      await SecureStore.setItemAsync(key, userString);
+    } catch (e) {
+      console.log("error SET..........", e);
+    }
+  };
+
+  const getData = async (key) => {
+    try {
+      let result = await SecureStore.getItemAsync(key);
+      console.log("stored DATA", "myUser", result);
+
+      dispatch(saveUser(result));
+    } catch (e) {
+      console.log("error GET..........", e);
+    }
+  };
+
+  const unsubscribe = () =>
+    onAuthStateChanged(auth, async (userx) => {
       let result = [];
 
       if (userx) {
@@ -43,14 +68,22 @@ const Index = () => {
           querySnapshot.forEach((doc: any) =>
             result.push({ ...doc.data(), id: doc.id })
           );
-          dispatch(saveUser(result[0]));
+          storeData("myUser", result[0]).then(() => getData("myUser"));
         }, 500);
       } else {
         console.log("no user bro");
       }
     });
-    return () => unsubscribe();
-  }, []);
+
+  useEffect(() => {
+    console.log("jjjjjjjjjjjj", value);
+
+    if (value === undefined) {
+      unsubscribe();
+    } else {
+      getData("myUser");
+    }
+  }, [value]);
 
   useEffect(() => {
     loading &&
@@ -86,7 +119,7 @@ const Index = () => {
           screenOptions={{
             header: () => (user && !loading ? <Title /> : null),
           }}
-          initialRouteName={!user ? "login" : "lll"}
+          initialRouteName={!value ? "login" : "lll"}
         >
           <Stack.Group>
             <Stack.Screen name="lll" component={Lll} />

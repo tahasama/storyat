@@ -45,7 +45,7 @@ const Items = ({ navigation }) => {
   const { result } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
-  const [first, setFirst] = useState([]);
+  const [loading, setLoading] = useState(false);
   const pageName = useRoute().name;
 
   const handleOnpress = (item) => {
@@ -54,18 +54,21 @@ const Items = ({ navigation }) => {
   };
 
   useEffect(() => {
-    isFocused && dispatch(loadStories({ pageName: pageName }));
+    setLoading(true);
+    isFocused &&
+      dispatch(loadStories({ pageName: pageName })).then(() =>
+        setLoading(false)
+      );
   }, [isFocused]);
 
   useEffect(() => {
     dispatch(menuState(false));
-    let arr = [...result];
-    setFirst(arr.sort(() => Math.random() + 0.8));
-  }, [result]);
+  }, []);
 
   useEffect(() => {
     menuStateValue ? navigation.openDrawer() : navigation.closeDrawer();
   }, [menuStateValue]);
+
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
 
@@ -138,7 +141,7 @@ const Items = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {result.length === 0 ? (
+      {loading ? (
         <View
           style={{
             alignItems: "center",
@@ -151,7 +154,7 @@ const Items = ({ navigation }) => {
         </View>
       ) : (
         <FlatList
-          data={first}
+          data={result}
           renderItem={({ item }) => (
             <View style={styles.item}>
               <TouchableOpacity

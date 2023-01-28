@@ -25,7 +25,6 @@ interface storyProps {
 export const loadStories = createAsyncThunk(
   "loadStories",
   async ({ pageName }: any) => {
-    console.log("zxzxzxzx", `"${pageName}"`, "ghhggh", pageName === "items");
     const yo = collection(db, "stories");
     const q = query(
       yo,

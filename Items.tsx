@@ -13,6 +13,7 @@ import {
   Image,
   ActivityIndicator,
   Dimensions,
+  RefreshControl,
 } from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -46,7 +47,16 @@ const Items = ({ navigation }) => {
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
   const pageName = useRoute().name;
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    dispatch(loadStories({ pageName: pageName }));
+
+    setRefreshing(false);
+  };
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
@@ -68,9 +78,6 @@ const Items = ({ navigation }) => {
   useEffect(() => {
     menuStateValue ? navigation.openDrawer() : navigation.closeDrawer();
   }, [menuStateValue]);
-
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
 
   const handleApplauded = (item) => {
     const voteData = {
@@ -154,6 +161,14 @@ const Items = ({ navigation }) => {
         </View>
       ) : (
         <FlatList
+          refreshControl={
+            <RefreshControl
+              colors={["#14764b", "#0F5838", "#093421"]}
+              style={{ backgroundColor: "black" }}
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+            />
+          }
           data={result}
           renderItem={({ item }) => (
             <View style={styles.item}>

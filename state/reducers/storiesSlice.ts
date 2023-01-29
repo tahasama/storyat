@@ -8,6 +8,7 @@ import {
   limit,
   orderBy,
   query,
+  startAfter,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -26,14 +27,15 @@ export const loadStories = createAsyncThunk(
   "loadStories",
   async ({ pageName }: any) => {
     const yo = collection(db, "stories");
+    const g = query(yo, orderBy("timestamp", "asc"), limit(4));
     const q = query(
       yo,
       where(pageName, "!=", []),
-      orderBy(pageName, "desc")
-      // limit(2)
+      orderBy(pageName, "desc"),
+      limit(4)
     );
 
-    const querySnapshot = await getDocs(pageName !== "items" ? q : yo);
+    const querySnapshot = await getDocs(pageName !== "items" ? q : g);
     const promises = querySnapshot.docs.map(async (docs: any) => {
       const username = await (
         await getDoc(doc(db, "users", docs.data().writerId))
@@ -48,8 +50,59 @@ export const loadStories = createAsyncThunk(
         avatar: avatar,
       };
     });
-    const result = await Promise.all(promises);
-    return result;
+    const resultInitial = await Promise.all(promises);
+
+    return resultInitial;
+  }
+);
+
+export const loadMoreStories = createAsyncThunk(
+  "loadMoreStories",
+  async ({ pageName, resultLength, resultInitial }: any) => {
+    console.log("resultLength", resultLength);
+    try {
+      const yo = collection(db, "stories");
+
+      const g = query(
+        yo,
+        orderBy("timestamp", "asc"),
+        limit(2),
+        startAfter(resultInitial[resultInitial.length - 1].timestamp)
+      );
+
+      const querySnapshot = await getDocs(g);
+      const promises = querySnapshot.docs.map(async (docs: any) => {
+        const username = await (
+          await getDoc(doc(db, "users", docs.data().writerId))
+        ).data().username;
+        const avatar = await (
+          await getDoc(doc(db, "users", docs.data().writerId))
+        ).data().avatar;
+        return {
+          ...docs.data(),
+          id: docs.id,
+          username: username,
+          avatar: avatar,
+        };
+      });
+
+      const result = await Promise.all(promises);
+      const resultw = [...resultInitial];
+      resultw.push(...result);
+      // const resultInitiaSet = new Set(resultInitia);
+      // const arrRes = Array.from(resultInitiaSet);
+
+      console.log(
+        "VVVVVVVVV",
+        resultw.map((X) => X.id),
+        "XXXXXXXXXXX",
+        result.map((X) => X.id)
+      );
+
+      return resultw;
+    } catch (error) {
+      console.log("MMMMMMMMMM", error);
+    }
   }
 );
 
@@ -177,7 +230,9 @@ export const voteWow = createAsyncThunk("voteApplaud", async (infos: any) => {
 
 export interface storiesProps {
   storiesStates: {
-    result: any[];
+    resultCumul: any[];
+    resultInitial: any[];
+    resultLoadMore: any[];
     title: string;
     content: string;
     writerId: string;
@@ -189,11 +244,14 @@ export interface storiesProps {
     brokenState: boolean;
     wowState: boolean;
     NumOfCommentState: number;
+    loadmore: number;
   };
 }
 
 export const storiesInitialState = {
-  result: [],
+  resultCumul: [],
+  resultInitial: [],
+  resultLoadMore: [],
   title: "",
   content: "",
   writerId: "",
@@ -205,6 +263,7 @@ export const storiesInitialState = {
   brokenState: false,
   wowState: false,
   NumOfCommentState: 0,
+  loadmore: 0,
 };
 
 export const storiesSlice = createSlice({
@@ -229,10 +288,20 @@ export const storiesSlice = createSlice({
     updateNumOfCommentState: (state, action) => {
       state.NumOfCommentState = action.payload;
     },
+    updateResultState: (state, action) => {
+      state.resultCumul = action.payload;
+    },
+    loadMore: (state, action) => {
+      state.loadmore = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
-      state.result = action.payload;
+      state.resultInitial = action.payload;
+    });
+    builder.addCase(loadMoreStories.fulfilled, (state, action: any) => {
+      // console.log();
+      state.resultLoadMore = action.payload;
     });
     builder.addCase(getStory.fulfilled, (state, action) => {
       state.story = action.payload;
@@ -248,5 +317,7 @@ export const {
   updateBrokenState,
   updateWowState,
   updateNumOfCommentState,
+  loadMore,
+  updateResultState,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

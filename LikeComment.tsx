@@ -58,8 +58,6 @@ const LikeComment = ({ item }) => {
 
   const handleLike = (item) => {
     let liked = item.likes.filter((zzz) => zzz.liker === user.id).length === 0;
-    // setCommentIdLoading(item.id);
-    // setLikeLoading(true);
     const commentLikesData = {
       commentId: item.id,
       liker: user.id,
@@ -79,23 +77,16 @@ const LikeComment = ({ item }) => {
         commentDislikesArray,
       })
     );
-    // .then(
-    // () =>
     dispatch(
       addCommentLike({
         commentLikesData,
         commentLikesArray,
       })
     );
-    // dispatch(loadcomments(ccc.item.id));
-    // setLikeLoading(false);
     isCommentLiked(!liked);
-    // console.log("777777777777", commentLiked);
   };
 
   const handleDislike = (item) => {
-    // setDisLikeLoading(true);
-    // setCommentIdLoading(item.id);
     const commentDislikesData = { commentId: item.id, liker: user.id };
     const commentDislikesArray = [...item.dislikes];
     const commentLikesData = { commentId: item.id, liker: user.id };

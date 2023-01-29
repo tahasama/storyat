@@ -30,7 +30,10 @@ import { db } from "./firebase";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 import {
   getstoriesData,
+  loadMore,
+  loadMoreStories,
   loadStories,
+  updateResultState,
   updateWowState,
   voteApplaud,
   voteBroken,
@@ -43,17 +46,41 @@ const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
-  const { result } = useAppSelector(getstoriesData);
+  const { resultLoadMore, resultInitial, resultCumul } =
+    useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const pageName = useRoute().name;
 
+  // console.log("handleLoadMore", resultLoadMore[0]);
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+
+    console.log("handleLoadMore");
+
+    dispatch(
+      loadMoreStories({
+        pageName: pageName,
+        resultLength:
+          resultLoadMore.length === 0
+            ? resultInitial.length
+            : resultLoadMore.length,
+        resultInitial:
+          resultLoadMore.length === 0 ? resultInitial : resultLoadMore,
+      })
+    );
+    console.log("handleLoadMore2");
+    setLoadingMore(false);
+  };
+
   const handleRefresh = async () => {
     setRefreshing(true);
-    dispatch(loadStories({ pageName: pageName }));
+    // dispatch(loadStories({ pageName: pageName })).then(() => setData(resultz));
 
     setRefreshing(false);
   };
@@ -65,10 +92,11 @@ const Items = ({ navigation }) => {
 
   useEffect(() => {
     setLoading(true);
-    isFocused &&
-      dispatch(loadStories({ pageName: pageName })).then(() =>
-        setLoading(false)
-      );
+    isFocused && dispatch(loadStories({ pageName: pageName }));
+
+    // dispatch(updateResultState(resultInitial));
+    setLoading(false);
+    // console.log("resultInitial", resultInitial);
   }, [isFocused]);
 
   useEffect(() => {
@@ -85,7 +113,7 @@ const Items = ({ navigation }) => {
       storyId: item.id,
     };
     const voteArray = [...item.applauds];
-    item.applauds.filter((zzz) => zzz.voter === user.id).length === 0
+    item?.applauds.filter((zzz) => zzz.voter === user.id).length === 0
       ? voteArray.push(voteData)
       : voteArray.pop();
     dispatch(
@@ -161,17 +189,18 @@ const Items = ({ navigation }) => {
         </View>
       ) : (
         <FlatList
+          onEndReached={handleLoadMore}
           refreshControl={
             <RefreshControl
               colors={["#14764b", "#0F5838", "#093421"]}
-              style={{ backgroundColor: "black" }}
               refreshing={refreshing}
               onRefresh={handleRefresh}
             />
           }
-          data={result}
+          data={resultLoadMore.length === 0 ? resultInitial : resultLoadMore}
           renderItem={({ item }) => (
             <View style={styles.item}>
+              {/* <Text style={{ color: "white", height: 400 }}>{item.id}</Text> */}
               <TouchableOpacity
                 onPress={() => {
                   handleOnpress(item);

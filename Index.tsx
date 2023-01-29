@@ -46,9 +46,8 @@ const Index = () => {
   const getData = async (key) => {
     try {
       let result = await SecureStore.getItemAsync(key);
-      console.log("stored DATA", "myUser", result);
 
-      dispatch(saveUser(result));
+      dispatch(saveUser(JSON.parse(result)));
     } catch (e) {
       console.log("error GET..........", e);
     }
@@ -76,8 +75,6 @@ const Index = () => {
     });
 
   useEffect(() => {
-    console.log("jjjjjjjjjjjj", value);
-
     if (value === undefined) {
       unsubscribe();
     } else {

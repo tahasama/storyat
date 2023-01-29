@@ -57,11 +57,23 @@ const Items = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const pageName = useRoute().name;
 
+  const randomm = () => {
+    let yyy = [...resultInitial];
+    return yyy.sort(() => Math.random() - 0.3);
+  };
+
+  const randomMore = () => {
+    let yyy = [...resultLoadMore];
+    return yyy.sort(() => Math.random() - 0.3);
+  };
+
   console.log(
     "resultInitial",
     resultInitial.map((x) => x.title),
     "resultLoadMore",
-    resultLoadMore.map((x) => x.title)
+    resultLoadMore.map((x) => x.title),
+    "randomm",
+    randomm().map((x) => x.title)
   );
 
   const handleLoadMore = async () => {
@@ -205,7 +217,15 @@ const Items = ({ navigation }) => {
               onRefresh={handleRefresh}
             />
           }
-          data={resultLoadMore.length === 0 ? resultInitial : resultLoadMore}
+          data={
+            pageName !== "items"
+              ? resultLoadMore.length === 0
+                ? resultInitial
+                : resultLoadMore
+              : resultLoadMore.length === 0
+              ? randomm()
+              : randomMore()
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
               {/* <Text style={{ color: "white", height: 400 }}>{item.id}</Text> */}

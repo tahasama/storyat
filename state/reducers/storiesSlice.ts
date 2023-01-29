@@ -91,6 +91,8 @@ export const loadMoreStories = createAsyncThunk(
               startAfter(
                 pageName === "applauds"
                   ? resultInitial[resultInitial.length - 1].applauds
+                  : pageName === "timestamp"
+                  ? resultInitial[resultInitial.length - 1].timestamp
                   : pageName === "compassions"
                   ? resultInitial[resultInitial.length - 1].compassions
                   : pageName === "brokens"
@@ -98,13 +100,6 @@ export const loadMoreStories = createAsyncThunk(
                   : resultInitial[resultInitial.length - 1].justNos
               )
             );
-
-      // const q = query(
-      //   yo,
-      //   orderBy(pageName, "desc"),
-      //   limit(2),
-      //   startAfter(resultInitial[resultInitial.length - 1].pageName)
-      // );
 
       const querySnapshot = await getDocs(g);
       const promises = querySnapshot.docs.map(async (docs: any) => {
@@ -123,6 +118,7 @@ export const loadMoreStories = createAsyncThunk(
       });
 
       const result = await Promise.all(promises);
+      // const resulty = result.sort(() => Math.random() + 0.5);
       const resultw = [...resultInitial];
       resultw.push(...result);
       // const resultInitiaSet = new Set(resultInitia);

@@ -31,6 +31,10 @@ import {} from "./state/reducers/repliesSlice";
 import {
   addCommentNumberToStory,
   substractCommentNumberToStory,
+  updateApplaudState,
+  updateBrokenState,
+  updateCompassionState,
+  updateWowState,
 } from "./state/reducers/storiesSlice";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -70,6 +74,14 @@ const Item = ({ navigation, route }) => {
 
   useEffect(() => {
     isFocused && dispatch(loadcomments(ccc.item.id));
+  }, [isFocused]);
+
+  useEffect(() => {
+    dispatch(menuState(false));
+    isFocused && dispatch(updateApplaudState([]));
+    isFocused && dispatch(updateCompassionState([]));
+    isFocused && dispatch(updateBrokenState([]));
+    isFocused && dispatch(updateWowState([]));
   }, [isFocused]);
 
   const handleComment = async () => {

@@ -26,7 +26,6 @@ interface storyProps {
 export const loadStories = createAsyncThunk(
   "loadStories",
   async ({ pageName }: any) => {
-    console.log("pageName", pageName);
     const yo = collection(db, "stories");
     const g =
       pageName === "items"
@@ -64,8 +63,6 @@ export const loadMoreStories = createAsyncThunk(
   async ({ pageName, resultLength, resultInitial }: any) => {
     const xxx = pageName;
 
-    console.log("pageName", pageName, "xxx", xxx, "eeeeeeeee");
-
     try {
       const yo = collection(db, "stories");
 
@@ -97,7 +94,8 @@ export const loadMoreStories = createAsyncThunk(
                   ? resultInitial[resultInitial.length - 1].compassions
                   : pageName === "brokens"
                   ? resultInitial[resultInitial.length - 1].brokens
-                  : resultInitial[resultInitial.length - 1].justNos
+                  : pageName === "justNos" &&
+                    resultInitial[resultInitial.length - 1].justNos
               )
             );
 
@@ -123,13 +121,6 @@ export const loadMoreStories = createAsyncThunk(
       resultw.push(...result);
       // const resultInitiaSet = new Set(resultInitia);
       // const arrRes = Array.from(resultInitiaSet);
-
-      console.log(
-        "VVVVVVVVV",
-        resultw.map((X) => X.id),
-        "XXXXXXXXXXX",
-        result.map((X) => X.id)
-      );
 
       return resultw;
     } catch (error) {
@@ -271,10 +262,10 @@ export interface storiesProps {
     timestamp: string;
     username: string;
     story: any;
-    applaudState: boolean;
-    compassionState: boolean;
-    brokenState: boolean;
-    wowState: boolean;
+    applaudState: any[];
+    compassionState: any[];
+    brokenState: any[];
+    wowState: any[];
     NumOfCommentState: number;
     loadmore: number;
   };
@@ -290,10 +281,10 @@ export const storiesInitialState = {
   timestamp: "",
   username: "",
   story: {},
-  applaudState: false,
-  compassionState: false,
-  brokenState: false,
-  wowState: false,
+  applaudState: [],
+  compassionState: [],
+  brokenState: [],
+  wowState: [],
   NumOfCommentState: 0,
   loadmore: 0,
 };
@@ -315,6 +306,7 @@ export const storiesSlice = createSlice({
       state.brokenState = action.payload;
     },
     updateWowState: (state, action) => {
+      // console.log("tttttt", action.payload);
       state.wowState = action.payload;
     },
     updateNumOfCommentState: (state, action) => {

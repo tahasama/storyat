@@ -33,6 +33,9 @@ import {
   loadMore,
   loadMoreStories,
   loadStories,
+  updateApplaudState,
+  updateBrokenState,
+  updateCompassionState,
   updateInitilalResultState,
   updateResultState,
   updateWowState,
@@ -47,13 +50,20 @@ const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
-  const { resultLoadMore, resultInitial, resultCumul } =
-    useAppSelector(getstoriesData);
+  const {
+    resultLoadMore,
+    resultInitial,
+    resultCumul,
+    brokenState,
+    applaudState,
+    compassionState,
+    wowState,
+  } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const pageName = useRoute().name;
 
@@ -67,19 +77,19 @@ const Items = ({ navigation }) => {
     return yyy.sort(() => Math.random() - 0.3);
   };
 
-  console.log(
-    "resultInitial",
-    resultInitial.map((x) => x.title),
-    "resultLoadMore",
-    resultLoadMore.map((x) => x.title),
-    "randomm",
-    randomm().map((x) => x.title)
-  );
+  // console.log(
+  //   "resultInitial",
+  //   resultInitial.map((x) => x.title),
+  //   "resultLoadMore",
+  //   resultLoadMore.map((x) => x.title),
+  //   "randomm",
+  //   randomm().map((x) => x.title),
+  //   "applaudState",
+  //   applaudState
+  // );
 
   const handleLoadMore = async () => {
     setLoadingMore(true);
-
-    console.log("handleLoadMore");
 
     dispatch(
       loadMoreStories({
@@ -92,13 +102,12 @@ const Items = ({ navigation }) => {
           resultLoadMore.length === 0 ? resultInitial : resultLoadMore,
       })
     );
-    console.log("handleLoadMore2");
     setLoadingMore(false);
   };
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    // dispatch(loadStories({ pageName: pageName })).then(() => setData(resultz));
+    dispatch(loadStories({ pageName: pageName }));
 
     setRefreshing(false);
   };
@@ -121,13 +130,21 @@ const Items = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(menuState(false));
-  }, []);
+    isFocused && dispatch(updateApplaudState([]));
+    isFocused && dispatch(updateCompassionState([]));
+    isFocused && dispatch(updateBrokenState([]));
+    isFocused && dispatch(updateWowState([]));
+  }, [isFocused]);
+
+  console.log("gggggggg", applaudState, "data", data);
 
   useEffect(() => {
     menuStateValue ? navigation.openDrawer() : navigation.closeDrawer();
   }, [menuStateValue]);
 
   const handleApplauded = (item) => {
+    let inter = [...applaudState];
+    setData(applaudState.reduce((x, y) => x + (y === item.id), 0));
     const voteData = {
       voter: user.id,
       storyId: item.id,
@@ -141,9 +158,12 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories({ pageName: pageName })));
+    ).then(() => dispatch(updateApplaudState([...applaudState, item.id])));
+    // .then(() => dispatch(loadStories({ pageName: pageName })));
   };
   const handleFeelingIt = (item) => {
+    let inter = [...compassionState];
+
     const voteData = {
       voter: user.id,
       storyId: item.id,
@@ -159,9 +179,22 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories({ pageName: pageName })));
+    );
+    // .then(() =>
+    //   dispatch(
+    //     updateCompassionState(
+    //       inter.filter((zzz) => zzz === item.id).length !== 0
+    //         ? inter.filter((zzz) => zzz !== item.id)
+    //         : [...compassionState, item.id]
+    //     )
+    //   )
+    // );
+    // .then(() => dispatch(loadStories({ pageName: pageName })));
   };
+
   const handleHeartBreaking = (item) => {
+    let interb = [...brokenState];
+
     const voteData = {
       voter: user.id,
       storyId: item.id,
@@ -175,9 +208,20 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories({ pageName: pageName })));
+    );
+    // .then(() =>
+    //   dispatch(
+    //     updateBrokenState(
+    //       interb.filter((zzz) => zzz === item.id).length !== 0
+    //         ? interb.filter((zzz) => zzz !== item.id)
+    //         : [...brokenState, item.id]
+    //     )
+    //   )
+    // );
+    // .then(() => dispatch(loadStories({ pageName: pageName })));
   };
   const handleCantDealWithThis = (item) => {
+    let inter = [...wowState];
     const voteData = {
       voter: user.id,
       storyId: item.id,
@@ -191,7 +235,18 @@ const Items = ({ navigation }) => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories({ pageName: pageName })));
+    );
+
+    // dispatch(
+    //   updateWowState(
+    //     inter.filter((zzz) => zzz === item.id).length !== 0
+    //       ? inter.filter((zzz) => zzz !== item.id)
+    //       : [...wowState, item.id]
+    //     // : inter.filter((zzz) => console.log("9999", zzz))
+    //   )
+    // );
+
+    dispatch(loadStories({ pageName: pageName }));
   };
 
   return (
@@ -275,8 +330,16 @@ const Items = ({ navigation }) => {
                   <MaterialCommunityIcons
                     name="hand-clap"
                     color={
-                      item.applauds.filter((zzz) => zzz.voter === user.id)
-                        .length !== 0
+                      (item.applauds.filter((zzz) => zzz.voter === user.id)
+                        .length !== 0 &&
+                        applaudState.reduce((x, y) => x + (y === item.id), 0) %
+                          2 ===
+                          0) ||
+                      (item.applauds.filter((zzz) => zzz.voter === user.id)
+                        .length === 0 &&
+                        applaudState.reduce((x, y) => x + (y === item.id), 0) %
+                          2 !==
+                          0)
                         ? "#73481c"
                         : "#707070"
                     }
@@ -287,6 +350,8 @@ const Items = ({ navigation }) => {
                   <MaterialCommunityIcons
                     name="heart"
                     color={
+                      compassionState.filter((zzz) => zzz === item.id)
+                        .length !== 0 ||
                       item.compassions.filter((zzz) => zzz.voter === user.id)
                         .length !== 0
                         ? "#4c0000"
@@ -300,6 +365,8 @@ const Items = ({ navigation }) => {
                   <MaterialCommunityIcons
                     name="heart-broken"
                     color={
+                      brokenState.filter((zzz) => zzz === item.id).length !==
+                        0 ||
                       item.brokens.filter((zzz) => zzz.voter === user.id)
                         .length !== 0
                         ? "#5900b2"
@@ -312,6 +379,7 @@ const Items = ({ navigation }) => {
                   <Feather
                     name="trending-down"
                     color={
+                      wowState.filter((zzz) => zzz === item.id).length !== 0 ||
                       item.justNos.filter((zzz) => zzz.voter === user.id)
                         .length !== 0
                         ? "#305a63"

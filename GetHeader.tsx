@@ -68,6 +68,15 @@ const GetHeader = ({ navigation, route }) => {
     wowState,
     NumOfCommentState,
   } = useAppSelector(getstoriesData);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    dispatch(menuState(false));
+    isFocused && dispatch(updateApplaudState([]));
+    isFocused && dispatch(updateCompassionState([]));
+    isFocused && dispatch(updateBrokenState([]));
+    isFocused && dispatch(updateWowState([]));
+  }, [isFocused]);
 
   useEffect(() => {
     dispatch(

@@ -33,6 +33,7 @@ import {
   loadMore,
   loadMoreStories,
   loadStories,
+  updateInitilalResultState,
   updateResultState,
   updateWowState,
   voteApplaud,
@@ -56,7 +57,12 @@ const Items = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const pageName = useRoute().name;
 
-  // console.log("handleLoadMore", resultLoadMore[0]);
+  console.log(
+    "resultInitial",
+    resultInitial.map((x) => x.title),
+    "resultLoadMore",
+    resultLoadMore.map((x) => x.title)
+  );
 
   const handleLoadMore = async () => {
     setLoadingMore(true);
@@ -92,6 +98,8 @@ const Items = ({ navigation }) => {
 
   useEffect(() => {
     setLoading(true);
+    dispatch(updateResultState([]));
+    dispatch(updateInitilalResultState([]));
     isFocused && dispatch(loadStories({ pageName: pageName }));
 
     // dispatch(updateResultState(resultInitial));

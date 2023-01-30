@@ -44,13 +44,6 @@ const GoogleLogin = () => {
           Alert.alert("action failed please try again");
         }
       });
-      // .catch((err) => {
-      //   err.code === "auth/account-exists-with-different-credential" &&
-      //     Alert.alert(
-      //       "Email used with other method",
-      //       "It appears that this email was uses before with another method of athentification, please try with a different email or a different method"
-      //     );
-      // });
     }
   }, [response]);
   return (

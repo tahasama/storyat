@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import Logout from "./Logout";
 import MenuButton from "./MenuButton";
 import Options from "./Options";
 
@@ -21,9 +20,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     backgroundColor: "#051E28",
-    // backgroundColor: "#002244",
-    // backgroundColor: "#001f20",
-
     alignItems: "center",
     height: 60,
   },

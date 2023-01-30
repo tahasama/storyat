@@ -21,24 +21,10 @@ const GoogleLogin = () => {
   };
   useEffect(() => {
     if (response?.type === "success") {
-      // let result = [];
-
       const { id_token } = response.params;
       const auth = getAuth();
       const credential = GoogleAuthProvider.credential(id_token);
       signInWithCredential(auth, credential).then(async (cred) => {
-        // try {
-        //   await addDoc(collection(db, "users"), {
-        //     username: cred.user.displayName,
-        //     firebaseUserId: cred.user.uid,
-        //     writer: cred.user.email,
-        //     timestamp: Date.now(),
-        //     avatar: `https://picsum.photos/id/${PicId()}/200/300`,
-        //   });
-        // } catch (e) {
-        //   console.error("Error adding document: ", e);
-        //   Alert.alert("action failed please try again");
-        // }
         const q = query(
           collection(db, "users"),
           where("firebaseUserId", "==", cred.user.uid)

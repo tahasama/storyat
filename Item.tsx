@@ -1,14 +1,11 @@
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   FlatList,
   Image,
-  ScrollView,
   TextInput,
   TouchableOpacity,
-  Alert,
   Keyboard,
   ActivityIndicator,
   Animated,
@@ -31,42 +28,26 @@ import {} from "./state/reducers/repliesSlice";
 import {
   addCommentNumberToStory,
   substractCommentNumberToStory,
-  updateApplaudState,
-  updateBrokenState,
-  updateCompassionState,
-  updateWowState,
 } from "./state/reducers/storiesSlice";
-
-import { useSelector, useDispatch } from "react-redux";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import StoryModal from "./StoryModal";
-import { getDocs } from "@firebase/firestore";
-import { collection } from "firebase/firestore";
-import { db } from "./firebase";
-import { getHeaderData, menuState } from "./state/reducers/headerSlice";
-import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
 import { useIsFocused } from "@react-navigation/native";
 import GetHeader from "./GetHeader";
 
 const Item = ({ navigation, route }) => {
+  const dispatch = useAppDispatch();
+  const isFocused = useIsFocused();
   const ccc = route.params;
   const { user } = useAppSelector(getAuthData);
+  const { result } = useAppSelector(getcommentsData);
 
-  const [status, setStatus] = useState("");
   const [commentIdLoading, setCommentIdLoading] = useState("");
+  const [comment, setComment] = useState("");
 
   const [commentIdDelete, setCommentIdDelete] = useState(false);
-  const [comment, setComment] = useState("");
   const [deleteComment, setDeleteComment] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const dispatch = useAppDispatch();
-  const { result, resultComments } = useAppSelector(getcommentsData);
-  const isFocused = useIsFocused();
 
   useEffect(() => {
     dispatch(storyRoute(ccc.item.id));
@@ -74,14 +55,6 @@ const Item = ({ navigation, route }) => {
 
   useEffect(() => {
     isFocused && dispatch(loadcomments(ccc.item.id));
-  }, [isFocused]);
-
-  useEffect(() => {
-    dispatch(menuState(false));
-    isFocused && dispatch(updateApplaudState([]));
-    isFocused && dispatch(updateCompassionState([]));
-    isFocused && dispatch(updateBrokenState([]));
-    isFocused && dispatch(updateWowState([]));
   }, [isFocused]);
 
   const handleComment = async () => {
@@ -95,7 +68,6 @@ const Item = ({ navigation, route }) => {
         numOfReplies: 0,
       })
     )
-      .then(() => setStatus("success"))
       .then(() =>
         dispatch(
           addCommentNumberToStory({
@@ -180,37 +152,6 @@ const Item = ({ navigation, route }) => {
     setDisLikeLoading(false);
   };
 
-  const anim = useRef(new Animated.Value(0));
-
-  const shake = useCallback(() => {
-    // makes the sequence loop
-    Animated.loop(
-      // runs the animation array in sequence
-      Animated.sequence([
-        // shift element to the left by 2 units
-        Animated.timing(anim.current, {
-          toValue: -2,
-          useNativeDriver: false,
-          duration: 80,
-        }),
-        // shift element to the right by 2 units
-        Animated.timing(anim.current, {
-          toValue: 2,
-          useNativeDriver: false,
-          duration: 80,
-        }),
-        // bring the element back to its original position
-        Animated.timing(anim.current, {
-          toValue: 0,
-          useNativeDriver: false,
-          duration: 80,
-        }),
-      ]),
-      // loops the above animation config 2 times
-      { iterations: 2 }
-    ).start();
-  }, []);
-
   const handleRemove = (item) => {
     setCommentIdDelete(item.id);
     shake();
@@ -223,106 +164,33 @@ const Item = ({ navigation, route }) => {
         })
       )
     );
-
     dispatch(loadcomments(ccc.item.id)).then(() => setDeleteComment(false));
   };
 
-  // const getHeader = () => {
-  //   return (
-  //     <View style={styles.subContainer}>
-  //       <View
-  //         style={{
-  //           flexDirection: "row",
-  //           justifyContent: "flex-start",
-  //           alignItems: "center",
-  //         }}
-  //       >
-  //         <Image
-  //           source={{
-  //             uri: ccc.item.avatar,
-  //           }}
-  //           style={{
-  //             width: 30,
-  //             height: 30,
-  //             borderRadius: 50,
-  //             marginHorizontal: 10,
-  //             marginVertical: 18,
-  //           }}
-  //         />
-  //         <Text style={{ fontSize: 16, color: "white" }}>
-  //           {ccc.item.username}
-  //         </Text>
-  //       </View>
-  //       <Text style={styles.title}>{ccc.item.title}</Text>
-  //       <Text style={styles.content}>
-  //         {"\t"}
+  const anim = useRef(new Animated.Value(0));
 
-  //         {ccc.item.content}
-  //       </Text>
-  //       <View
-  //         style={{
-  //           borderBottomColor: "grey",
-  //           borderBottomWidth: StyleSheet.hairlineWidth,
-  //         }}
-  //       />
-  //       <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
-  //         <TouchableOpacity>
-  //           <MaterialCommunityIcons
-  //             name="hand-clap"
-  //             color={"#73481c"}
-  //             size={28}
-  //           />
-  //         </TouchableOpacity>
-  //         <TouchableOpacity>
-  //           <MaterialCommunityIcons name="heart" color={"#4c0000"} size={28} />
-  //         </TouchableOpacity>
-
-  //         <TouchableOpacity>
-  //           <MaterialCommunityIcons
-  //             name="heart-broken"
-  //             color={"#5900b2"}
-  //             size={28}
-  //           />
-  //         </TouchableOpacity>
-  //         <TouchableOpacity>
-  //           <Feather name="trending-down" color={"#305a63"} size={28} />
-  //         </TouchableOpacity>
-
-  //         <TouchableOpacity
-  //           style={{
-  //             flexDirection: "row",
-  //             alignItems: "center",
-  //             // justifyContent: "space-between",
-  //           }}
-  //         >
-  //           <FontAwesome name="comments" color={"#707070"} size={28} />
-
-  //           {/* {item.numOfComments !== 0 && (
-  //                   <Text
-  //                     style={{
-  //                       color: "white",
-  //                       padding: 0,
-  //                       marginHorizontal: 5,
-  //                     }}
-  //                   >
-  //                     {item.numOfComments}
-  //                   </Text>
-  //                 )} */}
-  //         </TouchableOpacity>
-  //       </View>
-  //       <Text
-  //         style={{
-  //           color: "#7f6c33",
-  //           fontSize: 14,
-  //           marginLeft: 5,
-  //           marginTop: 3,
-  //         }}
-  //       >
-  //         Comments :
-  //       </Text>
-  //     </View>
-  //   );
-  // };
+  const shake = useCallback(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(anim.current, {
+          toValue: -2,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+        Animated.timing(anim.current, {
+          toValue: 2,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+        Animated.timing(anim.current, {
+          toValue: 0,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+      ]),
+      { iterations: 2 }
+    ).start();
+  }, []);
 
   return (
     <View style={styles.container}>

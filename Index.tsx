@@ -1,5 +1,5 @@
-import { StatusBar, StyleSheet, TouchableOpacity, View } from "react-native";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { StatusBar, StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Item from "./Item";
 import Login from "./Login";
@@ -13,17 +13,10 @@ import React from "react";
 import { useFonts } from "expo-font";
 import Lll from "./Lll";
 import Title from "./Title";
-// import StoryModal from "./StoryModal";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import StoryModal from "./StoryModal";
 import Reply from "./Reply";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import Options from "./Options";
 import Profile from "./Profile";
 import Actions from "./Actions";
-// import { StoryModal } from "./Modal";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Value } from "react-native-reanimated";
 import * as SecureStore from "expo-secure-store";
 
 const Index = () => {
@@ -31,32 +24,10 @@ const Index = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(true);
-  const [value, setValue] = useState<any>();
-  // const navigation = useNavigation();\
-
-  const storeData = async (key, value) => {
-    try {
-      const userString = JSON.stringify(value);
-      await SecureStore.setItemAsync(key, userString);
-    } catch (e) {
-      console.log("error SET..........", e);
-    }
-  };
-
-  const getData = async (key) => {
-    try {
-      let result = await SecureStore.getItemAsync(key);
-
-      dispatch(saveUser(JSON.parse(result)));
-    } catch (e) {
-      console.log("error GET..........", e);
-    }
-  };
 
   const unsubscribe = () =>
     onAuthStateChanged(auth, async (userx) => {
       let result = [];
-
       if (userx) {
         setTimeout(async () => {
           const q = query(
@@ -67,7 +38,9 @@ const Index = () => {
           querySnapshot.forEach((doc: any) =>
             result.push({ ...doc.data(), id: doc.id })
           );
-          storeData("myUser", result[0]).then(() => getData("myUser"));
+
+          // storeData("myUser", result[0]).then(() => getData("myUser"));
+          dispatch(saveUser(result[0]));
         }, 500);
       } else {
         console.log("no user bro");
@@ -75,12 +48,8 @@ const Index = () => {
     });
 
   useEffect(() => {
-    if (value === undefined) {
-      unsubscribe();
-    } else {
-      getData("myUser");
-    }
-  }, [value]);
+    unsubscribe();
+  }, []);
 
   useEffect(() => {
     loading &&
@@ -101,9 +70,6 @@ const Index = () => {
     return null;
   }
 
-  // const handleStory = () => {
-  //   navigation.navigate("login");
-  // };
   return (
     <>
       <NavigationContainer>
@@ -116,7 +82,7 @@ const Index = () => {
           screenOptions={{
             header: () => (user && !loading ? <Title /> : null),
           }}
-          initialRouteName={!value ? "login" : "lll"}
+          initialRouteName={user ? "login" : "lll"}
         >
           <Stack.Group>
             <Stack.Screen name="lll" component={Lll} />
@@ -129,7 +95,6 @@ const Index = () => {
           </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>
-      {/* <Options /> */}
     </>
   );
 };
@@ -143,16 +108,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     padding: 20,
-    // backgroundColor: "transparent",
     backgroundColor: "#051E28",
   },
   buttonContainer1: {
     flexDirection: "row",
     justifyContent: "center",
-    // backgroundColor: "#051E28",
-    // backgroundColor: "#002244",
     backgroundColor: "#332FD0",
-
     alignItems: "center",
     height: 80,
     width: 80,

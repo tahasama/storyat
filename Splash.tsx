@@ -46,10 +46,6 @@ const Splash = () => {
   });
 
   let [fontsLoaded] = useFonts({
-    "IndieFlower-Regular": require("./assets/fonts/IndieFlower-Regular.ttf"),
-    "RubikBubbles-Regular": require("./assets/fonts/RubikBubbles-Regular.ttf"),
-    "Caramel-Regular": require("./assets/fonts/Caramel-Regular.ttf"),
-    "JosefinSans-Bold": require("./assets/fonts/JosefinSans-Bold.ttf"),
     "BebasNeue-Regular": require("./assets/fonts/BebasNeue-Regular.ttf"),
   });
 

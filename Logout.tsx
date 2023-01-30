@@ -1,11 +1,12 @@
 import { signOut } from "firebase/auth";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { auth } from "./firebase";
 import { useNavigation } from "@react-navigation/core";
 import { resetUser } from "./state/reducers/authSlice";
 import { useDispatch } from "react-redux";
+import * as SecureStore from "expo-secure-store";
 
 const Logout = () => {
   const navigation = useNavigation<any>();
@@ -24,7 +25,6 @@ const Logout = () => {
           })
           .catch((error) => alert(error.message));
       }}
-      // style={styles.button}
     >
       <AntDesign name="logout" size={28} color="#646464" />
     </TouchableOpacity>

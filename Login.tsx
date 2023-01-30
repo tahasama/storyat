@@ -2,13 +2,14 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from "react-native";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -21,6 +22,7 @@ import FaceBookLogin from "./FaceBookLogin";
 import { getAuthData } from "./state/reducers/authSlice";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -47,20 +49,78 @@ const Login = ({ navigation, route }) => {
     }, 5000);
   }, []);
 
+  const PicId = () => {
+    return Math.floor(Math.random() * 1084);
+  };
+
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
+      .then(async (cred) => {
+        const q = query(
+          collection(db, "users"),
+          where("firebaseUserId", "==", cred.user.uid)
+        );
+        const querySnapshot = (await getDocs(q)).docs.length;
+
+        try {
+          querySnapshot === 0 &&
+            (await addDoc(collection(db, "users"), {
+              username: cred.user.displayName,
+              firebaseUserId: cred.user.uid,
+              writer: cred.user.email,
+              timestamp: Date.now(),
+              avatar: `https://picsum.photos/id/${PicId()}/200/300`,
+            }));
+        } catch (e) {
+          console.error("Error adding document: ", e);
+          Alert.alert("action failed please try again");
+        }
       })
-      .catch((error) => alert(error.message));
+      .catch((err) =>
+        Alert.alert(
+          "SomeThing's wrong ...",
+          err.code === "auth/user-not-found"
+            ? "wrong email, please try again"
+            : err.code === "auth/wrong-password"
+            ? "Wrong password, please try again"
+            : err.code === "auth/invalid-email"
+            ? "Please provide a valid email"
+            : err.code === "auth/internal-error"
+            ? "Please provide a valid password"
+            : err.code === "auth/network-request-failed" &&
+              "Failed to login, please try again"
+        )
+      );
   };
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
+      .then(async (cred) => {
+        const q = query(
+          collection(db, "users"),
+          where("firebaseUserId", "==", cred.user.uid)
+        );
+        const querySnapshot = (await getDocs(q)).docs.length;
+
+        try {
+          querySnapshot === 0 &&
+            (await addDoc(collection(db, "users"), {
+              username: cred.user.displayName,
+              firebaseUserId: cred.user.uid,
+              writer: cred.user.email,
+              timestamp: Date.now(),
+              avatar: `https://picsum.photos/id/${PicId()}/200/300`,
+            }));
+        } catch (e) {
+          console.error("Error adding document: ", e);
+          Alert.alert("action failed please try again");
+        }
       })
-      .catch((error) => alert(error.message));
+      .catch((error) =>
+        alert(
+          "Please make sure to Register first, and/or verify you internet connection and retry!  "
+        )
+      );
   };
 
   return (
@@ -79,12 +139,12 @@ const Login = ({ navigation, route }) => {
                 style={styles.input}
               />
               <TextInput
+                secureTextEntry
                 placeholder="Password"
                 placeholderTextColor={"#8BBCCC"}
                 value={password}
                 onChangeText={(text) => setPassword(text)}
                 style={styles.input}
-                secureTextEntry
               />
             </View>
             <View style={styles.buttonContainer}>

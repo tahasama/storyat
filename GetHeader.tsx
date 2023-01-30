@@ -1,37 +1,9 @@
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  FlatList,
-  Image,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  Keyboard,
-  ActivityIndicator,
-  Animated,
-} from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
-
-import { storyRoute } from "./state/reducers/headerSlice";
-import {
-  getcommentsData,
-  loadcomments,
-  addcomments,
-  removeComment,
-  addCommentLike,
-  addCommentDislike,
-} from "./state/reducers/commentsSlice";
-import Entypo from "@expo/vector-icons/Entypo";
 import {} from "./state/reducers/repliesSlice";
 import {
-  addCommentNumberToStory,
-  getStory,
-  substractCommentNumberToStory,
   updateApplaudState,
   updateBrokenState,
   updateCompassionState,
@@ -43,18 +15,11 @@ import {
   voteWow,
 } from "./state/reducers/storiesSlice";
 
-import { useSelector, useDispatch } from "react-redux";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import StoryModal from "./StoryModal";
-import { getDocs } from "@firebase/firestore";
-import { collection } from "firebase/firestore";
-import { db } from "./firebase";
-import { getHeaderData, menuState } from "./state/reducers/headerSlice";
-import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
-import { useIsFocused } from "@react-navigation/native";
+import { menuState } from "./state/reducers/headerSlice";
+import { getstoriesData } from "./state/reducers/storiesSlice";
 
 const GetHeader = ({ navigation, route }) => {
   const ccc = route.params;
@@ -68,17 +33,9 @@ const GetHeader = ({ navigation, route }) => {
     wowState,
     NumOfCommentState,
   } = useAppSelector(getstoriesData);
-  const isFocused = useIsFocused();
 
   useEffect(() => {
     dispatch(menuState(false));
-    isFocused && dispatch(updateApplaudState([]));
-    isFocused && dispatch(updateCompassionState([]));
-    isFocused && dispatch(updateBrokenState([]));
-    isFocused && dispatch(updateWowState([]));
-  }, [isFocused]);
-
-  useEffect(() => {
     dispatch(
       updateApplaudState(
         ccc.item.applauds.filter((zzz) => zzz.voter === user.id).length === 0
@@ -282,10 +239,7 @@ export default GetHeader;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: "#051e28",
-    // color: "yellow",
   },
   subContainer: { marginBottom: 7 },
   title: {
@@ -308,12 +262,6 @@ const styles = StyleSheet.create({
 
   commentContainer: {
     flexDirection: "column",
-    // paddingHorizontal: 20,
-    // paddingBottom: 20,
-    // marginTop: 20,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // backgroundColor: "red",
     paddingHorizontal: 20,
     marginTop: 20,
   },
@@ -345,24 +293,13 @@ const styles = StyleSheet.create({
     color: "#9BA5A9",
     paddingHorizontal: 20,
     paddingVertical: 12,
-    // backgroundColor: "green",
   },
   miniLogo: {
     width: 40,
     height: 40,
     borderRadius: 50,
   },
-  postComment: {
-    // // flex: 0,
-    // flexDirection: "row",
-    // // position: "absolute",
-    // // bottom: 10,
-    // alignItems: "center",
-    // justifyContent: "space-around",
-    // // width: "100%",
-    // // marginHorizontal: -10,
-    // backgroundColor: "#051E28",
-  },
+
   input: {
     height: 44,
     margin: 12,
@@ -373,12 +310,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: "75%",
     fontSize: 17,
-
-    // width: "90%",
     color: "#8BBCCC",
   },
   button: {
-    // backgroundColor: "#052821",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 9,

@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Alert,
   Modal,
   StyleSheet,
   Text,
@@ -12,16 +11,9 @@ import {
   StatusBar,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "./firebase";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
-import { useDispatch } from "react-redux";
-import {
-  addStories,
-  getstoriesData,
-  loadStories,
-} from "./state/reducers/storiesSlice";
+import { addStories, loadStories } from "./state/reducers/storiesSlice";
 import { useRoute } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;
@@ -74,7 +66,6 @@ const StoryModal = () => {
       {modalVisible && <StatusBar hidden />}
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <TouchableOpacity
-          // activeOpacity={1}
           style={{
             position: "absolute",
             top: -30,
@@ -92,7 +83,6 @@ const StoryModal = () => {
               <TextInput
                 placeholder={titleError ? "required title" : "Give it a title"}
                 placeholderTextColor={titleError ? "red" : "#8BBCCC"}
-                //   value={email}
                 onChangeText={(text) => setTitle(text)}
                 style={styles.input}
               />
@@ -103,16 +93,12 @@ const StoryModal = () => {
                   contentError ? "required content" : "Write your story here..."
                 }
                 placeholderTextColor={contentError ? "red" : "#8BBCCC"}
-                //   value={password}
                 onChangeText={(text) => setContent(text)}
                 style={styles.input}
-                //   secureTextEntry
               />
-
               <TouchableOpacity
                 onPress={handleStory}
                 style={styles.buttonSendContainer}
-                // disabled={content === "" && title === "" && true}
               >
                 {status !== "success" ? (
                   <Text
@@ -181,8 +167,6 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: "#495C83",
     borderRadius: 20,
-    // paddingHorizontal: 120,
-    // paddingVertical: 10,
     marginTop: 100,
     width: windowWidth * 0.98,
     paddingVertical: 50,
@@ -213,7 +197,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   modalText: {
-    // marginBottom: 15,
     textAlign: "center",
   },
   inputContainer: {
@@ -226,7 +209,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
     marginTop: 10,
-    // width: "100%",
     fontSize: 18,
   },
   buttonSendContainer: {
@@ -234,12 +216,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonSend: {
-    // backgroundColor: "#748DA6",
     borderRadius: 50,
     elevation: 4,
-    // width: "30%",
-    // height: 70,
-    // textAlign: "center",
     top: 16,
     paddingVertical: 20,
     paddingHorizontal: 30,

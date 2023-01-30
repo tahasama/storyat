@@ -3,15 +3,13 @@ import {
   Text,
   StyleSheet,
   Modal,
-  Alert,
   Pressable,
   Dimensions,
   TouchableOpacity,
   Switch,
   StatusBar,
 } from "react-native";
-import React, { Profiler, useEffect, useState } from "react";
-import Logout from "./Logout";
+import React, { useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -21,21 +19,6 @@ import { resetUser } from "./state/reducers/authSlice";
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
 import { menuState } from "./state/reducers/headerSlice";
-
-{
-  /* <TouchableOpacity
-// activeOpacity={1}
-style={{
-  position: "absolute",
-  top: 0,
-  bottom: 0,
-  left: 0,
-  right: 0,
-  backgroundColor: "rgba(0,0,0,0.5)",
-}}
-onPress={() => setModalVisible(false)}
-/> */
-}
 
 const Options = () => {
   const windowWidth = Dimensions.get("window").width;
@@ -57,7 +40,6 @@ const Options = () => {
         visible={modalVisible}
       >
         <TouchableOpacity
-          // activeOpacity={1}
           style={{
             position: "absolute",
             top: 0,
@@ -77,8 +59,6 @@ const Options = () => {
               {
                 height: windowHeight / 3,
                 width: windowWidth,
-                // backgroundColor: "blue",
-                // position: "relative",
               },
             ]}
           >
@@ -92,7 +72,6 @@ const Options = () => {
               <TouchableOpacity
                 style={{
                   marginBottom: 20,
-                  // backgroundColor: "red",
                   width: windowWidth / 2.55,
                   flexDirection: "row",
                 }}
@@ -117,7 +96,6 @@ const Options = () => {
                   navigation.navigate("actions"), setModalVisible(false)
                 )}
                 style={{
-                  // backgroundColor: "red",
                   width: windowWidth / 2.5,
                   flexDirection: "row",
                   marginBottom: 12,
@@ -142,12 +120,8 @@ const Options = () => {
               </TouchableOpacity>
               <View
                 style={{
-                  // justifyContent: "center",
-                  // alignItems: "flex-start",
                   flexDirection: "row",
-                  // flex: 1,
                   height: windowHeight / 18,
-                  // backgroundColor: "red",
                   width: windowWidth / 2.6,
                   marginBottom: 12,
                 }}
@@ -185,7 +159,6 @@ const Options = () => {
                     .catch((error) => alert(error.message));
                 }}
                 style={{
-                  // backgroundColor: "red",
                   width: windowWidth / 2.5,
                   flexDirection: "row",
                   marginBottom: 12,
@@ -228,15 +201,11 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-evenly",
-    // alignItems: "flex-start",
-    // backgroundColor: "yellow",
     width: "100%",
   },
   buttonContainer: {
-    // position: "absolute",
     justifyContent: "center",
     alignItems: "center",
-    // margin: 10,
     right: 20,
   },
   button: {
@@ -248,12 +217,9 @@ const styles = StyleSheet.create({
   centeredView: {
     justifyContent: "center",
     alignItems: "center",
-    // marginTop: 22,
   },
   modalView: {
-    // margin: 20,
     backgroundColor: "#051E28",
-
     borderTopEndRadius: 20,
     borderTopStartRadius: 20,
     padding: 35,

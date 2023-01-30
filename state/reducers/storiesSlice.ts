@@ -15,13 +15,38 @@ import {
 import { Alert } from "react-native";
 import { db } from "../../firebase";
 
-// const USER_URL: any = process.env.REACT_APP_USER_URL;
-
 interface storyProps {
   userId: string;
   title: string;
   content: string;
 }
+
+export const myStories = createAsyncThunk(
+  "myStories",
+  async ({ pageName }: any) => {
+    const yo = collection(db, "stories");
+    const g = query(yo, where("writerId", "==", pageName));
+
+    const querySnapshot = await getDocs(g);
+    const promises = querySnapshot.docs.map(async (docs: any) => {
+      const username = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().username;
+      const avatar = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().avatar;
+      return {
+        ...docs.data(),
+        id: docs.id,
+        username: username,
+        avatar: avatar,
+      };
+    });
+    const result = await Promise.all(promises);
+
+    return result;
+  }
+);
 
 export const loadStories = createAsyncThunk(
   "loadStories",
@@ -53,25 +78,15 @@ export const loadStories = createAsyncThunk(
       };
     });
     const resultInitial = await Promise.all(promises);
-
     return resultInitial;
   }
 );
 
 export const loadMoreStories = createAsyncThunk(
   "loadMoreStories",
-  async ({ pageName, resultLength, resultInitial }: any) => {
-    const xxx = pageName;
-
+  async ({ pageName, resultInitial }: any) => {
     try {
       const yo = collection(db, "stories");
-
-      // const g = query(
-      //   yo,
-      //   orderBy("timestamp", "desc"),
-      //   limit(2),
-      //   startAfter(resultInitial[resultInitial.length - 1].timestamp)
-      // );
       const g =
         pageName === "items"
           ? query(
@@ -116,11 +131,8 @@ export const loadMoreStories = createAsyncThunk(
       });
 
       const result = await Promise.all(promises);
-      // const resulty = result.sort(() => Math.random() + 0.5);
       const resultw = [...resultInitial];
       resultw.push(...result);
-      // const resultInitiaSet = new Set(resultInitia);
-      // const arrRes = Array.from(resultInitiaSet);
 
       return resultw;
     } catch (error) {
@@ -253,7 +265,7 @@ export const voteWow = createAsyncThunk("voteApplaud", async (infos: any) => {
 
 export interface storiesProps {
   storiesStates: {
-    resultCumul: any[];
+    result: any[];
     resultInitial: any[];
     resultLoadMore: any[];
     title: string;
@@ -262,17 +274,25 @@ export interface storiesProps {
     timestamp: string;
     username: string;
     story: any;
-    applaudState: any[];
-    compassionState: any[];
-    brokenState: any[];
-    wowState: any[];
+    applaudState: boolean;
+    applaudArray: any[];
+
+    compassionState: boolean;
+    compassionArray: any[];
+
+    brokenState: boolean;
+    brokenArray: any[];
+
+    wowState: boolean;
+    wowArray: any[];
+
     NumOfCommentState: number;
     loadmore: number;
   };
 }
 
 export const storiesInitialState = {
-  resultCumul: [],
+  result: [],
   resultInitial: [],
   resultLoadMore: [],
   title: "",
@@ -281,10 +301,19 @@ export const storiesInitialState = {
   timestamp: "",
   username: "",
   story: {},
-  applaudState: [],
-  compassionState: [],
-  brokenState: [],
-  wowState: [],
+
+  applaudState: false,
+  applaudArray: [],
+
+  compassionState: false,
+  compassionArray: [],
+
+  brokenState: false,
+  brokenArray: [],
+
+  wowState: false,
+  wowArray: [],
+
   NumOfCommentState: 0,
   loadmore: 0,
 };
@@ -306,7 +335,6 @@ export const storiesSlice = createSlice({
       state.brokenState = action.payload;
     },
     updateWowState: (state, action) => {
-      // console.log("tttttt", action.payload);
       state.wowState = action.payload;
     },
     updateNumOfCommentState: (state, action) => {
@@ -318,20 +346,19 @@ export const storiesSlice = createSlice({
     updateInitilalResultState: (state, action) => {
       state.resultInitial = action.payload;
     },
-    loadMore: (state, action) => {
-      state.loadmore = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
       state.resultInitial = action.payload;
     });
     builder.addCase(loadMoreStories.fulfilled, (state, action: any) => {
-      // console.log();
       state.resultLoadMore = action.payload;
     });
     builder.addCase(getStory.fulfilled, (state, action) => {
       state.story = action.payload;
+    });
+    builder.addCase(myStories.fulfilled, (state, action) => {
+      state.result = action.payload;
     });
   },
 });
@@ -344,7 +371,6 @@ export const {
   updateBrokenState,
   updateWowState,
   updateNumOfCommentState,
-  loadMore,
   updateResultState,
   updateInitilalResultState,
 } = storiesSlice.actions;

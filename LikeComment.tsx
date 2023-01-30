@@ -1,60 +1,20 @@
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  FlatList,
-  Image,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-  Keyboard,
-  ActivityIndicator,
-  Animated,
-} from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
 
-import { storyRoute } from "./state/reducers/headerSlice";
 import {
   getcommentsData,
-  loadcomments,
-  addcomments,
-  removeComment,
   addCommentLike,
   addCommentDislike,
   isCommentLiked,
 } from "./state/reducers/commentsSlice";
 import Entypo from "@expo/vector-icons/Entypo";
-import {} from "./state/reducers/repliesSlice";
-import {
-  addCommentNumberToStory,
-  substractCommentNumberToStory,
-  updateNumOfCommentState,
-} from "./state/reducers/storiesSlice";
-
-import { useSelector, useDispatch } from "react-redux";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import StoryModal from "./StoryModal";
-import { getDocs } from "@firebase/firestore";
-import { collection } from "firebase/firestore";
-import { db } from "./firebase";
-import { getHeaderData, menuState } from "./state/reducers/headerSlice";
-import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
-import { useIsFocused } from "@react-navigation/native";
-import GetHeader from "./GetHeader";
 
 const LikeComment = ({ item }) => {
   const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
-  const { result, resultComments, commentDisliked, commentLiked } =
-    useAppSelector(getcommentsData);
-  const isFocused = useIsFocused();
+  const { commentLiked } = useAppSelector(getcommentsData);
 
   const handleLike = (item) => {
     let liked = item.likes.filter((zzz) => zzz.liker === user.id).length === 0;
@@ -110,13 +70,10 @@ const LikeComment = ({ item }) => {
         commentDislikesArray,
       })
     );
-    // dispatch(loadcomments(ccc.item.id));
-    // setDisLikeLoading(false);
   };
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        // disabled={commentLiked && true}
         onPress={() => {
           handleLike(item);
         }}
@@ -158,11 +115,6 @@ const LikeComment = ({ item }) => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // backgroundColor: "#051e28",
-    // color: "yellow",
     flexDirection: "row",
   },
 });

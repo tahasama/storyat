@@ -1,18 +1,12 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData } from "./state/reducers/authSlice";
 import { useNavigation, StackActions } from "@react-navigation/core";
 import { useRoute } from "@react-navigation/native";
-import {
-  commentRoute,
-  getHeaderData,
-  menuState,
-  storyRoute,
-} from "./state/reducers/headerSlice";
+import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 
 const MenuButton = () => {
   const dispatch = useAppDispatch();
@@ -20,12 +14,9 @@ const MenuButton = () => {
 
   const route = useRoute();
 
-  const { menuStateValue, commentRouteValue, storyRouteValue } =
-    useAppSelector(getHeaderData);
+  const { menuStateValue } = useAppSelector(getHeaderData);
 
   const popAction = StackActions.pop(1);
-
-  // useEffect(() => {}, [route.name]);
 
   return (
     <View style={styles.buttonContainer}>
@@ -35,8 +26,6 @@ const MenuButton = () => {
             route.name !== "lll"
               ? navigation.dispatch(popAction)
               : dispatch(menuState(!menuStateValue));
-            // route.name === "item" && dispatch(commentRoute("")),
-            //   route.name === "item" && dispatch(storyRoute(""));
           }
         }}
         style={styles.button}
@@ -63,7 +52,6 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     alignItems: "center",
-    // zIndex: 99,
   },
   modal: {
     width: "100%",

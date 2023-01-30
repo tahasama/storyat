@@ -10,7 +10,13 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getstoriesData, getStory } from "./state/reducers/storiesSlice";
+import {
+  getstoriesData,
+  getStory,
+  loadStories,
+  myStories,
+  updateResultState,
+} from "./state/reducers/storiesSlice";
 import { getAuthData } from "./state/reducers/authSlice";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import StoryModal from "./StoryModal";
@@ -19,14 +25,23 @@ import {
   getcommentsData,
   loadAllComments,
 } from "./state/reducers/commentsSlice";
+import { menuState } from "./state/reducers/headerSlice";
 
 const Actions = () => {
   const { result } = useAppSelector(getstoriesData);
   const { user } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(menuState(false)),
+      setLoading(true),
+      dispatch(myStories({ pageName: user.id })),
+      setLoading(false);
+  }, []);
 
   function MyStories({ navigation }) {
-    let myStories = result.filter((xxx) => xxx.writerId === user.id);
     const handleOnpress = (item) => {
       navigation.navigate("item", { item: item });
       setSelectedId(item.id);
@@ -46,7 +61,7 @@ const Actions = () => {
           </View>
         ) : (
           <FlatList
-            data={myStories}
+            data={result}
             renderItem={({ item }) => (
               <View style={styles.item}>
                 <TouchableOpacity

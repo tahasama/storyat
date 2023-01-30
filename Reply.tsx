@@ -1,14 +1,11 @@
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   FlatList,
   Image,
-  ScrollView,
   TextInput,
   TouchableOpacity,
-  Alert,
   Keyboard,
   ActivityIndicator,
   Animated,
@@ -16,20 +13,6 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
-import {
-  addDoc,
-  arrayUnion,
-  collection,
-  collectionGroup,
-  doc,
-  FieldValue,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "./firebase";
 import { getHeaderData, commentRoute } from "./state/reducers/headerSlice";
 import {
   getrepliesData,
@@ -37,26 +20,19 @@ import {
   addreplies,
   removereply,
   addreplyLike,
-  isreplyLiked,
-  isreplyDisliked,
   addreplyDislike,
-  getreply,
 } from "./state/reducers/repliesSlice";
-import { loadStories } from "./state/reducers/storiesSlice";
 import Entypo from "@expo/vector-icons/Entypo";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import {
   addReplyNumberToComment,
   substractReplyNumberToComment,
 } from "./state/reducers/commentsSlice";
-// import { addReplyNumberToComment } from "./state/reducers/commentsSlice";
 
-const Reply = ({ navigation, route }) => {
+const Reply = ({ route }) => {
   const ccc = route.params;
   const { user } = useAppSelector(getAuthData);
 
-  const { commentRouteValue } = useAppSelector(getHeaderData);
-  const [status, setStatus] = useState("");
   const [replyIdLoading, setreplyIdLoading] = useState("");
 
   const [replyIdDelete, setreplyIdDelete] = useState(false);
@@ -66,8 +42,7 @@ const Reply = ({ navigation, route }) => {
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const dispatch = useAppDispatch();
-  const { result, replyLiked, replyDisliked, likes, dislikes } =
-    useAppSelector(getrepliesData);
+  const { result } = useAppSelector(getrepliesData);
 
   useEffect(() => {
     dispatch(commentRoute(ccc.item.id));
@@ -87,8 +62,6 @@ const Reply = ({ navigation, route }) => {
         dislikes: [],
       })
     )
-      .then(() => setStatus("success"))
-
       .then(() =>
         dispatch(
           addReplyNumberToComment({
@@ -168,37 +141,6 @@ const Reply = ({ navigation, route }) => {
     );
   };
 
-  const anim = useRef(new Animated.Value(0));
-
-  const shake = useCallback(() => {
-    // makes the sequence loop
-    Animated.loop(
-      // runs the animation array in sequence
-      Animated.sequence([
-        // shift element to the left by 2 units
-        Animated.timing(anim.current, {
-          toValue: -2,
-          useNativeDriver: false,
-          duration: 80,
-        }),
-        // shift element to the right by 2 units
-        Animated.timing(anim.current, {
-          toValue: 2,
-          useNativeDriver: false,
-          duration: 80,
-        }),
-        // bring the element back to its original position
-        Animated.timing(anim.current, {
-          toValue: 0,
-          useNativeDriver: false,
-          duration: 80,
-        }),
-      ]),
-      // loops the above animation config 2 times
-      { iterations: 2 }
-    ).start();
-  }, []);
-
   const handleRemove = (item) => {
     setreplyIdDelete(item.id);
     shake();
@@ -216,6 +158,31 @@ const Reply = ({ navigation, route }) => {
         dispatch(loadreplies(ccc.item.id)).then(() => setDeletereply(false))
       );
   };
+
+  const anim = useRef(new Animated.Value(0));
+
+  const shake = useCallback(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(anim.current, {
+          toValue: -2,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+        Animated.timing(anim.current, {
+          toValue: 2,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+        Animated.timing(anim.current, {
+          toValue: 0,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+      ]),
+      { iterations: 2 }
+    ).start();
+  }, []);
 
   const getHeader = () => {
     return (
@@ -301,7 +268,6 @@ const Reply = ({ navigation, route }) => {
             <Text style={styles.reply}>{item.reply}</Text>
             <View style={styles.replyActions}>
               <TouchableOpacity
-                // disabled={replyLiked && true}
                 onPress={() => {
                   handleLike(item);
                 }}
@@ -478,7 +444,6 @@ const styles = StyleSheet.create({
     color: "#9BA5A9",
     paddingHorizontal: 20,
     paddingVertical: 12,
-    // backgroundColor: "green",
   },
   miniLogo: {
     width: 40,
@@ -496,12 +461,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: "75%",
     fontSize: 17,
-
-    // width: "90%",
     color: "#8BBCCC",
   },
   button: {
-    // backgroundColor: "#052821",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 9,

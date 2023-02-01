@@ -26,6 +26,7 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
 
   const unsubscribe = () =>
+    !user &&
     onAuthStateChanged(auth, async (userx) => {
       let result = [];
       if (userx) {
@@ -49,7 +50,7 @@ const Index = () => {
 
   useEffect(() => {
     unsubscribe();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     loading &&
@@ -82,7 +83,7 @@ const Index = () => {
           screenOptions={{
             header: () => (user && !loading ? <Title /> : null),
           }}
-          initialRouteName={user ? "login" : "lll"}
+          initialRouteName={!user ? "login" : "lll"}
         >
           <Stack.Group>
             <Stack.Screen name="lll" component={Lll} />

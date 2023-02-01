@@ -20,10 +20,10 @@ import StoryModal from "./StoryModal";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 import {
   getstoriesData,
-  loadMoreStories,
+  // loadMoreStories,
   loadStories,
   updateInitilalResultState,
-  updateResultState,
+  // updateResultState,
   voteApplaud,
   voteBroken,
   voteCompassion,
@@ -35,7 +35,7 @@ const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
-  const { resultLoadMore, resultInitial } = useAppSelector(getstoriesData);
+  const { resultInitial } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
@@ -48,26 +48,26 @@ const Items = ({ navigation }) => {
     return yyy.sort(() => Math.random() - 0.3);
   };
 
-  const randomMore = () => {
-    let yyy = [...resultLoadMore];
-    return yyy.sort(() => Math.random() - 0.3);
-  };
+  // const randomMore = () => {
+  //   let yyy = [...resultLoadMore];
+  //   return yyy.sort(() => Math.random() - 0.3);
+  // };
 
-  const handleLoadMore = async () => {
-    setLoadingMore(true);
-    dispatch(
-      loadMoreStories({
-        pageName: pageName,
-        resultLength:
-          resultLoadMore.length === 0
-            ? resultInitial.length
-            : resultLoadMore.length,
-        resultInitial:
-          resultLoadMore.length === 0 ? resultInitial : resultLoadMore,
-      })
-    );
-    setLoadingMore(false);
-  };
+  // const handleLoadMore = async () => {
+  //   setLoadingMore(true);
+  //   dispatch(
+  //     loadMoreStories({
+  //       pageName: pageName,
+  //       resultLength:
+  //         resultLoadMore.length === 0
+  //           ? resultInitial.length
+  //           : resultLoadMore.length,
+  //       resultInitial:
+  //         resultLoadMore.length === 0 ? resultInitial : resultLoadMore,
+  //     })
+  //   );
+  //   setLoadingMore(false);
+  // };
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -85,7 +85,7 @@ const Items = ({ navigation }) => {
     isFocused &&
       (dispatch(menuState(false)),
       setLoading(true),
-      dispatch(updateResultState([])),
+      // dispatch(updateResultState([])),
       dispatch(updateInitilalResultState([])),
       dispatch(loadStories({ pageName: pageName })),
       setLoading(false));
@@ -101,8 +101,8 @@ const Items = ({ navigation }) => {
       storyId: item.id,
     };
     const voteArray = [...item.applauds];
-    item?.applauds.filter((zzz) => zzz.voter === user.id).length === 0
-      ? voteArray.push(voteData)
+    item?.applauds.filter((zzz) => zzz === user.id).length === 0
+      ? voteArray.push(voteData.voter)
       : voteArray.pop();
     dispatch(
       voteApplaud({
@@ -117,8 +117,8 @@ const Items = ({ navigation }) => {
       storyId: item.id,
     };
     const voteArray = [...item.compassions];
-    item.compassions.filter((zzz) => zzz.voter === user.id).length === 0
-      ? voteArray.push(voteData)
+    item.compassions.filter((zzz) => zzz === user.id).length === 0
+      ? voteArray.push(voteData.voter)
       : voteArray.pop();
     dispatch(
       voteCompassion({
@@ -133,8 +133,8 @@ const Items = ({ navigation }) => {
       storyId: item.id,
     };
     const voteArray = [...item.brokens];
-    item.brokens.filter((zzz) => zzz.voter === user.id).length === 0
-      ? voteArray.push(voteData)
+    item.brokens.filter((zzz) => zzz === user.id).length === 0
+      ? voteArray.push(voteData.voter)
       : voteArray.pop();
     dispatch(
       voteBroken({
@@ -149,8 +149,8 @@ const Items = ({ navigation }) => {
       storyId: item.id,
     };
     const voteArray = [...item.justNos];
-    item.justNos.filter((zzz) => zzz.voter === user.id).length === 0
-      ? voteArray.push(voteData)
+    item.justNos.filter((zzz) => zzz === user.id).length === 0
+      ? voteArray.push(voteData.voter)
       : voteArray.pop();
     dispatch(
       voteWow({
@@ -175,7 +175,7 @@ const Items = ({ navigation }) => {
         </View>
       ) : (
         <FlatList
-          onEndReached={handleLoadMore}
+          // onEndReached={handleLoadMore}
           refreshControl={
             <RefreshControl
               colors={["#14764b", "#0F5838", "#093421"]}
@@ -185,12 +185,12 @@ const Items = ({ navigation }) => {
           }
           data={
             pageName !== "items"
-              ? resultLoadMore.length === 0
-                ? resultInitial
-                : resultLoadMore
-              : resultLoadMore.length === 0
-              ? randomm()
-              : randomMore()
+              ? //   ? resultLoadMore.length === 0
+                resultInitial
+              : //     : resultLoadMore
+                //   : resultLoadMore.length === 0
+                randomm()
+            // : randomMore()
           }
           renderItem={({ item }) => (
             <View style={styles.item}>
@@ -240,8 +240,8 @@ const Items = ({ navigation }) => {
                   <MaterialCommunityIcons
                     name="hand-clap"
                     color={
-                      item.applauds.filter((zzz) => zzz.voter === user.id)
-                        .length === 0
+                      item.applauds.filter((zzz) => zzz === user.id).length ===
+                      0
                         ? "#707070"
                         : "#73481c"
                     }
@@ -252,7 +252,7 @@ const Items = ({ navigation }) => {
                   <MaterialCommunityIcons
                     name="heart"
                     color={
-                      item.compassions.filter((zzz) => zzz.voter === user.id)
+                      item.compassions.filter((zzz) => zzz === user.id)
                         .length === 0
                         ? "#707070"
                         : "#4c0000"
@@ -264,8 +264,7 @@ const Items = ({ navigation }) => {
                   <MaterialCommunityIcons
                     name="heart-broken"
                     color={
-                      item.brokens.filter((zzz) => zzz.voter === user.id)
-                        .length === 0
+                      item.brokens.filter((zzz) => zzz === user.id).length === 0
                         ? "#707070"
                         : "#5900b2"
                     }
@@ -276,8 +275,7 @@ const Items = ({ navigation }) => {
                   <Feather
                     name="trending-down"
                     color={
-                      item.justNos.filter((zzz) => zzz.voter === user.id)
-                        .length === 0
+                      item.justNos.filter((zzz) => zzz === user.id).length === 0
                         ? "#707070"
                         : "#305a63"
                     }

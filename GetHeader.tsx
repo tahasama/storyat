@@ -38,22 +38,22 @@ const GetHeader = ({ navigation, route }) => {
     dispatch(menuState(false));
     dispatch(
       updateApplaudState(
-        ccc.item.applauds.filter((zzz) => zzz.voter === user.id).length === 0
+        ccc.item.applauds.filter((zzz) => zzz === user.id).length === 0
       )
     );
     dispatch(
       updateCompassionState(
-        ccc.item.compassions.filter((zzz) => zzz.voter === user.id).length === 0
+        ccc.item.compassions.filter((zzz) => zzz === user.id).length === 0
       )
     );
     dispatch(
       updateBrokenState(
-        ccc.item.brokens.filter((zzz) => zzz.voter === user.id).length === 0
+        ccc.item.brokens.filter((zzz) => zzz === user.id).length === 0
       )
     );
     dispatch(
       updateWowState(
-        ccc.item.justNos.filter((zzz) => zzz.voter === user.id).length === 0
+        ccc.item.justNos.filter((zzz) => zzz === user.id).length === 0
       )
     );
     dispatch(updateNumOfCommentState(ccc.item.numOfComments));

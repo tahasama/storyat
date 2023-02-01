@@ -48,18 +48,47 @@ export const myStories = createAsyncThunk(
   }
 );
 
+export const ReactedToStories = createAsyncThunk(
+  "ReactedToStories",
+  async ({ pageName }: any) => {
+    console.log("333333333", pageName);
+    const yo = collection(db, "stories");
+    const g = query(yo, where("applauds", "array-contains", pageName));
+
+    const querySnapshot = await getDocs(g);
+    const promises = querySnapshot.docs.map(async (docs: any) => {
+      const username = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().username;
+      const avatar = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().avatar;
+      return {
+        ...docs.data(),
+        id: docs.id,
+        username: username,
+        avatar: avatar,
+      };
+    });
+    const result = await Promise.all(promises);
+    console.log("@@@@@@", result);
+
+    return result;
+  }
+);
+
 export const loadStories = createAsyncThunk(
   "loadStories",
   async ({ pageName }: any) => {
     const yo = collection(db, "stories");
     const g =
       pageName === "items"
-        ? query(yo, orderBy("timestamp", "desc"), limit(4))
+        ? query(yo, orderBy("timestamp", "desc"))
         : query(
             yo,
             where(pageName, "!=", []),
-            orderBy(pageName, "desc"),
-            limit(4)
+            orderBy(pageName, "desc")
+            // limit(4)
           );
 
     const querySnapshot = await getDocs(g);
@@ -82,64 +111,64 @@ export const loadStories = createAsyncThunk(
   }
 );
 
-export const loadMoreStories = createAsyncThunk(
-  "loadMoreStories",
-  async ({ pageName, resultInitial }: any) => {
-    try {
-      const yo = collection(db, "stories");
-      const g =
-        pageName === "items"
-          ? query(
-              yo,
-              orderBy("timestamp", "desc"),
-              limit(2),
-              startAfter(resultInitial[resultInitial.length - 1].timestamp)
-            )
-          : query(
-              yo,
-              where(pageName, "!=", []),
-              orderBy(pageName, "desc"),
-              limit(2),
-              startAfter(
-                pageName === "applauds"
-                  ? resultInitial[resultInitial.length - 1].applauds
-                  : pageName === "timestamp"
-                  ? resultInitial[resultInitial.length - 1].timestamp
-                  : pageName === "compassions"
-                  ? resultInitial[resultInitial.length - 1].compassions
-                  : pageName === "brokens"
-                  ? resultInitial[resultInitial.length - 1].brokens
-                  : pageName === "justNos" &&
-                    resultInitial[resultInitial.length - 1].justNos
-              )
-            );
+// export const loadMoreStories = createAsyncThunk(
+//   "loadMoreStories",
+//   async ({ pageName, resultInitial }: any) => {
+//     try {
+//       const yo = collection(db, "stories");
+//       const g =
+//         pageName === "items"
+//           ? query(
+//               yo,
+//               orderBy("timestamp", "desc"),
+//               limit(2),
+//               startAfter(resultInitial[resultInitial.length - 1].timestamp)
+//             )
+//           : query(
+//               yo,
+//               where(pageName, "!=", []),
+//               orderBy(pageName, "desc"),
+//               limit(2),
+//               startAfter(
+//                 pageName === "applauds"
+//                   ? resultInitial[resultInitial.length - 1].applauds
+//                   : pageName === "timestamp"
+//                   ? resultInitial[resultInitial.length - 1].timestamp
+//                   : pageName === "compassions"
+//                   ? resultInitial[resultInitial.length - 1].compassions
+//                   : pageName === "brokens"
+//                   ? resultInitial[resultInitial.length - 1].brokens
+//                   : pageName === "justNos" &&
+//                     resultInitial[resultInitial.length - 1].justNos
+//               )
+//             );
 
-      const querySnapshot = await getDocs(g);
-      const promises = querySnapshot.docs.map(async (docs: any) => {
-        const username = await (
-          await getDoc(doc(db, "users", docs.data().writerId))
-        ).data().username;
-        const avatar = await (
-          await getDoc(doc(db, "users", docs.data().writerId))
-        ).data().avatar;
-        return {
-          ...docs.data(),
-          id: docs.id,
-          username: username,
-          avatar: avatar,
-        };
-      });
+//       const querySnapshot = await getDocs(g);
+//       const promises = querySnapshot.docs.map(async (docs: any) => {
+//         const username = await (
+//           await getDoc(doc(db, "users", docs.data().writerId))
+//         ).data().username;
+//         const avatar = await (
+//           await getDoc(doc(db, "users", docs.data().writerId))
+//         ).data().avatar;
+//         return {
+//           ...docs.data(),
+//           id: docs.id,
+//           username: username,
+//           avatar: avatar,
+//         };
+//       });
 
-      const result = await Promise.all(promises);
-      const resultw = [...resultInitial];
-      resultw.push(...result);
+//       const result = await Promise.all(promises);
+//       const resultw = [...resultInitial];
+//       resultw.push(...result);
 
-      return resultw;
-    } catch (error) {
-      console.log("MMMMMMMMMM", error);
-    }
-  }
-);
+//       return resultw;
+//     } catch (error) {
+//       console.log("MMMMMMMMMM", error);
+//     }
+//   }
+// );
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
   try {
@@ -267,7 +296,8 @@ export interface storiesProps {
   storiesStates: {
     result: any[];
     resultInitial: any[];
-    resultLoadMore: any[];
+    resultReactions: any[];
+    // resultLoadMore: any[];
     title: string;
     content: string;
     writerId: string;
@@ -287,14 +317,15 @@ export interface storiesProps {
     wowArray: any[];
 
     NumOfCommentState: number;
-    loadmore: number;
+    // loadmore: number;
   };
 }
 
 export const storiesInitialState = {
   result: [],
   resultInitial: [],
-  resultLoadMore: [],
+  resultReactions: [],
+  // resultLoadMore: [],
   title: "",
   content: "",
   writerId: "",
@@ -315,7 +346,7 @@ export const storiesInitialState = {
   wowArray: [],
 
   NumOfCommentState: 0,
-  loadmore: 0,
+  // loadmore: 0,
 };
 
 export const storiesSlice = createSlice({
@@ -340,9 +371,9 @@ export const storiesSlice = createSlice({
     updateNumOfCommentState: (state, action) => {
       state.NumOfCommentState = action.payload;
     },
-    updateResultState: (state, action) => {
-      state.resultLoadMore = action.payload;
-    },
+    // updateResultState: (state, action) => {
+    //   state.resultLoadMore = action.payload;
+    // },
     updateInitilalResultState: (state, action) => {
       state.resultInitial = action.payload;
     },
@@ -351,14 +382,17 @@ export const storiesSlice = createSlice({
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
       state.resultInitial = action.payload;
     });
-    builder.addCase(loadMoreStories.fulfilled, (state, action: any) => {
-      state.resultLoadMore = action.payload;
-    });
+    // builder.addCase(loadMoreStories.fulfilled, (state, action: any) => {
+    //   state.resultLoadMore = action.payload;
+    // });
     builder.addCase(getStory.fulfilled, (state, action) => {
       state.story = action.payload;
     });
     builder.addCase(myStories.fulfilled, (state, action) => {
       state.result = action.payload;
+    });
+    builder.addCase(ReactedToStories.fulfilled, (state, action) => {
+      state.resultReactions = action.payload;
     });
   },
 });
@@ -371,7 +405,7 @@ export const {
   updateBrokenState,
   updateWowState,
   updateNumOfCommentState,
-  updateResultState,
+  // updateResultState,
   updateInitilalResultState,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

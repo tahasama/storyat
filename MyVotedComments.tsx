@@ -27,6 +27,16 @@ import {
   loadAllComments,
 } from "./state/reducers/commentsSlice";
 import { menuState } from "./state/reducers/headerSlice";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+
+import {
+  voteApplaud,
+  voteBroken,
+  voteCompassion,
+  voteWow,
+} from "./state/reducers/storiesSlice";
 
 function MyVotedComments({ navigation }) {
   const { votedComments } = useAppSelector(getcommentsData);
@@ -51,6 +61,70 @@ function MyVotedComments({ navigation }) {
     // setSelectedId(item.id);
   };
 
+  const handleApplauded = (item) => {
+    const voteData = {
+      voter: user.id,
+      storyId: item.id,
+    };
+    const voteArray = [...item.applauds];
+    item?.applauds.filter((zzz) => zzz === user.id).length === 0
+      ? voteArray.push(voteData.voter)
+      : voteArray.pop();
+    dispatch(
+      voteApplaud({
+        voteData,
+        voteArray,
+      })
+    ).then(() => dispatch(loadStories({ pageName: "" })));
+  };
+  const handleFeelingIt = (item) => {
+    const voteData = {
+      voter: user.id,
+      storyId: item.id,
+    };
+    const voteArray = [...item.compassions];
+    item.compassions.filter((zzz) => zzz === user.id).length === 0
+      ? voteArray.push(voteData.voter)
+      : voteArray.pop();
+    dispatch(
+      voteCompassion({
+        voteData,
+        voteArray,
+      })
+    ).then(() => dispatch(loadStories({ pageName: "" })));
+  };
+  const handleHeartBreaking = (item) => {
+    const voteData = {
+      voter: user.id,
+      storyId: item.id,
+    };
+    const voteArray = [...item.brokens];
+    item.brokens.filter((zzz) => zzz === user.id).length === 0
+      ? voteArray.push(voteData.voter)
+      : voteArray.pop();
+    dispatch(
+      voteBroken({
+        voteData,
+        voteArray,
+      })
+    ).then(() => dispatch(loadStories({ pageName: "" })));
+  };
+  const handleCantDealWithThis = (item) => {
+    const voteData = {
+      voter: user.id,
+      storyId: item.id,
+    };
+    const voteArray = [...item.justNos];
+    item.justNos.filter((zzz) => zzz === user.id).length === 0
+      ? voteArray.push(voteData.voter)
+      : voteArray.pop();
+    dispatch(
+      voteWow({
+        voteData,
+        voteArray,
+      })
+    ).then(() => dispatch(loadStories({ pageName: "" })));
+  };
   return (
     <SafeAreaView style={styles.container}>
       {outputArray.length === undefined ? (
@@ -112,7 +186,103 @@ function MyVotedComments({ navigation }) {
                   {item.content}
                 </Text>
               </TouchableOpacity>
+              <View
+                style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+              >
+                <TouchableOpacity
+                  onPress={() => handleApplauded(item)}
+                  style={{ flexDirection: "row" }}
+                >
+                  <MaterialCommunityIcons
+                    name="hand-clap"
+                    color={
+                      item.applauds.filter((zzz) => zzz === user.id).length ===
+                      0
+                        ? "#707070"
+                        : "#73481c"
+                    }
+                    size={28}
+                  />
+                  {item.applauds.length !== 0 && (
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                      {item.applauds.length}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleFeelingIt(item)}
+                  style={{ flexDirection: "row" }}
+                >
+                  <MaterialCommunityIcons
+                    name="heart"
+                    color={
+                      item.compassions.filter((zzz) => zzz === user.id)
+                        .length === 0
+                        ? "#707070"
+                        : "#4c0000"
+                    }
+                    size={28}
+                  />
+                  {item.compassions.length !== 0 && (
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                      {item.compassions.length}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleHeartBreaking(item)}
+                  style={{ flexDirection: "row" }}
+                >
+                  <MaterialCommunityIcons
+                    name="heart-broken"
+                    color={
+                      item.brokens.filter((zzz) => zzz === user.id).length === 0
+                        ? "#707070"
+                        : "#5900b2"
+                    }
+                    size={28}
+                  />
+                  {item.brokens.length !== 0 && (
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                      {item.brokens.length}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleCantDealWithThis(item)}
+                  style={{ flexDirection: "row" }}
+                >
+                  <Feather
+                    name="trending-down"
+                    color={
+                      item.justNos.filter((zzz) => zzz === user.id).length === 0
+                        ? "#707070"
+                        : "#305a63"
+                    }
+                    size={28}
+                  />
+                  {item.justNos.length !== 0 && (
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                      {item.justNos.length}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleOnpress(item)}
+                  style={{
+                    flexDirection: "row",
+                    // alignItems: "center",
+                  }}
+                >
+                  <FontAwesome name="comments" color={"#707070"} size={28} />
 
+                  {item.numOfComments !== 0 && (
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                      {item.numOfComments}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </View>
               <View
                 style={{
                   borderBottomColor: "grey",

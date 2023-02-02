@@ -27,6 +27,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import {} from "./state/reducers/repliesSlice";
 import {
   addCommentNumberToStory,
+  getstoriesData,
   substractCommentNumberToStory,
 } from "./state/reducers/storiesSlice";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -353,7 +354,11 @@ const Item = ({ navigation, route }) => {
           return item.id;
         }}
         extraData={selectedId}
-        ListHeaderComponent={GetHeader({ navigation, route })}
+        ListHeaderComponent={GetHeader({
+          navigation,
+          route,
+          storyId: ccc.item.id,
+        })}
         // ListFooterComponent={getFooter}
         // ListFooterComponentStyle={{
         //   backgroundColor: "#495C83",

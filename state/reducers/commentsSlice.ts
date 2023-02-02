@@ -27,7 +27,7 @@ interface commentProps {
 export const AllComments = createAsyncThunk(
   "AllComments",
   async (data: any) => {
-    const querySnapshot = await getDocs(collection(db, "comments"));
+    const querySnapshot = await getDocs(query(collection(db, "comments")));
     const promises = querySnapshot.docs.map(async (docs: any) => {
       return { ...docs.data(), id: docs.id };
     });
@@ -39,6 +39,9 @@ export const AllComments = createAsyncThunk(
       .map((x) => x.likes.filter((y) => y.liker === data))
       .flat()
       .map((y) => y.storyId);
+
+    console.log("votedComments", votedComments);
+
     const promisess = votedComments.map(async (ccc) => {
       const res = await getDoc(doc(db, "stories", ccc));
       const avatar = await (
@@ -79,9 +82,9 @@ export const loadAllComments = createAsyncThunk(
     });
     const resultComments = await Promise.all(promises);
     let xxx = [];
-
     const promisess = resultComments.map(async (ccc) => {
       const res = await getDoc(doc(db, "stories", ccc.storyId));
+
       const avatar = await (
         await getDoc(doc(db, "users", res.data().writerId))
       ).data().avatar;

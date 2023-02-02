@@ -236,7 +236,10 @@ const Items = ({ navigation }) => {
               <View
                 style={{ flexDirection: "row", justifyContent: "space-evenly" }}
               >
-                <TouchableOpacity onPress={() => handleApplauded(item)}>
+                <TouchableOpacity
+                  onPress={() => handleApplauded(item)}
+                  style={{ flexDirection: "row" }}
+                >
                   <MaterialCommunityIcons
                     name="hand-clap"
                     color={
@@ -247,8 +250,16 @@ const Items = ({ navigation }) => {
                     }
                     size={28}
                   />
+                  {item.applauds.length !== 0 && (
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                      {item.applauds.length}
+                    </Text>
+                  )}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleFeelingIt(item)}>
+                <TouchableOpacity
+                  onPress={() => handleFeelingIt(item)}
+                  style={{ flexDirection: "row" }}
+                >
                   <MaterialCommunityIcons
                     name="heart"
                     color={
@@ -259,8 +270,16 @@ const Items = ({ navigation }) => {
                     }
                     size={28}
                   />
+                  {item.compassions.length !== 0 && (
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                      {item.compassions.length}
+                    </Text>
+                  )}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleHeartBreaking(item)}>
+                <TouchableOpacity
+                  onPress={() => handleHeartBreaking(item)}
+                  style={{ flexDirection: "row" }}
+                >
                   <MaterialCommunityIcons
                     name="heart-broken"
                     color={
@@ -270,8 +289,16 @@ const Items = ({ navigation }) => {
                     }
                     size={28}
                   />
+                  {item.brokens.length !== 0 && (
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                      {item.brokens.length}
+                    </Text>
+                  )}
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleCantDealWithThis(item)}>
+                <TouchableOpacity
+                  onPress={() => handleCantDealWithThis(item)}
+                  style={{ flexDirection: "row" }}
+                >
                   <Feather
                     name="trending-down"
                     color={
@@ -281,24 +308,23 @@ const Items = ({ navigation }) => {
                     }
                     size={28}
                   />
+                  {item.justNos.length !== 0 && (
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                      {item.justNos.length}
+                    </Text>
+                  )}
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => handleOnpress(item)}
                   style={{
                     flexDirection: "row",
-                    alignItems: "center",
+                    // alignItems: "center",
                   }}
                 >
                   <FontAwesome name="comments" color={"#707070"} size={28} />
 
                   {item.numOfComments !== 0 && (
-                    <Text
-                      style={{
-                        color: "white",
-                        padding: 0,
-                        marginHorizontal: 5,
-                      }}
-                    >
+                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
                       {item.numOfComments}
                     </Text>
                   )}

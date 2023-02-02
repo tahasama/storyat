@@ -51,7 +51,6 @@ export const myStories = createAsyncThunk(
 export const ReactedToStories = createAsyncThunk(
   "ReactedToStories",
   async ({ pageName }: any) => {
-    console.log("333333333", pageName);
     const yo = collection(db, "stories");
     const g = query(yo, where("applauds", "array-contains", pageName));
 
@@ -71,8 +70,6 @@ export const ReactedToStories = createAsyncThunk(
       };
     });
     const result = await Promise.all(promises);
-    console.log("@@@@@@", result);
-
     return result;
   }
 );
@@ -82,7 +79,7 @@ export const loadStories = createAsyncThunk(
   async ({ pageName }: any) => {
     const yo = collection(db, "stories");
     const g =
-      pageName === "items"
+      pageName === "items" || pageName === ""
         ? query(yo, orderBy("timestamp", "desc"))
         : query(
             yo,

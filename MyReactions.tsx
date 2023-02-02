@@ -30,6 +30,14 @@ import { menuState } from "./state/reducers/headerSlice";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
+import { useRoute } from "@react-navigation/native";
+import {
+  voteApplaud,
+  voteBroken,
+  voteCompassion,
+  voteWow,
+} from "./state/reducers/storiesSlice";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 function MyReactions({ navigation }) {
   const { resultReactions } = useAppSelector(getstoriesData);
@@ -37,7 +45,6 @@ function MyReactions({ navigation }) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
-  console.log("HHHHHH", resultReactions);
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
     //   setSelectedId(item.id);
@@ -49,6 +56,86 @@ function MyReactions({ navigation }) {
       setLoading(false);
   }, []);
   const Reactions = () => {
+    const pageName = useRoute().name;
+    console.log("pageName", pageName);
+    const [first, setFirst] = useState([]);
+
+    useEffect(() => {
+      setTimeout(() => {
+        pageName === "applaud"
+          ? setFirst(resultReactions.filter((x) => x.applauds.length !== 0))
+          : pageName === "heart"
+          ? setFirst(resultReactions.filter((x) => x.compassions.length !== 0))
+          : pageName === "broken heart"
+          ? setFirst(resultReactions.filter((x) => x.brokens.length !== 0))
+          : setFirst(resultReactions.filter((x) => x.justNos.length !== 0));
+      }, 1000);
+    }, []);
+    const handleApplauded = (item) => {
+      const voteData = {
+        voter: user.id,
+        storyId: item.id,
+      };
+      const voteArray = [...item.applauds];
+      item?.applauds.filter((zzz) => zzz === user.id).length === 0
+        ? voteArray.push(voteData.voter)
+        : voteArray.pop();
+      dispatch(
+        voteApplaud({
+          voteData,
+          voteArray,
+        })
+      ).then(() => dispatch(loadStories({ pageName: pageName })));
+    };
+    const handleFeelingIt = (item) => {
+      const voteData = {
+        voter: user.id,
+        storyId: item.id,
+      };
+      const voteArray = [...item.compassions];
+      item.compassions.filter((zzz) => zzz === user.id).length === 0
+        ? voteArray.push(voteData.voter)
+        : voteArray.pop();
+      dispatch(
+        voteCompassion({
+          voteData,
+          voteArray,
+        })
+      ).then(() => dispatch(loadStories({ pageName: pageName })));
+    };
+    const handleHeartBreaking = (item) => {
+      const voteData = {
+        voter: user.id,
+        storyId: item.id,
+      };
+      const voteArray = [...item.brokens];
+      item.brokens.filter((zzz) => zzz === user.id).length === 0
+        ? voteArray.push(voteData.voter)
+        : voteArray.pop();
+      dispatch(
+        voteBroken({
+          voteData,
+          voteArray,
+        })
+      ).then(() => dispatch(loadStories({ pageName: pageName })));
+    };
+    const handleCantDealWithThis = (item) => {
+      const voteData = {
+        voter: user.id,
+        storyId: item.id,
+      };
+      const voteArray = [...item.justNos];
+      item.justNos.filter((zzz) => zzz === user.id).length === 0
+        ? voteArray.push(voteData.voter)
+        : voteArray.pop();
+      dispatch(
+        voteWow({
+          voteData,
+          voteArray,
+        })
+      ).then(() => dispatch(loadStories({ pageName: pageName })));
+    };
+
     return (
       <SafeAreaView style={styles.container}>
         {resultReactions.length === undefined ? (
@@ -64,7 +151,7 @@ function MyReactions({ navigation }) {
           </View>
         ) : (
           <FlatList
-            data={resultReactions}
+            data={first}
             renderItem={({ item }) => (
               <View style={styles.item}>
                 <TouchableOpacity
@@ -109,6 +196,109 @@ function MyReactions({ navigation }) {
 
                 <View
                   style={{
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => handleApplauded(item)}
+                    style={{ flexDirection: "row" }}
+                  >
+                    <MaterialCommunityIcons
+                      name="hand-clap"
+                      color={
+                        item.applauds.filter((zzz) => zzz === user.id)
+                          .length === 0
+                          ? "#707070"
+                          : "#73481c"
+                      }
+                      size={28}
+                    />
+                    {item.applauds.length !== 0 && (
+                      <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                        {item.applauds.length}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleFeelingIt(item)}
+                    style={{ flexDirection: "row" }}
+                  >
+                    <MaterialCommunityIcons
+                      name="heart"
+                      color={
+                        item.compassions.filter((zzz) => zzz === user.id)
+                          .length === 0
+                          ? "#707070"
+                          : "#4c0000"
+                      }
+                      size={28}
+                    />
+                    {item.compassions.length !== 0 && (
+                      <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                        {item.compassions.length}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleHeartBreaking(item)}
+                    style={{ flexDirection: "row" }}
+                  >
+                    <MaterialCommunityIcons
+                      name="heart-broken"
+                      color={
+                        item.brokens.filter((zzz) => zzz === user.id).length ===
+                        0
+                          ? "#707070"
+                          : "#5900b2"
+                      }
+                      size={28}
+                    />
+                    {item.brokens.length !== 0 && (
+                      <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                        {item.brokens.length}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleCantDealWithThis(item)}
+                    style={{ flexDirection: "row" }}
+                  >
+                    <Feather
+                      name="trending-down"
+                      color={
+                        item.justNos.filter((zzz) => zzz === user.id).length ===
+                        0
+                          ? "#707070"
+                          : "#305a63"
+                      }
+                      size={28}
+                    />
+                    {item.justNos.length !== 0 && (
+                      <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                        {item.justNos.length}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleOnpress(item)}
+                    style={{
+                      flexDirection: "row",
+                      // alignItems: "center",
+                    }}
+                  >
+                    <FontAwesome name="comments" color={"#707070"} size={28} />
+
+                    {item.numOfComments !== 0 && (
+                      <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                        {item.numOfComments}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={{
                     borderBottomColor: "grey",
                     borderBottomWidth: StyleSheet.hairlineWidth,
                     marginTop: 15,
@@ -131,20 +321,11 @@ function MyReactions({ navigation }) {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarActiveBackgroundColor: "#213242",
+        // tabBarInactiveBackgroundColor: "#051e2d",
         header: () => null,
-        tabBarLabelStyle: {
-          fontSize: 14,
-          textTransform: "capitalize",
-          color: "#9ba5a9",
-        },
-        tabBarItemStyle: { padding: 9 },
-        tabBarStyle: {
-          backgroundColor: "#051e2d",
-          // borderBottomWidth: 4,
-          borderBottomColor: "#9ba5a9",
-          borderStyle: "solid",
-          elevation: 10,
-        },
+        tabBarItemStyle: { borderRadius: 20 },
+        tabBarStyle: { backgroundColor: "#051e2d" },
       }}
     >
       <Tab.Screen
@@ -186,7 +367,7 @@ function MyReactions({ navigation }) {
         }}
       />
       <Tab.Screen
-        name="down trend"
+        name="ohno"
         component={Reactions}
         options={{
           tabBarShowLabel: false,

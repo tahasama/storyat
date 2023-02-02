@@ -21,7 +21,7 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { menuState } from "./state/reducers/headerSlice";
 import { getstoriesData } from "./state/reducers/storiesSlice";
 
-const GetHeader = ({ navigation, route }) => {
+const GetHeader = ({ navigation, route, storyId }) => {
   const ccc = route.params;
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
@@ -33,6 +33,8 @@ const GetHeader = ({ navigation, route }) => {
     wowState,
     NumOfCommentState,
   } = useAppSelector(getstoriesData);
+
+  console.log("::::::::", storyId);
 
   useEffect(() => {
     dispatch(menuState(false));
@@ -76,7 +78,7 @@ const GetHeader = ({ navigation, route }) => {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(updateApplaudState(!applaudState)));
+    ).then(() => dispatch(updateApplaudState(storyId)));
   };
   const handleFeelingIt = (item) => {
     const voteData = {
@@ -153,68 +155,103 @@ const GetHeader = ({ navigation, route }) => {
 
         {ccc.item.content}
       </Text>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          marginBottom: 15,
-        }}
-      >
-        <TouchableOpacity onPress={() => handleApplauded(ccc.item)}>
+      <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+        <TouchableOpacity
+          onPress={() => handleApplauded(ccc.item)}
+          style={{ flexDirection: "row" }}
+        >
           <MaterialCommunityIcons
             name="hand-clap"
-            color={!applaudState ? "#73481c" : "#707070"}
+            color={
+              ccc.item.applauds.filter((zzz) => zzz === user.id).length === 0
+                ? "#707070"
+                : "#73481c"
+            }
             size={28}
           />
+          {ccc.item.applauds.length !== 0 && (
+            <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+              {ccc.item.applauds.length}
+            </Text>
+          )}
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleFeelingIt(ccc.item)}>
+        <TouchableOpacity
+          onPress={() => handleFeelingIt(ccc.item)}
+          style={{ flexDirection: "row" }}
+        >
           <MaterialCommunityIcons
             name="heart"
-            color={!compassionState ? "#4c0000" : "#707070"}
+            color={
+              ccc.item.compassions.filter((zzz) => zzz === user.id).length === 0
+                ? "#707070"
+                : "#4c0000"
+            }
             size={28}
           />
+          {ccc.item.compassions.length !== 0 && (
+            <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+              {ccc.item.compassions.length}
+            </Text>
+          )}
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handleHeartBreaking(ccc.item)}>
+        <TouchableOpacity
+          onPress={() => handleHeartBreaking(ccc.item)}
+          style={{ flexDirection: "row" }}
+        >
           <MaterialCommunityIcons
             name="heart-broken"
-            color={!brokenState ? "#5900b2" : "#707070"}
+            color={
+              ccc.item.brokens.filter((zzz) => zzz === user.id).length === 0
+                ? "#707070"
+                : "#5900b2"
+            }
             size={28}
           />
+          {ccc.item.brokens.length !== 0 && (
+            <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+              {ccc.item.brokens.length}
+            </Text>
+          )}
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleCantDealWithThis(ccc.item)}>
+        <TouchableOpacity
+          onPress={() => handleCantDealWithThis(ccc.item)}
+          style={{ flexDirection: "row" }}
+        >
           <Feather
             name="trending-down"
-            color={!wowState ? "#305a63" : "#707070"}
+            color={
+              ccc.item.justNos.filter((zzz) => zzz === user.id).length === 0
+                ? "#707070"
+                : "#305a63"
+            }
             size={28}
           />
+          {ccc.item.justNos.length !== 0 && (
+            <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+              {ccc.item.justNos.length}
+            </Text>
+          )}
         </TouchableOpacity>
-
         <TouchableOpacity
           onPress={() => handleOnpress(ccc.item)}
           style={{
             flexDirection: "row",
-            alignItems: "center",
-            // justifyContent: "space-between",
+            // alignItems: "center",
           }}
         >
           <FontAwesome name="comments" color={"#707070"} size={28} />
 
-          {NumOfCommentState !== 0 && (
-            <Text
-              style={{
-                color: "white",
-                padding: 0,
-                marginHorizontal: 5,
-              }}
-            >
-              {NumOfCommentState}
+          {ccc.item.numOfComments !== 0 && (
+            <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+              {ccc.item.numOfComments}
             </Text>
           )}
         </TouchableOpacity>
       </View>
       <View
         style={{
+          paddingTop: 10,
+          // paddingBottom: 10,
           borderBottomColor: "grey",
           borderBottomWidth: StyleSheet.hairlineWidth,
         }}
@@ -225,7 +262,7 @@ const GetHeader = ({ navigation, route }) => {
           color: "#7f6c33",
           fontSize: 14,
           marginLeft: 5,
-          marginTop: 3,
+          marginTop: 5,
         }}
       >
         Comments :

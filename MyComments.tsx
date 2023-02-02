@@ -42,7 +42,7 @@ function MyComments({ navigation }) {
   const { resultComments } = useAppSelector(getcommentsData);
   const { user } = useAppSelector(getAuthData);
 
-  const { story } = useAppSelector(getstoriesData);
+  // const { storys } = useAppSelector(getstoriesData);
   const dispatch = useAppDispatch();
   const [stories, setStories] = useState([]);
   useEffect(() => {

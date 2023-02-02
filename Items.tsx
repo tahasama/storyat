@@ -101,15 +101,27 @@ const Items = ({ navigation }) => {
       storyId: item.id,
     };
     const voteArray = [...item.applauds];
-    item?.applauds.filter((zzz) => zzz === user.id).length === 0
-      ? voteArray.push(voteData.voter)
-      : voteArray.pop();
+    console.log("ser 1", voteArray);
+    // console.log("applaudState", applaudState);
+
+    const xxx = () => {
+      return voteArray.push(user.id);
+    };
+
+    const yyy = () => {
+      return voteArray.pop();
+    };
+    item.applauds.length === 0 ? xxx() : yyy();
+
+    console.log("ser 2", voteArray);
+    // dispatch(updateApplaudState(outputArray));
     dispatch(
       voteApplaud({
         voteData,
-        voteArray,
+        outputArray: voteArray,
       })
-    ).then(() => dispatch(loadStories({ pageName: pageName })));
+    );
+    dispatch(loadStories({ pageName: pageName }));
   };
   const handleFeelingIt = (item) => {
     const voteData = {

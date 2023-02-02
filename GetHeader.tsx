@@ -26,6 +26,7 @@ const GetHeader = ({ navigation, route, storyId }) => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
+  const [voteArray, setvoteArray] = useState(ccc.item.applauds);
   const {
     applaudState,
     compassionState,
@@ -34,51 +35,69 @@ const GetHeader = ({ navigation, route, storyId }) => {
     NumOfCommentState,
   } = useAppSelector(getstoriesData);
 
-  console.log("::::::::", storyId);
-
   useEffect(() => {
     dispatch(menuState(false));
     dispatch(
-      updateApplaudState(
-        ccc.item.applauds.filter((zzz) => zzz === user.id).length === 0
-      )
+      updateApplaudState(ccc.item.applauds.filter((zzz) => zzz === user.id))
     );
     dispatch(
       updateCompassionState(
-        ccc.item.compassions.filter((zzz) => zzz === user.id).length === 0
+        ccc.item.compassions.filter((zzz) => zzz === user.id).length !== 0
       )
     );
     dispatch(
       updateBrokenState(
-        ccc.item.brokens.filter((zzz) => zzz === user.id).length === 0
+        ccc.item.brokens.filter((zzz) => zzz === user.id).length !== 0
       )
     );
     dispatch(
       updateWowState(
-        ccc.item.justNos.filter((zzz) => zzz === user.id).length === 0
+        ccc.item.justNos.filter((zzz) => zzz === user.id).length !== 0
       )
     );
     dispatch(updateNumOfCommentState(ccc.item.numOfComments));
-  }, []);
+  }, [ccc.item.applauds]);
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
     setSelectedId(item.id);
   };
 
-  const handleApplauded = (item) => {
+  const handleApplauded = () => {
     const voteData = {
       voter: user.id,
-      storyId: item.id,
+      storyId: ccc.item.id,
     };
-    const voteArray = [...item.applauds];
-    applaudState ? voteArray.push(voteData) : voteArray.pop();
-    dispatch(
-      voteApplaud({
-        voteData,
-        voteArray,
-      })
-    ).then(() => dispatch(updateApplaudState(storyId)));
+    const voteArray = [...ccc.item.applauds];
+    console.log("ser 1", voteArray);
+    console.log("applaudState", applaudState);
+
+    const xxx = () => {
+      return voteArray.push(user.id);
+    };
+
+    const yyy = () => {
+      return voteArray.pop();
+    };
+    applaudState.length === 0 ? xxx() : yyy();
+
+    const outputArray = voteArray.reduce((acc, curr) => {
+      if (!acc.find((obj) => obj === curr)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
+
+    console.log("ser 2", outputArray);
+    dispatch(updateApplaudState(outputArray));
+    setTimeout(() => {
+      dispatch(
+        voteApplaud({
+          voteData,
+          outputArray,
+        })
+      );
+    }, 450);
   };
   const handleFeelingIt = (item) => {
     const voteData = {
@@ -86,8 +105,9 @@ const GetHeader = ({ navigation, route, storyId }) => {
       storyId: item.id,
     };
     const voteArray = [...item.compassions];
-    compassionState ? voteArray.push(voteData) : voteArray.pop();
-
+    !compassionState
+      ? voteArray.push(voteData.voter)
+      : voteArray.filter((x) => x.voter !== user.id);
     dispatch(
       voteCompassion({
         voteData,
@@ -101,7 +121,9 @@ const GetHeader = ({ navigation, route, storyId }) => {
       storyId: item.id,
     };
     const voteArray = [...item.brokens];
-    brokenState ? voteArray.push(voteData) : voteArray.pop();
+    !brokenState
+      ? voteArray.push(voteData.voter)
+      : voteArray.filter((x) => x.voter !== user.id);
     dispatch(
       voteBroken({
         voteData,
@@ -115,7 +137,9 @@ const GetHeader = ({ navigation, route, storyId }) => {
       storyId: item.id,
     };
     const voteArray = [...item.justNos];
-    wowState ? voteArray.push(voteData) : voteArray.pop();
+    !wowState
+      ? voteArray.push(voteData.voter)
+      : voteArray.filter((x) => x.voter !== user.id);
     dispatch(
       voteWow({
         voteData,
@@ -157,16 +181,12 @@ const GetHeader = ({ navigation, route, storyId }) => {
       </Text>
       <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
         <TouchableOpacity
-          onPress={() => handleApplauded(ccc.item)}
+          onPress={handleApplauded}
           style={{ flexDirection: "row" }}
         >
           <MaterialCommunityIcons
             name="hand-clap"
-            color={
-              ccc.item.applauds.filter((zzz) => zzz === user.id).length === 0
-                ? "#707070"
-                : "#73481c"
-            }
+            color={applaudState.length === 0 ? "#707070" : "#73481c"}
             size={28}
           />
           {ccc.item.applauds.length !== 0 && (
@@ -181,11 +201,7 @@ const GetHeader = ({ navigation, route, storyId }) => {
         >
           <MaterialCommunityIcons
             name="heart"
-            color={
-              ccc.item.compassions.filter((zzz) => zzz === user.id).length === 0
-                ? "#707070"
-                : "#4c0000"
-            }
+            color={!compassionState ? "#707070" : "#4c0000"}
             size={28}
           />
           {ccc.item.compassions.length !== 0 && (
@@ -200,11 +216,7 @@ const GetHeader = ({ navigation, route, storyId }) => {
         >
           <MaterialCommunityIcons
             name="heart-broken"
-            color={
-              ccc.item.brokens.filter((zzz) => zzz === user.id).length === 0
-                ? "#707070"
-                : "#5900b2"
-            }
+            color={!brokenState ? "#707070" : "#5900b2"}
             size={28}
           />
           {ccc.item.brokens.length !== 0 && (
@@ -219,11 +231,7 @@ const GetHeader = ({ navigation, route, storyId }) => {
         >
           <Feather
             name="trending-down"
-            color={
-              ccc.item.justNos.filter((zzz) => zzz === user.id).length === 0
-                ? "#707070"
-                : "#305a63"
-            }
+            color={!wowState ? "#707070" : "#305a63"}
             size={28}
           />
           {ccc.item.justNos.length !== 0 && (

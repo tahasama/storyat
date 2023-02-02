@@ -237,7 +237,7 @@ export const voteApplaud = createAsyncThunk(
   async (infos: any) => {
     try {
       const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
-        applauds: infos.voteArray,
+        applauds: infos.outputArray,
       });
       return res;
     } catch (e) {
@@ -301,7 +301,7 @@ export interface storiesProps {
     timestamp: string;
     username: string;
     story: any;
-    applaudState: boolean;
+    applaudState: any[];
     applaudArray: any[];
 
     compassionState: boolean;
@@ -330,7 +330,7 @@ export const storiesInitialState = {
   username: "",
   story: {},
 
-  applaudState: false,
+  applaudState: [],
   applaudArray: [],
 
   compassionState: false,
@@ -354,6 +354,7 @@ export const storiesSlice = createSlice({
       state.username = action.payload;
     },
     updateApplaudState: (state, action) => {
+      console.log("redux", action.payload);
       state.applaudState = action.payload;
     },
     updateCompassionState: (state, action) => {

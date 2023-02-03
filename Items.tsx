@@ -115,6 +115,7 @@ const Items = ({ navigation }) => {
 
     console.log("ser 2", voteArray);
     // dispatch(updateApplaudState(outputArray));
+
     dispatch(
       voteApplaud({
         voteData,

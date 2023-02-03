@@ -6,8 +6,10 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
+import { Alert } from "react-native";
 
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 
 const USER_URL: any = process.env.REACT_APP_USER_URL;
 
@@ -19,6 +21,22 @@ interface valueProps {
   username?: string;
   userimage?: string;
 }
+
+export const updateUserImage = createAsyncThunk(
+  "updateUserImage",
+  async (userImageInfos: any) => {
+    console.log("OOOOO", userImageInfos);
+    try {
+      const res = await updateDoc(doc(db, "users", userImageInfos.userId), {
+        avatar: userImageInfos.userImage,
+      });
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
 
 export const registerUser = createAsyncThunk(
   "registerUser",

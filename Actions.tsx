@@ -31,11 +31,12 @@ import MyComments from "./MyComments";
 import MyReactions from "./MyReactions";
 import MyVotedComments from "./MyVotedComments";
 
-const Actions = () => {
+const Actions = ({ navigation, route }) => {
   const { user } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  console.log("66666", route.params);
 
   const Tab = createMaterialTopTabNavigator();
 
@@ -57,7 +58,10 @@ const Actions = () => {
         },
       }}
     >
-      <Tab.Screen name="My stories" component={MyStories} />
+      <Tab.Screen
+        name="My stories"
+        children={() => <MyStories theUser={route.params} />}
+      />
       <Tab.Screen name="My comments" component={MyComments} />
       <Tab.Screen name="My reactions" component={MyReactions} />
       <Tab.Screen name="My voted comments" component={MyVotedComments} />

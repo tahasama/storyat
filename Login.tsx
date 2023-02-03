@@ -76,7 +76,8 @@ const Login = ({ navigation, route }) => {
           Alert.alert("action failed please try again");
         }
       })
-      .catch((err) =>
+      .catch((err) => {
+        console.log("qqqqqqqqqq", err.message);
         Alert.alert(
           "SomeThing's wrong ...",
           err.code === "auth/user-not-found"
@@ -87,10 +88,12 @@ const Login = ({ navigation, route }) => {
             ? "Please provide a valid email"
             : err.code === "auth/internal-error"
             ? "Please provide a valid password"
-            : err.code === "auth/network-request-failed" &&
-              "Failed to login, please try again"
-        )
-      );
+            : err.code === "auth/network-request-failed"
+            ? "Failed to login, please try again"
+            : err.code === "auth/email-already-in-use" &&
+              "This email exist already"
+        );
+      });
   };
 
   const handleLogin = () => {

@@ -21,42 +21,47 @@ import {
 import { getAuthData } from "./state/reducers/authSlice";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import StoryModal from "./StoryModal";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-
 import {
   AllComments,
   getcommentsData,
   loadAllComments,
 } from "./state/reducers/commentsSlice";
 import { menuState } from "./state/reducers/headerSlice";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
+import { useRoute } from "@react-navigation/native";
 import {
   voteApplaud,
   voteBroken,
   voteCompassion,
   voteWow,
 } from "./state/reducers/storiesSlice";
-
-function MyStories({ navigation, route, theUser }: any) {
-  const { result } = useAppSelector(getstoriesData);
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+const Reactions = ({ navigation }) => {
+  const { resultReactions } = useAppSelector(getstoriesData);
+  const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-  const { user } = useAppSelector(getAuthData);
-  console.log("%%%%%", theUser);
+  const pageName = useRoute().name;
 
-  useEffect(() => {
-    dispatch(menuState(false)),
-      setLoading(true),
-      dispatch(myStories({ pageName: user.id })),
-      // dispatch(ReactedToStories({ pageName: user.id })),
-      setLoading(false);
-  }, []);
+  // console.log("pageName", pageName);
+  const [first, setFirst] = useState([]);
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
     //   setSelectedId(item.id);
   };
+  console.log("pppppp");
+  useEffect(() => {
+    setLoading(true),
+      dispatch(ReactedToStories({ userId: user.id, pageName: pageName })),
+      setLoading(false);
+    setTimeout(() => {
+      setFirst(resultReactions);
+    }, 1000);
+  }, [pageName]);
+  console.log("first", first);
   const handleApplauded = (item) => {
     const voteData = {
       voter: user.id,
@@ -71,7 +76,7 @@ function MyStories({ navigation, route, theUser }: any) {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories({ pageName: "" })));
+    ).then(() => dispatch(loadStories({ pageName: pageName })));
   };
   const handleFeelingIt = (item) => {
     const voteData = {
@@ -87,7 +92,7 @@ function MyStories({ navigation, route, theUser }: any) {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories({ pageName: "" })));
+    ).then(() => dispatch(loadStories({ pageName: pageName })));
   };
   const handleHeartBreaking = (item) => {
     const voteData = {
@@ -103,7 +108,7 @@ function MyStories({ navigation, route, theUser }: any) {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories({ pageName: "" })));
+    ).then(() => dispatch(loadStories({ pageName: pageName })));
   };
   const handleCantDealWithThis = (item) => {
     const voteData = {
@@ -119,11 +124,12 @@ function MyStories({ navigation, route, theUser }: any) {
         voteData,
         voteArray,
       })
-    ).then(() => dispatch(loadStories({ pageName: "" })));
+    ).then(() => dispatch(loadStories({ pageName: pageName })));
   };
+
   return (
     <SafeAreaView style={styles.container}>
-      {result.length === undefined ? (
+      {resultReactions.length === undefined ? (
         <View
           style={{
             alignItems: "center",
@@ -136,7 +142,7 @@ function MyStories({ navigation, route, theUser }: any) {
         </View>
       ) : (
         <FlatList
-          data={result}
+          data={first}
           renderItem={({ item }) => (
             <View style={styles.item}>
               <TouchableOpacity
@@ -178,8 +184,12 @@ function MyStories({ navigation, route, theUser }: any) {
                   {item.content}
                 </Text>
               </TouchableOpacity>
+
               <View
-                style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                }}
               >
                 <TouchableOpacity
                   onPress={() => handleApplauded(item)}
@@ -275,6 +285,7 @@ function MyStories({ navigation, route, theUser }: any) {
                   )}
                 </TouchableOpacity>
               </View>
+
               <View
                 style={{
                   borderBottomColor: "grey",
@@ -290,14 +301,11 @@ function MyStories({ navigation, route, theUser }: any) {
           // extraData={selectedId}
         />
       )}
-
-      <View style={{ flex: 1 }}>
-        <StoryModal />
-      </View>
     </SafeAreaView>
   );
-}
-export default MyStories;
+};
+
+export default Reactions;
 
 const styles = StyleSheet.create({
   container: {

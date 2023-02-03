@@ -6,7 +6,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { Alert } from "react-native";
 
 import { auth, db } from "../../firebase";
@@ -37,6 +37,20 @@ export const updateUserImage = createAsyncThunk(
     }
   }
 );
+
+export const getUser = createAsyncThunk("getUser", async (userId: any) => {
+  console.log("user.id in redux", userId);
+  let result = [];
+  try {
+    const res: any = await getDoc(doc(db, "users", userId));
+    res.forEach((doc: any) => result.push({ ...doc.data(), id: userId }));
+    console.log("user.id 2", res);
+    return res;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    Alert.alert("action failed please try again");
+  }
+});
 
 export const registerUser = createAsyncThunk(
   "registerUser",
@@ -90,6 +104,7 @@ export interface userProps {
     // confirmPassword: string;
     err: { code: string; message: string };
     user: any;
+    image: string;
   };
 }
 
@@ -99,6 +114,7 @@ export const userInitialState = {
   password: "",
   err: { code: "", message: "" },
   user: "",
+  image: "",
 };
 
 export const authSlice = createSlice({
@@ -115,6 +131,9 @@ export const authSlice = createSlice({
     resetUser: (state, action) => {
       state.user = "";
     },
+    updateUserImageState: (state, action) => {
+      state.image = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(registerUser.fulfilled, (state, action: any) => {
@@ -129,9 +148,13 @@ export const authSlice = createSlice({
       state.err.code = action.payload.code;
       state.err.message = action.payload.message;
     });
+    builder.addCase(getUser.fulfilled, (state, action: any) => {
+      state.user = action.payload;
+    });
   },
 });
 
 export const getAuthData = (state: userProps) => state.authUser;
-export const { updateError, saveUser, resetUser } = authSlice.actions;
+export const { updateError, saveUser, resetUser, updateUserImageState } =
+  authSlice.actions;
 export default authSlice.reducer;

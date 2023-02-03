@@ -8,9 +8,14 @@ import {
   Button,
   Pressable,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, updateUserImage } from "./state/reducers/authSlice";
+import {
+  getAuthData,
+  getUser,
+  updateUserImage,
+  updateUserImageState,
+} from "./state/reducers/authSlice";
 import { getstoriesData } from "./state/reducers/storiesSlice";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
@@ -20,21 +25,26 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import * as ImagePicker from "expo-image-picker";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./firebase";
+import { useNavigation } from "@react-navigation/native";
 
 const Profile = () => {
   const { user } = useAppSelector(getAuthData);
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const [image, setImage] = useState(user.avatar);
+  // const [image, setImage] = useState(user.avatar);
   const { result, resultReactions } = useAppSelector(getstoriesData);
   const { resultComments } = useAppSelector(getcommentsData);
+  const { image } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
+  const navigation = useNavigation<any>();
+  console.log("user in profile.....", image);
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 1,
     });
+    dispatch(updateUserImageState(result.assets[0].uri));
 
     if (!result.canceled) {
       const response = await fetch(result.assets[0].uri);
@@ -46,9 +56,12 @@ const Profile = () => {
         .then(async () => {
           const res = await getDownloadURL(storageRef);
           console.log("res", res);
-          dispatch(updateUserImage({ userImage: res, userId: user.id }));
-          setImage(res);
+          setTimeout(() => {
+            dispatch(updateUserImage({ userImage: res, userId: user.id }));
+          }, 2000);
+          // dispatch(updateUserImage({ userImage: res, userId: user.id }));
         })
+
         .catch((error) => {
           console.error(error);
         });
@@ -57,13 +70,17 @@ const Profile = () => {
 
   // const joined1 = new DateFormat
 
+  const handleOnpress = () => {
+    navigation.navigate("actions", user.id);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flexDirection: "row" }}>
         <View>
           <Image
             source={{
-              uri: image,
+              uri: !image ? user.avatar : image,
             }}
             style={{
               width: 150,
@@ -74,7 +91,7 @@ const Profile = () => {
           />
         </View>
         <View style={{ justifyContent: "space-around" }}>
-          <Text style={{ color: "white" }}>Uesrmame : {user.username}</Text>
+          <Text style={{ color: "white" }}>Username : {user.username}</Text>
           <Text style={{ color: "white" }}>
             joined on : {new Date(user.timestamp).toDateString()}
           </Text>
@@ -193,6 +210,9 @@ const Profile = () => {
           <Text style={{ color: "white" }}>{resultComments.length}</Text>
         </View>
       </View>
+      <Pressable onPress={handleOnpress}>
+        <Text style={{ color: "white" }}>See Collections</Text>
+      </Pressable>
     </SafeAreaView>
   );
 };

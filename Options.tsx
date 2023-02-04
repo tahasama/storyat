@@ -96,7 +96,7 @@ const Options = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => (
-                  navigation.navigate("actions", { userId: user.id }),
+                  navigation.navigate("actions", { userId: user }),
                   setModalVisible(false)
                 )}
                 style={{

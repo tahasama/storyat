@@ -43,11 +43,12 @@ function MyStories({ navigation, route, theUser }: any) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const { user } = useAppSelector(getAuthData);
+  // console.log("theUser10", theUser);
 
   useEffect(() => {
     dispatch(menuState(false)),
       setLoading(true),
-      dispatch(myStories({ pageName: user.id })),
+      dispatch(myStories({ pageName: theUser })),
       // dispatch(ReactedToStories({ pageName: user.id })),
       setLoading(false);
   }, []);

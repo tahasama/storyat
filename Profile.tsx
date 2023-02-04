@@ -46,7 +46,7 @@ const Profile = ({ route }: any) => {
   // const [userId, setuserId] = useState<any>();
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
-  console.log("resultReactions", resultReactions);
+  // console.log("resultReactions", resultReactions);
   // console.log("userId", route.params.theUser, "user", user.id);
   // const userId =
   //   route.params.theUser === undefined ? user.id : route.params.theUser.id;
@@ -86,10 +86,10 @@ const Profile = ({ route }: any) => {
 
   // const joined1 = new DateFormat
 
-  console.log("user infos", userId.id);
+  // console.log("user infos", userId.id);
 
   const handleOnpress = () => {
-    navigation.navigate("actions", { userId: route.params.theUser });
+    navigation.navigate("actions", { userId: userId });
   };
 
   useEffect(() => {

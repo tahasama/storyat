@@ -45,6 +45,7 @@ function MyReactions({ navigation, theUser }: any) {
   const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
+  // console.log("787878", theUser);
 
   useEffect(() => {
     dispatch(menuState(false));

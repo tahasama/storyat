@@ -45,13 +45,14 @@ const Reactions = ({ navigation, theUser }: any) => {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const pageName = useRoute().name;
-  console.log("theUser2", theUser);
+  // console.log("theUser2", theUser);
+  // console.log("resultReactions", resultReactions.length);
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
   };
   useEffect(() => {
     setLoading(true),
-      dispatch(ReactedToStories({ userId: theUser.userId })),
+      dispatch(ReactedToStories({ userId: theUser })),
       setLoading(false);
   }, []);
 
@@ -141,19 +142,13 @@ const Reactions = ({ navigation, theUser }: any) => {
         <FlatList
           data={
             pageName === "applauds"
-              ? resultReactions.filter((x) =>
-                  x.applauds.includes(theUser.userId)
-                )
+              ? resultReactions.filter((x) => x.applauds.includes(theUser))
               : pageName === "compassions"
-              ? resultReactions.filter((x) =>
-                  x.compassions.includes(theUser.userId)
-                )
+              ? resultReactions.filter((x) => x.compassions.includes(theUser))
               : pageName === "brokens"
-              ? resultReactions.filter((x) =>
-                  x.brokens.includes(theUser.userId)
-                )
-              : pageName === "jusNos" &&
-                resultReactions.filter((x) => x.jusNos.includes(theUser.userId))
+              ? resultReactions.filter((x) => x.brokens.includes(theUser))
+              : pageName === "justNos" &&
+                resultReactions.filter((x) => x.justNos.includes(theUser))
           }
           renderItem={({ item }) => (
             <View style={styles.item}>

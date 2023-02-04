@@ -91,8 +91,16 @@ const Index = () => {
             <Stack.Screen name="reply" component={Reply} />
             <Stack.Screen name="login" component={Login} />
             <Stack.Screen name="logout" component={Logout} />
-            <Stack.Screen name="profile" component={Profile} />
-            <Stack.Screen name="actions" component={Actions} />
+            <Stack.Screen
+              name="profile"
+              component={Profile}
+              options={{ animation: "slide_from_bottom" }}
+            />
+            <Stack.Screen
+              name="actions"
+              component={Actions}
+              options={{ animation: "slide_from_right" }}
+            />
           </Stack.Group>
         </Stack.Navigator>
       </NavigationContainer>

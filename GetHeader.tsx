@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData } from "./state/reducers/authSlice";
+import { getAuthData, getUser } from "./state/reducers/authSlice";
 import {} from "./state/reducers/repliesSlice";
 import {
   updateApplaudState,
@@ -147,29 +147,12 @@ const GetHeader = ({ navigation, route, storyId }) => {
 
   return (
     <View style={styles.subContainer}>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          source={{
-            uri: ccc.item.avatar,
-          }}
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 50,
-            marginHorizontal: 10,
-            marginVertical: 18,
-          }}
-        />
-        <Text style={{ fontSize: 16, color: "white" }}>
-          {ccc.item.username}
-        </Text>
-      </View>
+      <TouchableOpacity
+        onPress={() => (
+          dispatch(getUser(ccc.item.writerId)),
+          navigation.navigate("profile", { notActualUser: true })
+        )}
+      />
       <Text style={styles.title}>{ccc.item.title}</Text>
       <Text style={styles.content}>
         {"\t"}
@@ -261,7 +244,6 @@ const GetHeader = ({ navigation, route, storyId }) => {
           borderBottomWidth: StyleSheet.hairlineWidth,
         }}
       />
-
       <Text
         style={{
           color: "#7f6c33",

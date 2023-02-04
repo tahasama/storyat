@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData } from "./state/reducers/authSlice";
+import { getAuthData, getUser } from "./state/reducers/authSlice";
 
 import { storyRoute } from "./state/reducers/headerSlice";
 import {
@@ -200,7 +200,14 @@ const Item = ({ navigation, route }) => {
         data={result}
         renderItem={({ item }) => (
           <View style={styles.commentContainer}>
-            <View
+            <TouchableOpacity
+              onPress={
+                () => (
+                  dispatch(getUser(item.commenter)),
+                  navigation.navigate("profile", { notActualUser: true })
+                )
+                // console.log("commm", item.commenter)
+              }
               style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",
@@ -222,7 +229,7 @@ const Item = ({ navigation, route }) => {
               <Text style={{ fontSize: 16, color: "white", marginLeft: 8 }}>
                 {item.username}
               </Text>
-            </View>
+            </TouchableOpacity>
             <Text style={styles.comment}>{item.comment}</Text>
             <View style={styles.commentActions}>
               <TouchableOpacity

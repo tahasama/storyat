@@ -53,6 +53,7 @@ export const myStories = createAsyncThunk(
 export const ReactedToStories = createAsyncThunk(
   "ReactedToStories",
   async ({ userId }: any) => {
+    console.log("userId redux", userId);
     const results: any = [];
 
     const yo = collection(db, "stories");
@@ -136,6 +137,8 @@ export const ReactedToStories = createAsyncThunk(
     //   };
     // });
     const result = await Promise.all(results);
+    // console.log("result", result);
+
     return result;
   }
 );

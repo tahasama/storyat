@@ -12,7 +12,7 @@ import {
 } from "react-native";
 
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData } from "./state/reducers/authSlice";
+import { getAuthData, getUser } from "./state/reducers/authSlice";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -205,33 +205,37 @@ const Items = ({ navigation }) => {
           renderItem={({ item }) => (
             <View style={styles.item}>
               <TouchableOpacity
+                onPress={() => (
+                  dispatch(getUser(item.writerId)),
+                  navigation.navigate("profile", { notActualUser: true })
+                )}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                }}
+              >
+                <Image
+                  source={{
+                    uri: item.avatar,
+                  }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    borderRadius: 50,
+                    marginHorizontal: 10,
+                    marginVertical: 18,
+                  }}
+                />
+                <Text style={{ fontSize: 16, color: "white" }}>
+                  {item.username}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={() => {
                   handleOnpress(item);
                 }}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                  }}
-                >
-                  <Image
-                    source={{
-                      uri: item.avatar,
-                    }}
-                    style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 50,
-                      marginHorizontal: 10,
-                      marginVertical: 18,
-                    }}
-                  />
-                  <Text style={{ fontSize: 16, color: "white" }}>
-                    {item.username}
-                  </Text>
-                </View>
                 <Text style={styles.title}>{item.title}</Text>
                 <Text
                   style={[

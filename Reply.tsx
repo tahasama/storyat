@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData } from "./state/reducers/authSlice";
+import { getAuthData, getUser } from "./state/reducers/authSlice";
 import { getHeaderData, commentRoute } from "./state/reducers/headerSlice";
 import {
   getrepliesData,
@@ -29,7 +29,7 @@ import {
   substractReplyNumberToComment,
 } from "./state/reducers/commentsSlice";
 
-const Reply = ({ route }) => {
+const Reply = ({ navigation, route }) => {
   const ccc = route.params;
   const { user } = useAppSelector(getAuthData);
 
@@ -187,7 +187,14 @@ const Reply = ({ route }) => {
   const getHeader = () => {
     return (
       <View style={styles.subContainer}>
-        <View
+        <TouchableOpacity
+          onPress={
+            () => (
+              dispatch(getUser(ccc.item.commenter)),
+              navigation.navigate("profile", { notActualUser: true })
+            )
+            // console.log("commm", item.commenter)
+          }
           style={{
             flexDirection: "row",
             justifyContent: "flex-start",
@@ -209,7 +216,7 @@ const Reply = ({ route }) => {
           <Text style={{ fontSize: 16, color: "white" }}>
             {ccc.item.username}
           </Text>
-        </View>
+        </TouchableOpacity>
         <Text style={styles.content}>
           {"\t"}
 
@@ -242,7 +249,14 @@ const Reply = ({ route }) => {
         data={result}
         renderItem={({ item }) => (
           <View style={styles.replyContainer}>
-            <View
+            <TouchableOpacity
+              onPress={
+                () => (
+                  dispatch(getUser(item.replier)),
+                  navigation.navigate("profile", { notActualUser: true })
+                )
+                // console.log("commm", item.commenter)
+              }
               style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",
@@ -264,7 +278,7 @@ const Reply = ({ route }) => {
               <Text style={{ fontSize: 16, color: "white", marginLeft: 8 }}>
                 {item.username}
               </Text>
-            </View>
+            </TouchableOpacity>
             <Text style={styles.reply}>{item.reply}</Text>
             <View style={styles.replyActions}>
               <TouchableOpacity

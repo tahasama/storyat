@@ -78,7 +78,8 @@ const Options = () => {
                   flexDirection: "row",
                 }}
                 onPress={() => (
-                  navigation.navigate("profile"), setModalVisible(false)
+                  navigation.navigate("profile", { theUser: user.id }),
+                  setModalVisible(false)
                 )}
               >
                 <FontAwesome name="user-circle-o" size={33} color="#646464" />

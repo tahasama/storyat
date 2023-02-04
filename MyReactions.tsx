@@ -40,7 +40,7 @@ import {
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Reactions from "./Reactions";
 
-function MyReactions({ navigation }) {
+function MyReactions({ navigation, theUser }: any) {
   const { resultReactions } = useAppSelector(getstoriesData);
   const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
@@ -64,7 +64,7 @@ function MyReactions({ navigation }) {
     >
       <Tab.Screen
         name="applauds"
-        component={Reactions}
+        children={() => <Reactions theUser={theUser} />}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
@@ -78,7 +78,7 @@ function MyReactions({ navigation }) {
       />
       <Tab.Screen
         name="compassions"
-        component={Reactions}
+        children={() => <Reactions theUser={theUser} />}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
@@ -88,7 +88,7 @@ function MyReactions({ navigation }) {
       />
       <Tab.Screen
         name="brokens"
-        component={Reactions}
+        children={() => <Reactions theUser={theUser} />}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
@@ -102,7 +102,7 @@ function MyReactions({ navigation }) {
       />
       <Tab.Screen
         name="justNos"
-        component={Reactions}
+        children={() => <Reactions theUser={theUser} />}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (

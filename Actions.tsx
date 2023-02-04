@@ -36,6 +36,7 @@ const Actions = ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  console.log("theUser", route.params);
 
   const Tab = createMaterialTopTabNavigator();
 
@@ -62,7 +63,10 @@ const Actions = ({ navigation, route }) => {
         children={() => <MyStories theUser={route.params} />}
       />
       <Tab.Screen name="My comments" component={MyComments} />
-      <Tab.Screen name="My reactions" component={MyReactions} />
+      <Tab.Screen
+        name="My reactions"
+        children={() => <MyReactions theUser={route.params} />}
+      />
       <Tab.Screen name="My voted comments" component={MyVotedComments} />
     </Tab.Navigator>
   );

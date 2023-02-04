@@ -38,10 +38,13 @@ export const updateUserImage = createAsyncThunk(
 );
 
 export const getUser = createAsyncThunk("getUser", async (userId: any) => {
-  let result = [];
   try {
-    const res: any = await getDoc(doc(db, "users", userId));
-    res.forEach((doc: any) => result.push({ ...doc.data(), id: userId }));
+    console.log("ddddooo", userId);
+
+    const res = await getDoc(doc(db, "users", userId));
+    return { ...res.data(), id: res.id };
+
+    console.log("dddd", res);
     return res;
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -101,6 +104,7 @@ export interface userProps {
     // confirmPassword: string;
     err: { code: string; message: string };
     user: any;
+    newuser: any;
     image: string;
   };
 }
@@ -111,6 +115,7 @@ export const userInitialState = {
   password: "",
   err: { code: "", message: "" },
   user: "",
+  newuser: "",
   image: "",
 };
 
@@ -146,7 +151,7 @@ export const authSlice = createSlice({
       state.err.message = action.payload.message;
     });
     builder.addCase(getUser.fulfilled, (state, action: any) => {
-      state.user = action.payload;
+      state.newuser = action.payload;
     });
   },
 });

@@ -38,20 +38,20 @@ import {
   voteWow,
 } from "./state/reducers/storiesSlice";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-const Reactions = ({ navigation }) => {
+const Reactions = ({ navigation, theUser }: any) => {
   const { resultReactions, myReactedToStories } =
     useAppSelector(getstoriesData);
   const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const pageName = useRoute().name;
-
+  console.log("theUser2", theUser);
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
   };
   useEffect(() => {
     setLoading(true),
-      dispatch(ReactedToStories({ userId: user.id })),
+      dispatch(ReactedToStories({ userId: theUser.userId })),
       setLoading(false);
   }, []);
 
@@ -141,13 +141,19 @@ const Reactions = ({ navigation }) => {
         <FlatList
           data={
             pageName === "applauds"
-              ? resultReactions.filter((x) => x.applauds.includes(user.id))
+              ? resultReactions.filter((x) =>
+                  x.applauds.includes(theUser.userId)
+                )
               : pageName === "compassions"
-              ? resultReactions.filter((x) => x.compassions.includes(user.id))
+              ? resultReactions.filter((x) =>
+                  x.compassions.includes(theUser.userId)
+                )
               : pageName === "brokens"
-              ? resultReactions.filter((x) => x.brokens.includes(user.id))
+              ? resultReactions.filter((x) =>
+                  x.brokens.includes(theUser.userId)
+                )
               : pageName === "jusNos" &&
-                resultReactions.filter((x) => x.jusNos.includes(user.id))
+                resultReactions.filter((x) => x.jusNos.includes(theUser.userId))
           }
           renderItem={({ item }) => (
             <View style={styles.item}>

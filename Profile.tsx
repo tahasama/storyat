@@ -48,7 +48,6 @@ const Profile = ({ route }: any) => {
   // const [userId, setuserId] = useState<any>();
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
-  // console.log("resultReactions", resultReactions);
   // console.log("userId", route.params.theUser, "user", user.id);
   // const userId =
   //   route.params.theUser === undefined ? user.id : route.params.theUser.id;
@@ -110,6 +109,7 @@ const Profile = ({ route }: any) => {
   }, [userId.id]);
 
   console.log("username", username);
+  console.log("userId", userId.id, "user.id", user.id);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -143,40 +143,42 @@ const Profile = ({ route }: any) => {
         </View>
       </View>
 
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginHorizontal: 18,
-        }}
-      >
-        <Pressable
-          onPress={() => pickImageAsync()}
+      {userId.id === user.id && (
+        <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#7f724c",
-            paddingRight: 22,
-            paddingLeft: 0,
-            paddingVertical: 5,
-            borderRadius: 5,
+            justifyContent: "space-between",
+            marginHorizontal: 18,
           }}
         >
-          <Feather
-            name="camera"
-            size={20}
-            color={"white"}
-            style={{ marginHorizontal: 10 }}
-          />
-          <Text style={{ color: "white" }}>Update image</Text>
-        </Pressable>
+          <Pressable
+            onPress={() => pickImageAsync()}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#7f724c",
+              paddingRight: 22,
+              paddingLeft: 0,
+              paddingVertical: 5,
+              borderRadius: 5,
+            }}
+          >
+            <Feather
+              name="camera"
+              size={20}
+              color={"white"}
+              style={{ marginHorizontal: 10 }}
+            />
+            <Text style={{ color: "white" }}>Update image</Text>
+          </Pressable>
 
-        <View style={{ flex: 1 }}>
-          <UsernameModal />
+          <View style={{ flex: 1 }}>
+            <UsernameModal />
+          </View>
         </View>
-      </View>
+      )}
       <Text
         style={{
           color: "grey",

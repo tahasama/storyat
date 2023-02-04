@@ -52,6 +52,22 @@ export const getUser = createAsyncThunk("getUser", async (userId: any) => {
   }
 });
 
+export const updateUsername = createAsyncThunk(
+  "updateUsername",
+  async ({ userId, username }: any) => {
+    try {
+      const res = await updateDoc(doc(db, "users", userId), {
+        username: username,
+      });
+      console.log("dddd", res);
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
 export const registerUser = createAsyncThunk(
   "registerUser",
   async ({ email, password }: valueProps) => {
@@ -106,6 +122,7 @@ export interface userProps {
     user: any;
     newuser: any;
     image: string;
+    username: string;
   };
 }
 
@@ -117,6 +134,7 @@ export const userInitialState = {
   user: "",
   newuser: "",
   image: "",
+  username: "",
 };
 
 export const authSlice = createSlice({
@@ -136,6 +154,9 @@ export const authSlice = createSlice({
     updateUserImageState: (state, action) => {
       state.image = action.payload;
     },
+    updateUsernameState: (state, action) => {
+      state.username = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(registerUser.fulfilled, (state, action: any) => {
@@ -153,10 +174,18 @@ export const authSlice = createSlice({
     builder.addCase(getUser.fulfilled, (state, action: any) => {
       state.newuser = action.payload;
     });
+    // builder.addCase(updateUsername.fulfilled, (state, action: any) => {
+    //   state.username = action.payload;
+    // });
   },
 });
 
 export const getAuthData = (state: userProps) => state.authUser;
-export const { updateError, saveUser, resetUser, updateUserImageState } =
-  authSlice.actions;
+export const {
+  updateError,
+  saveUser,
+  resetUser,
+  updateUserImageState,
+  updateUsernameState,
+} = authSlice.actions;
 export default authSlice.reducer;

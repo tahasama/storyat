@@ -34,6 +34,8 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./firebase";
 import { useNavigation } from "@react-navigation/native";
 import { menuState } from "./state/reducers/headerSlice";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import UsernameModal from "./UsernameModal";
 
 const Profile = ({ route }: any) => {
   const windowWidth = Dimensions.get("window").width;
@@ -42,7 +44,7 @@ const Profile = ({ route }: any) => {
   const { result, resultReactions, myReactedToStories } =
     useAppSelector(getstoriesData);
   const { resultComments } = useAppSelector(getcommentsData);
-  const { image, user, newuser } = useAppSelector(getAuthData);
+  const { image, user, newuser, username } = useAppSelector(getAuthData);
   // const [userId, setuserId] = useState<any>();
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
@@ -92,6 +94,10 @@ const Profile = ({ route }: any) => {
     navigation.navigate("actions", { userId: userId });
   };
 
+  // const HandleUsername = () => {
+  //   dispatch(updateUsername(userId.id));
+  // };
+
   useEffect(() => {
     dispatch(menuState(false)),
       // setLoading(true),
@@ -102,6 +108,8 @@ const Profile = ({ route }: any) => {
     // dispatch(ReactedToStories({ pageName: user.id })),
     // setLoading(false);
   }, [userId.id]);
+
+  console.log("username", username);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -120,7 +128,9 @@ const Profile = ({ route }: any) => {
           />
         </View>
         <View style={{ justifyContent: "space-around" }}>
-          <Text style={{ color: "white" }}>Username : {userId.username}</Text>
+          <Text style={{ color: "white" }}>
+            Username : {username !== "" ? username : userId.username}
+          </Text>
           <Text style={{ color: "white" }}>
             joined on : {new Date(userId.timestamp).toDateString()}
           </Text>
@@ -137,12 +147,22 @@ const Profile = ({ route }: any) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-around",
+          justifyContent: "space-between",
+          marginHorizontal: 18,
         }}
       >
         <Pressable
           onPress={() => pickImageAsync()}
-          style={{ flexDirection: "row", alignItems: "center" }}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#7f724c",
+            paddingRight: 22,
+            paddingLeft: 0,
+            paddingVertical: 5,
+            borderRadius: 5,
+          }}
         >
           <Feather
             name="camera"
@@ -152,17 +172,10 @@ const Profile = ({ route }: any) => {
           />
           <Text style={{ color: "white" }}>Update image</Text>
         </Pressable>
-        <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center" }}
-        >
-          <MaterialCommunityIcons
-            name="pencil-outline"
-            color={"white"}
-            size={20}
-            style={{ color: "white", marginHorizontal: 10 }}
-          />
-          <Text style={{ color: "white" }}>Update Username</Text>
-        </TouchableOpacity>
+
+        <View style={{ flex: 1 }}>
+          <UsernameModal />
+        </View>
       </View>
       <Text
         style={{
@@ -179,14 +192,14 @@ const Profile = ({ route }: any) => {
         <View
           style={{
             flexDirection: "row",
-            margin: 25,
+            margin: 20,
             alignItems: "center",
           }}
         >
           <MaterialCommunityIcons
             name="hand-clap"
             color={"#73481c"}
-            size={36}
+            size={34}
           />
           <Text style={styles.text}> Applauded / Respected Stories : </Text>
 
@@ -198,9 +211,9 @@ const Profile = ({ route }: any) => {
           </Text>
         </View>
         <View
-          style={{ flexDirection: "row", margin: 25, alignItems: "center" }}
+          style={{ flexDirection: "row", margin: 20, alignItems: "center" }}
         >
-          <MaterialCommunityIcons name="heart" color={"#4c0000"} size={36} />
+          <MaterialCommunityIcons name="heart" color={"#4c0000"} size={34} />
           <Text style={styles.text}> Liked / Loved Stories : </Text>
 
           <Text style={{ color: "white" }}>
@@ -211,12 +224,12 @@ const Profile = ({ route }: any) => {
           </Text>
         </View>
         <View
-          style={{ flexDirection: "row", margin: 25, alignItems: "center" }}
+          style={{ flexDirection: "row", margin: 20, alignItems: "center" }}
         >
           <MaterialCommunityIcons
             name="heart-broken"
             color={"#5900b2"}
-            size={36}
+            size={34}
           />
           <Text style={styles.text}> Heart breaking Stories : </Text>
           <Text style={{ color: "white" }}>
@@ -231,9 +244,9 @@ const Profile = ({ route }: any) => {
           ></Pressable>
         </View>
         <View
-          style={{ flexDirection: "row", margin: 25, alignItems: "center" }}
+          style={{ flexDirection: "row", margin: 20, alignItems: "center" }}
         >
-          <Feather name="trending-down" color={"#305a63"} size={36} />
+          <Feather name="trending-down" color={"#305a63"} size={34} />
           <Text style={styles.text}> Cant't deal with / Wow Stories : </Text>
 
           <Text style={{ color: "white" }}>
@@ -244,15 +257,25 @@ const Profile = ({ route }: any) => {
           </Text>
         </View>
         <View
-          style={{ flexDirection: "row", margin: 25, alignItems: "center" }}
+          style={{ flexDirection: "row", margin: 20, alignItems: "center" }}
         >
-          <FontAwesome name="comments" color={"#707070"} size={36} />
+          <FontAwesome name="comments" color={"#707070"} size={34} />
           <Text style={styles.text}> Comments of Stories : </Text>
           <Text style={{ color: "white" }}>{resultComments.length}</Text>
         </View>
       </View>
-      <Pressable onPress={handleOnpress}>
-        <Text style={{ color: "white" }}>See Collections</Text>
+      <Pressable onPress={handleOnpress} style={styles.buttonBottom}>
+        <Text
+          style={{
+            color: "white",
+            marginHorizontal: 10,
+            fontSize: 14,
+            fontFamily: "monospace",
+          }}
+        >
+          See Collections
+        </Text>
+        <AntDesign name="arrowright" color="grey" size={20} />
       </Pressable>
     </SafeAreaView>
   );
@@ -314,5 +337,17 @@ const styles = StyleSheet.create({
     fontWeight: "300",
     letterSpacing: 0.25,
     color: "white",
+    marginHorizontal: 5,
+  },
+  buttonBottom: {
+    flexDirection: "row",
+    backgroundColor: "#38314e",
+    bottom: 0,
+    position: "absolute",
+    padding: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    elevation: 20,
   },
 });

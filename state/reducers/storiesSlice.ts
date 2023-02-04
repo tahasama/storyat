@@ -3,11 +3,13 @@ import {
   addDoc,
   collection,
   doc,
+  DocumentData,
   getDoc,
   getDocs,
   limit,
   orderBy,
   query,
+  QuerySnapshot,
   startAfter,
   updateDoc,
   where,
@@ -50,28 +52,90 @@ export const myStories = createAsyncThunk(
 
 export const ReactedToStories = createAsyncThunk(
   "ReactedToStories",
-  async ({ userId, pageName }: any) => {
-    console.log("pageName....", pageName);
-    const yo = collection(db, "stories");
-    const g = query(yo, where(pageName, "array-contains", userId));
+  async ({ userId }: any) => {
+    const results: any = [];
 
-    const querySnapshot = await getDocs(g);
-    const promises = querySnapshot.docs.map(async (docs: any) => {
+    const yo = collection(db, "stories");
+    const g = query(yo, where("brokens", "array-contains", userId));
+    const h = query(yo, where("compassions", "array-contains", userId));
+    const e = query(yo, where("applauds", "array-contains", userId));
+    const f = query(yo, where("jusNos", "array-contains", userId));
+
+    const querySnapshotg = await getDocs(g);
+    querySnapshotg.docs.map(async (docs: any) => {
       const username = await (
         await getDoc(doc(db, "users", docs.data().writerId))
       ).data().username;
       const avatar = await (
         await getDoc(doc(db, "users", docs.data().writerId))
       ).data().avatar;
-      return {
+      results.push({
         ...docs.data(),
         id: docs.id,
         username: username,
         avatar: avatar,
-      };
+      });
     });
-    const result = await Promise.all(promises);
-    console.log("ddddddd", result);
+    const querySnapshoth = await getDocs(h);
+    querySnapshoth.docs.map(async (docs: any) => {
+      const username = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().username;
+      const avatar = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().avatar;
+      results.push({
+        ...docs.data(),
+        id: docs.id,
+        username: username,
+        avatar: avatar,
+      });
+    });
+    const querySnapshote = await getDocs(e);
+    querySnapshote.docs.map(async (docs: any) => {
+      const username = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().username;
+      const avatar = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().avatar;
+      results.push({
+        ...docs.data(),
+        id: docs.id,
+        username: username,
+        avatar: avatar,
+      });
+    });
+    const querySnapshotf = await getDocs(f);
+    querySnapshotf.docs.map(async (docs: any) => {
+      const username = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().username;
+      const avatar = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().avatar;
+      results.push({
+        ...docs.data(),
+        id: docs.id,
+        username: username,
+        avatar: avatar,
+      });
+    });
+    // const promises = results.docs.map(async (docs: any) => {
+    //   const username = await (
+    //     await getDoc(doc(db, "users", docs.data().writerId))
+    //   ).data().username;
+    //   const avatar = await (
+    //     await getDoc(doc(db, "users", docs.data().writerId))
+    //   ).data().avatar;
+    //   return {
+    //     ...docs.data(),
+    //     id: docs.id,
+    //     username: username,
+    //     avatar: avatar,
+    //   };
+    // });
+    const result = await Promise.all(results);
     return result;
   }
 );
@@ -109,65 +173,6 @@ export const loadStories = createAsyncThunk(
     return resultInitial;
   }
 );
-
-// export const loadMoreStories = createAsyncThunk(
-//   "loadMoreStories",
-//   async ({ pageName, resultInitial }: any) => {
-//     try {
-//       const yo = collection(db, "stories");
-//       const g =
-//         pageName === "items"
-//           ? query(
-//               yo,
-//               orderBy("timestamp", "desc"),
-//               limit(2),
-//               startAfter(resultInitial[resultInitial.length - 1].timestamp)
-//             )
-//           : query(
-//               yo,
-//               where(pageName, "!=", []),
-//               orderBy(pageName, "desc"),
-//               limit(2),
-//               startAfter(
-//                 pageName === "applauds"
-//                   ? resultInitial[resultInitial.length - 1].applauds
-//                   : pageName === "timestamp"
-//                   ? resultInitial[resultInitial.length - 1].timestamp
-//                   : pageName === "compassions"
-//                   ? resultInitial[resultInitial.length - 1].compassions
-//                   : pageName === "brokens"
-//                   ? resultInitial[resultInitial.length - 1].brokens
-//                   : pageName === "justNos" &&
-//                     resultInitial[resultInitial.length - 1].justNos
-//               )
-//             );
-
-//       const querySnapshot = await getDocs(g);
-//       const promises = querySnapshot.docs.map(async (docs: any) => {
-//         const username = await (
-//           await getDoc(doc(db, "users", docs.data().writerId))
-//         ).data().username;
-//         const avatar = await (
-//           await getDoc(doc(db, "users", docs.data().writerId))
-//         ).data().avatar;
-//         return {
-//           ...docs.data(),
-//           id: docs.id,
-//           username: username,
-//           avatar: avatar,
-//         };
-//       });
-
-//       const result = await Promise.all(promises);
-//       const resultw = [...resultInitial];
-//       resultw.push(...result);
-
-//       return resultw;
-//     } catch (error) {
-//       console.log("MMMMMMMMMM", error);
-//     }
-//   }
-// );
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
   try {
@@ -296,6 +301,8 @@ export interface storiesProps {
     result: any[];
     resultInitial: any[];
     resultReactions: any[];
+    myReactedToStories: any[];
+
     // resultLoadMore: any[];
     title: string;
     content: string;
@@ -324,6 +331,7 @@ export const storiesInitialState = {
   result: [],
   resultInitial: [],
   resultReactions: [],
+  myReactedToStories: [],
   // resultLoadMore: [],
   title: "",
   content: "",
@@ -356,7 +364,6 @@ export const storiesSlice = createSlice({
       state.username = action.payload;
     },
     updateApplaudState: (state, action) => {
-      console.log("redux", action.payload);
       state.applaudState = action.payload;
     },
     updateCompassionState: (state, action) => {
@@ -376,6 +383,9 @@ export const storiesSlice = createSlice({
     // },
     updateInitilalResultState: (state, action) => {
       state.resultInitial = action.payload;
+    },
+    reactedToStoriesState: (state, action) => {
+      state.myReactedToStories = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -407,5 +417,6 @@ export const {
   updateNumOfCommentState,
   // updateResultState,
   updateInitilalResultState,
+  reactedToStoriesState,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

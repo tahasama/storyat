@@ -40,8 +40,6 @@ export const AllComments = createAsyncThunk(
       .flat()
       .map((y) => y.storyId);
 
-    console.log("votedComments", votedComments);
-
     const promisess = votedComments.map(async (ccc) => {
       const res = await getDoc(doc(db, "stories", ccc));
       const avatar = await (

@@ -32,11 +32,10 @@ import MyReactions from "./MyReactions";
 import MyVotedComments from "./MyVotedComments";
 
 const Actions = ({ navigation, route }) => {
-  const { user } = useAppSelector(getAuthData);
+  // const { user } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
-  console.log("66666", route.params);
 
   const Tab = createMaterialTopTabNavigator();
 

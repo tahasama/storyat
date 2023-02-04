@@ -43,7 +43,6 @@ function MyStories({ navigation, route, theUser }: any) {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const { user } = useAppSelector(getAuthData);
-  console.log("%%%%%", theUser);
 
   useEffect(() => {
     dispatch(menuState(false)),

@@ -39,29 +39,26 @@ import {
 } from "./state/reducers/storiesSlice";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 const Reactions = ({ navigation }) => {
-  const { resultReactions } = useAppSelector(getstoriesData);
+  const { resultReactions, myReactedToStories } =
+    useAppSelector(getstoriesData);
   const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
   const pageName = useRoute().name;
 
-  // console.log("pageName", pageName);
-  const [first, setFirst] = useState([]);
-
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
-    //   setSelectedId(item.id);
   };
-  console.log("pppppp");
   useEffect(() => {
     setLoading(true),
-      dispatch(ReactedToStories({ userId: user.id, pageName: pageName })),
+      dispatch(ReactedToStories({ userId: user.id })),
       setLoading(false);
-    setTimeout(() => {
-      setFirst(resultReactions);
-    }, 1000);
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {}, 1000);
   }, [pageName]);
-  console.log("first", first);
+
   const handleApplauded = (item) => {
     const voteData = {
       voter: user.id,
@@ -142,7 +139,16 @@ const Reactions = ({ navigation }) => {
         </View>
       ) : (
         <FlatList
-          data={first}
+          data={
+            pageName === "applauds"
+              ? resultReactions.filter((x) => x.applauds.includes(user.id))
+              : pageName === "compassions"
+              ? resultReactions.filter((x) => x.compassions.includes(user.id))
+              : pageName === "brokens"
+              ? resultReactions.filter((x) => x.brokens.includes(user.id))
+              : pageName === "jusNos" &&
+                resultReactions.filter((x) => x.jusNos.includes(user.id))
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
               <TouchableOpacity
@@ -295,9 +301,8 @@ const Reactions = ({ navigation }) => {
               />
             </View>
           )}
-          keyExtractor={(item) => {
-            return item.id;
-          }}
+          keyExtractor={(item, index) => index.toString()}
+
           // extraData={selectedId}
         />
       )}

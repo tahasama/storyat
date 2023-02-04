@@ -101,8 +101,6 @@ const Items = ({ navigation }) => {
       storyId: item.id,
     };
     const voteArray = [...item.applauds];
-    console.log("ser 1", voteArray);
-    // console.log("applaudState", applaudState);
 
     const xxx = () => {
       return voteArray.push(user.id);
@@ -113,7 +111,6 @@ const Items = ({ navigation }) => {
     };
     item.applauds.length === 0 ? xxx() : yyy();
 
-    console.log("ser 2", voteArray);
     // dispatch(updateApplaudState(outputArray));
 
     dispatch(

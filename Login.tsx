@@ -77,7 +77,6 @@ const Login = ({ navigation, route }) => {
         }
       })
       .catch((err) => {
-        console.log("qqqqqqqqqq", err.message);
         Alert.alert(
           "SomeThing's wrong ...",
           err.code === "auth/user-not-found"

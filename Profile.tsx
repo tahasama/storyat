@@ -37,7 +37,6 @@ const Profile = () => {
   const { image } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
-  console.log("user in profile.....", image);
 
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -55,7 +54,6 @@ const Profile = () => {
       uploadBytesResumable(storageRef, blob)
         .then(async () => {
           const res = await getDownloadURL(storageRef);
-          console.log("res", res);
           setTimeout(() => {
             dispatch(updateUserImage({ userImage: res, userId: user.id }));
           }, 2000);

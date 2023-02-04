@@ -25,7 +25,6 @@ interface valueProps {
 export const updateUserImage = createAsyncThunk(
   "updateUserImage",
   async (userImageInfos: any) => {
-    console.log("OOOOO", userImageInfos);
     try {
       const res = await updateDoc(doc(db, "users", userImageInfos.userId), {
         avatar: userImageInfos.userImage,
@@ -39,12 +38,10 @@ export const updateUserImage = createAsyncThunk(
 );
 
 export const getUser = createAsyncThunk("getUser", async (userId: any) => {
-  console.log("user.id in redux", userId);
   let result = [];
   try {
     const res: any = await getDoc(doc(db, "users", userId));
     res.forEach((doc: any) => result.push({ ...doc.data(), id: userId }));
-    console.log("user.id 2", res);
     return res;
   } catch (e) {
     console.error("Error adding document: ", e);

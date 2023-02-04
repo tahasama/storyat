@@ -69,8 +69,6 @@ const GetHeader = ({ navigation, route, storyId }) => {
       storyId: ccc.item.id,
     };
     const voteArray = [...ccc.item.applauds];
-    console.log("ser 1", voteArray);
-    console.log("applaudState", applaudState);
 
     const xxx = () => {
       return voteArray.push(user.id);
@@ -88,7 +86,6 @@ const GetHeader = ({ navigation, route, storyId }) => {
       return acc;
     }, []);
 
-    console.log("ser 2", outputArray);
     dispatch(updateApplaudState(outputArray));
     setTimeout(() => {
       dispatch(

@@ -62,7 +62,6 @@ function MyComments({ navigation }) {
     navigation.navigate("item", { item: item });
     //   setSelectedId(item.id);
   };
-  // console.log("resultComments", resultComments);
 
   const handleApplauded = (item) => {
     const voteData = {

@@ -15,10 +15,11 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
-import { resetUser } from "./state/reducers/authSlice";
+import { getAuthData, resetUser } from "./state/reducers/authSlice";
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
 import { menuState } from "./state/reducers/headerSlice";
+import { useAppSelector } from "./state/hooks";
 
 const Options = () => {
   const windowWidth = Dimensions.get("window").width;
@@ -28,6 +29,7 @@ const Options = () => {
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
+  const { user } = useAppSelector(getAuthData);
 
   return (
     <View style={styles.centeredView}>
@@ -93,7 +95,8 @@ const Options = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => (
-                  navigation.navigate("actions"), setModalVisible(false)
+                  navigation.navigate("actions", { userId: user.id }),
+                  setModalVisible(false)
                 )}
                 style={{
                   width: windowWidth / 2.5,

@@ -13,13 +13,20 @@ import {
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
-import { addStories, loadStories } from "./state/reducers/storiesSlice";
+import {
+  addStories,
+  getstoriesData,
+  loadStories,
+  updateStories,
+  updateStoriesState,
+} from "./state/reducers/storiesSlice";
 import { useRoute } from "@react-navigation/native";
+import Feather from "@expo/vector-icons/Feather";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const StoryModal = () => {
+const StoryModal = (story) => {
   const dispatch = useAppDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("");
@@ -28,16 +35,38 @@ const StoryModal = () => {
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
+  const { myupdateStoryState } = useAppSelector(getstoriesData);
   const pageName = useRoute().name;
+  console.log("myupdateStoryState", myupdateStoryState.title);
 
-  const handleStory = async () => {
-    content !== "" && title !== ""
+  // useEffect(() => {
+  //   dispatch(updateStoriesState({ title: "", content: "", id: "" }));
+  // }, []);
+
+  const vvv = () => {
+    pageName !== "item"
       ? (dispatch(addStories({ title, userId: user.id, content })).then(() =>
           setStatus("success")
         ),
         setTimeout(() => {
           dispatch(loadStories({ pageName: pageName }));
         }, 250))
+      : dispatch(
+          updateStories({
+            title,
+            storyId: myupdateStoryState.id,
+            content,
+          })
+        )
+          .then(() => setStatus("success"))
+          .then(() => {
+            dispatch(updateStoriesState({ title: title, content: content }));
+          });
+  };
+
+  const handleStory = async () => {
+    content !== "" && title !== ""
+      ? vvv()
       : title === "" && content !== ""
       ? setTitleError(true)
       : title !== "" && content === ""
@@ -85,6 +114,8 @@ const StoryModal = () => {
                 placeholderTextColor={titleError ? "red" : "#8BBCCC"}
                 onChangeText={(text) => setTitle(text)}
                 style={styles.input}
+                maxLength={70}
+                defaultValue={myupdateStoryState.title}
               />
               <TextInput
                 multiline
@@ -95,6 +126,7 @@ const StoryModal = () => {
                 placeholderTextColor={contentError ? "red" : "#8BBCCC"}
                 onChangeText={(text) => setContent(text)}
                 style={styles.input}
+                defaultValue={myupdateStoryState.content}
               />
               <TouchableOpacity
                 onPress={handleStory}
@@ -142,15 +174,23 @@ const StoryModal = () => {
         </View>
       </Modal>
       <Pressable
-        style={[styles.buttonOpen, { opacity: modalVisible ? 0 : 1 }]}
+        style={
+          pageName === "item"
+            ? { opacity: modalVisible ? 0 : 1, bottom: 20 }
+            : [styles.buttonOpen, { opacity: modalVisible ? 0 : 1 }]
+        }
         onPress={() => setModalVisible(true)}
       >
-        <AntDesign
-          style={styles.textStyle}
-          name="plus"
-          size={30}
-          color="#646464"
-        />
+        {pageName !== "item" ? (
+          <AntDesign
+            style={styles.textStyle}
+            name="plus"
+            size={30}
+            color="#646464"
+          />
+        ) : (
+          <Feather name="edit" color={"#244f76"} size={26} />
+        )}
       </Pressable>
     </View>
   );

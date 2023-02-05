@@ -212,6 +212,24 @@ export const addStories = createAsyncThunk(
   }
 );
 
+export const updateStories = createAsyncThunk(
+  "updateStories",
+  async ({ title, content, storyId }: any) => {
+    console.log("here we go again", storyId);
+    try {
+      const res = await updateDoc(doc(db, "stories", storyId), {
+        title: title,
+        content: content,
+      });
+
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
 export const addCommentNumberToStory = createAsyncThunk(
   "addCommentNumberToStory",
   async (infos: any) => {
@@ -313,6 +331,8 @@ export interface storiesProps {
     timestamp: string;
     username: string;
     story: any;
+    myupdateStoriesState: any;
+    myupdateStoryState: any;
     applaudState: any[];
     applaudArray: any[];
 
@@ -357,6 +377,8 @@ export const storiesInitialState = {
 
   NumOfCommentState: 0,
   // loadmore: 0,
+  myupdateStoriesState: {},
+  myupdateStoryState: [],
 };
 
 export const storiesSlice = createSlice({
@@ -390,6 +412,12 @@ export const storiesSlice = createSlice({
     reactedToStoriesState: (state, action) => {
       state.myReactedToStories = action.payload;
     },
+    updateStoriesState: (state, action) => {
+      state.myupdateStoriesState = action.payload;
+    },
+    updateStory: (state, action) => {
+      state.myupdateStoryState = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
@@ -421,5 +449,7 @@ export const {
   // updateResultState,
   updateInitilalResultState,
   reactedToStoriesState,
+  updateStoriesState,
+  updateStory,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

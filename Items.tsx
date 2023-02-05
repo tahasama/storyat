@@ -236,15 +236,17 @@ const Items = ({ navigation }) => {
                   handleOnpress(item);
                 }}
               >
-                <Text style={styles.title}>{item.title}</Text>
+                <Text style={[styles.title, { textAlign: "center" }]}>
+                  {item.title}
+                </Text>
                 <Text
                   style={[
                     styles.title,
-                    { marginHorizontal: 20, color: "#9fa3a7", fontSize: 20 },
+                    { marginHorizontal: 10, color: "#9fa3a7", fontSize: 20 },
                   ]}
                   numberOfLines={2}
                 >
-                  {item.content}
+                  {"\t"} {item.content}
                 </Text>
               </TouchableOpacity>
               <View
@@ -374,14 +376,14 @@ const styles = StyleSheet.create({
   },
 
   item: {
-    padding: 8,
+    paddingHorizontal: 8,
     marginVertical: 8,
   },
   title: {
     fontSize: 22,
     color: "#bcbcbc",
     marginBottom: 25,
-    marginHorizontal: 12,
+    marginHorizontal: 32,
   },
 
   icon: {

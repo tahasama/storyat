@@ -29,6 +29,7 @@ import {
   addCommentNumberToStory,
   getstoriesData,
   substractCommentNumberToStory,
+  updateStory,
 } from "./state/reducers/storiesSlice";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
@@ -40,6 +41,7 @@ const Item = ({ navigation, route }) => {
   const ccc = route.params;
   const { user } = useAppSelector(getAuthData);
   const { result } = useAppSelector(getcommentsData);
+  const { myupdateStoriesState } = useAppSelector(getstoriesData);
 
   const [commentIdLoading, setCommentIdLoading] = useState("");
   const [comment, setComment] = useState("");
@@ -49,6 +51,10 @@ const Item = ({ navigation, route }) => {
   const [likeLoading, setLikeLoading] = useState(false);
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+
+  useEffect(() => {
+    dispatch(updateStory(ccc.item));
+  }, []);
 
   useEffect(() => {
     dispatch(storyRoute(ccc.item.id));

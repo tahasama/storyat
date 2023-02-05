@@ -8,6 +8,7 @@ import {
   updateBrokenState,
   updateCompassionState,
   updateNumOfCommentState,
+  updateStory,
   updateWowState,
   voteApplaud,
   voteBroken,
@@ -18,15 +19,24 @@ import {
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { menuState } from "./state/reducers/headerSlice";
 import { getstoriesData } from "./state/reducers/storiesSlice";
+import UsernameModal from "./UsernameModal";
+import StoryModal from "./StoryModal";
 
 const GetHeader = ({ navigation, route, storyId }) => {
   const ccc = route.params;
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
+  const { myupdateStoriesState } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const [voteArray, setvoteArray] = useState(ccc.item.applauds);
+  console.log(
+    "myupdateStoriesState",
+    Object.keys(myupdateStoriesState).length === 0
+  );
+
   const {
     applaudState,
     compassionState,
@@ -144,20 +154,103 @@ const GetHeader = ({ navigation, route, storyId }) => {
       })
     ).then(() => dispatch(updateWowState(!wowState)));
   };
+  myupdateStoriesState;
+  // console.log("ccc", ccc.item.writerId, "and...", user.id);
+  console.log("myupdateStoriesState", myupdateStoriesState);
 
   return (
     <View style={styles.subContainer}>
-      <TouchableOpacity
-        onPress={() => (
-          dispatch(getUser(ccc.item.writerId)),
-          navigation.navigate("profile", { notActualUser: true })
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          width: "100%",
+          flex: 1,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => (
+            dispatch(getUser(ccc.item.writerId)),
+            navigation.navigate("profile", { notActualUser: true })
+          )}
+          style={{
+            flexDirection: "column",
+            justifyContent: "flex-start",
+            // alignItems: "center",
+            flex: 4,
+            // backgroundColor: "green",
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              marginTop: 18,
+              marginBottom: 8,
+            }}
+          >
+            <Image
+              source={{
+                uri: ccc.item.avatar,
+              }}
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 50,
+                marginHorizontal: 10,
+              }}
+            />
+            <Text style={{ fontSize: 16, color: "white" }}>
+              {ccc.item.username}
+            </Text>
+          </View>
+          <Text
+            style={{
+              color: "#476700",
+              marginHorizontal: 10,
+              marginLeft: 50,
+            }}
+          >
+            {new Date(ccc.item.timestamp).toDateString()}
+          </Text>
+        </TouchableOpacity>
+        {ccc.item.writerId === user.id && (
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+              width: "100%",
+              flex: 1,
+              marginHorizontal: 12,
+              // backgroundColor: "red",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <StoryModal />
+            </View>
+
+            <MaterialCommunityIcons
+              name="delete-empty"
+              color={"#244f76"}
+              size={32}
+            />
+          </View>
         )}
-      />
-      <Text style={styles.title}>{ccc.item.title}</Text>
+      </View>
+      <Text style={styles.title}>
+        {Object.keys(myupdateStoriesState).length === 0
+          ? ccc.item.title
+          : myupdateStoriesState.title}
+      </Text>
       <Text style={styles.content}>
         {"\t"}
 
-        {ccc.item.content}
+        {Object.keys(myupdateStoriesState).length === 0
+          ? ccc.item.content
+          : myupdateStoriesState.content}
       </Text>
       <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
         <TouchableOpacity

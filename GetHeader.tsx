@@ -1,9 +1,17 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData, getUser } from "./state/reducers/authSlice";
 import {} from "./state/reducers/repliesSlice";
 import {
+  removeStory,
   updateApplaudState,
   updateBrokenState,
   updateCompassionState,
@@ -158,6 +166,39 @@ const GetHeader = ({ navigation, route, storyId }) => {
   // console.log("ccc", ccc.item.writerId, "and...", user.id);
   console.log("myupdateStoriesState", myupdateStoriesState);
 
+  const anim = useRef(new Animated.Value(0));
+
+  const shake = useCallback(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(anim.current, {
+          toValue: -2,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+        Animated.timing(anim.current, {
+          toValue: 2,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+        Animated.timing(anim.current, {
+          toValue: 0,
+          useNativeDriver: false,
+          duration: 80,
+        }),
+      ]),
+      { iterations: 2 }
+    ).start();
+  }, []);
+
+  const handleRemoveStory = (item) => {
+    console.log("IIIII", item.id);
+    shake();
+    dispatch(removeStory({ storyId: item.id })).then(() =>
+      navigation.navigate("items")
+    );
+  };
+
   return (
     <View style={styles.subContainer}>
       <View
@@ -188,7 +229,7 @@ const GetHeader = ({ navigation, route, storyId }) => {
               justifyContent: "flex-start",
               alignItems: "center",
               marginTop: 18,
-              marginBottom: 8,
+              marginBottom: 4,
             }}
           >
             <Image
@@ -210,7 +251,7 @@ const GetHeader = ({ navigation, route, storyId }) => {
             style={{
               color: "#476700",
               marginHorizontal: 10,
-              marginLeft: 50,
+              marginLeft: 70,
             }}
           >
             {new Date(ccc.item.timestamp).toDateString()}
@@ -232,11 +273,16 @@ const GetHeader = ({ navigation, route, storyId }) => {
               <StoryModal />
             </View>
 
-            <MaterialCommunityIcons
-              name="delete-empty"
-              color={"#244f76"}
-              size={32}
-            />
+            <Animated.View
+              style={{ transform: [{ translateX: anim.current }] }}
+            >
+              <MaterialCommunityIcons
+                onPress={() => handleRemoveStory(ccc.item)}
+                name="delete-empty"
+                color={"#669393"}
+                size={28}
+              />
+            </Animated.View>
           </View>
         )}
       </View>

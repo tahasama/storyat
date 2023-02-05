@@ -37,7 +37,7 @@ const StoryModal = (story) => {
   const { user } = useAppSelector(getAuthData);
   const { myupdateStoryState } = useAppSelector(getstoriesData);
   const pageName = useRoute().name;
-  console.log("myupdateStoryState", myupdateStoryState.title);
+  console.log("myupdateStoryState", pageName);
 
   // useEffect(() => {
   //   dispatch(updateStoriesState({ title: "", content: "", id: "" }));
@@ -45,9 +45,9 @@ const StoryModal = (story) => {
 
   const vvv = () => {
     pageName !== "item"
-      ? (dispatch(addStories({ title, userId: user.id, content })).then(() =>
-          setStatus("success")
-        ),
+      ? (dispatch(addStories({ title, userId: user.id, content }))
+          .then(() => setStatus("success"))
+          .then(() => (setContent(""), setTitle(""))),
         setTimeout(() => {
           dispatch(loadStories({ pageName: pageName }));
         }, 250))
@@ -58,7 +58,7 @@ const StoryModal = (story) => {
             content,
           })
         )
-          .then(() => setStatus("success"))
+          .then(() => (setStatus("success"), setContent(""), setTitle("")))
           .then(() => {
             dispatch(updateStoriesState({ title: title, content: content }));
           });
@@ -115,7 +115,9 @@ const StoryModal = (story) => {
                 onChangeText={(text) => setTitle(text)}
                 style={styles.input}
                 maxLength={70}
-                defaultValue={myupdateStoryState.title}
+                defaultValue={
+                  pageName !== "item" ? title : myupdateStoryState.title
+                }
               />
               <TextInput
                 multiline
@@ -126,7 +128,9 @@ const StoryModal = (story) => {
                 placeholderTextColor={contentError ? "red" : "#8BBCCC"}
                 onChangeText={(text) => setContent(text)}
                 style={styles.input}
-                defaultValue={myupdateStoryState.content}
+                defaultValue={
+                  pageName !== "item" ? content : myupdateStoryState.content
+                }
               />
               <TouchableOpacity
                 onPress={handleStory}
@@ -189,7 +193,7 @@ const StoryModal = (story) => {
             color="#646464"
           />
         ) : (
-          <Feather name="edit" color={"#244f76"} size={26} />
+          <Feather name="edit" color={"#244f76"} size={24} />
         )}
       </Pressable>
     </View>

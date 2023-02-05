@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   DocumentData,
   getDoc,
@@ -221,6 +222,21 @@ export const updateStories = createAsyncThunk(
         title: title,
         content: content,
       });
+
+      return res;
+    } catch (e) {
+      console.error("Error adding document: ", e);
+      Alert.alert("action failed please try again");
+    }
+  }
+);
+
+export const removeStory = createAsyncThunk(
+  "removeStory",
+  async ({ storyId }: any) => {
+    console.log("here we go again delete", storyId);
+    try {
+      const res = await deleteDoc(doc(db, "stories", storyId));
 
       return res;
     } catch (e) {

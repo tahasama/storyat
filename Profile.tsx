@@ -7,6 +7,7 @@ import {
   Dimensions,
   Button,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
@@ -40,7 +41,7 @@ import UsernameModal from "./UsernameModal";
 const Profile = ({ route }: any) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  // const [image, setImage] = useState(user.avatar);
+  const [loading, setLoading] = useState(false);
   const { result, resultReactions, myReactedToStories } =
     useAppSelector(getstoriesData);
   const { resultComments } = useAppSelector(getcommentsData);
@@ -52,13 +53,14 @@ const Profile = ({ route }: any) => {
   // const userId =
   //   route.params.theUser === undefined ? user.id : route.params.theUser.id;
   const pickImageAsync = async () => {
+    console.log("start updating image");
+    setLoading(true);
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 1,
     });
-    dispatch(updateUserImageState(result.assets[0].uri));
-
     if (!result.canceled) {
+      dispatch(updateUserImageState(result.assets[0].uri));
       const response = await fetch(result.assets[0].uri);
       const blob = await response.blob();
 
@@ -69,13 +71,17 @@ const Profile = ({ route }: any) => {
           const res = await getDownloadURL(storageRef);
           setTimeout(() => {
             dispatch(updateUserImage({ userImage: res, userId: user.id }));
-          }, 2000);
+          }, 2000),
+            setLoading(false);
           // dispatch(updateUserImage({ userImage: res, userId: user.id }));
         })
 
         .catch((error) => {
-          console.error(error);
+          setLoading(false);
+          console.error("some error", error.message);
         });
+    } else {
+      setLoading(false);
     }
   };
   // const userId = user.id !== route.params.theUser ? newuser : user;
@@ -164,14 +170,21 @@ const Profile = ({ route }: any) => {
               paddingVertical: 5,
               borderRadius: 5,
             }}
+            disabled={loading && true}
           >
-            <Feather
-              name="camera"
-              size={20}
-              color={"white"}
-              style={{ marginHorizontal: 10 }}
-            />
-            <Text style={{ color: "white" }}>Update image</Text>
+            {!loading ? (
+              <Feather
+                name={"camera"}
+                size={20}
+                color={"white"}
+                style={{ marginHorizontal: 10 }}
+              />
+            ) : (
+              <ActivityIndicator size="large" />
+            )}
+            <Text style={{ color: "white" }}>
+              {!loading ? "Update image" : "Updating ..."}
+            </Text>
           </Pressable>
 
           <View style={{ flex: 1 }}>

@@ -11,26 +11,19 @@ import {
   RefreshControl,
 } from "react-native";
 
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, getUser } from "./state/reducers/authSlice";
-import StoryModal from "./StoryModal";
-import { getHeaderData, menuState } from "./state/reducers/headerSlice";
-import {
-  getstoriesData,
-  // loadMoreStories,
-  loadStories,
-  updateInitilalResultState,
-  // updateResultState,
-  // voteApplaud,
-} from "./state/reducers/storiesSlice";
 import { useIsFocused, useRoute } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import HeadOfStory from "./HeadOfStory";
-import BodyOfStory from "./BodyOfStory";
-import FooterOfStory from "./FooterOfStory";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { getAuthData } from "../state/reducers/authSlice";
+import { getHeaderData } from "../state/reducers/headerSlice";
+import { getstoriesData } from "../state/reducers/storiesSlice";
+import StoryModal from "../StoryModal";
+import FooterOfStory from "../FooterOfStory";
+import BodyOfStory from "../BodyOfStory";
+import HeadOfStory from "../HeadOfStory";
 
-const Items = () => {
+const Compassions = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
@@ -42,20 +35,15 @@ const Items = () => {
   const [refreshing, setRefreshing] = useState(false);
   const pageName = useRoute().name;
   const [data, setData] = useState([]);
-  const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
+  const result = async () =>
+    await AsyncStorage.getItem("myStoredDataCompassions");
 
   useEffect(() => {
     setTimeout(() => {
       result().then((res) => setData(JSON.parse(res)));
     }, 750);
   }, []);
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    dispatch(loadStories(pageName));
-
-    setRefreshing(false);
-  };
+  console.log("Compassions");
 
   return (
     <SafeAreaView style={styles.container}>
@@ -77,7 +65,7 @@ const Items = () => {
             <RefreshControl
               colors={["#14764b", "#0F5838", "#093421"]}
               refreshing={refreshing}
-              onRefresh={handleRefresh}
+              // onRefresh={handleRefresh}
             />
           }
           data={data}
@@ -108,6 +96,8 @@ const Items = () => {
     </SafeAreaView>
   );
 };
+
+export default Compassions;
 
 const styles = StyleSheet.create({
   container: {
@@ -153,5 +143,3 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
 });
-
-export default Items;

@@ -1,91 +1,30 @@
 import { StyleSheet, TouchableOpacity, View, Text, Button } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
+import Applauds from "./DrawerActions/Applauds";
+import JustNos from "./DrawerActions/JustNos";
+import Brokens from "./DrawerActions/Brokens";
+import Compassions from "./DrawerActions/Compassions";
+import Newest from "./DrawerActions/Newest";
 import Items from "./Items";
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getHeaderData, menuState } from "./state/reducers/headerSlice";
-import FooterOfStory from "./FooterOfStory";
-import Title from "./Title";
-import { DrawerActions } from "@react-navigation/native";
-
-const Drawer = createDrawerNavigator();
 
 const Lll = () => {
-  const { menuStateValue } = useAppSelector(getHeaderData);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(menuState(false));
-  }, []);
-
+  const Drawer = createDrawerNavigator();
   return (
     <Drawer.Navigator
-      // initialRouteName="items"
-      // useLegacyImplementation
-      // drawerType="front"
+      // defaultScreenOptions={{ unmountOnBlur: true }}
       screenOptions={{
-        header: (props) => <Title />,
-
         drawerStyle: { backgroundColor: "#041820" },
         drawerInactiveTintColor: "#9BA5A9",
         swipeEnabled: true,
-        // overlayColor: "transparent",
       }}
     >
-      <Drawer.Screen
-        name="items"
-        component={Items}
-        // listeners={{
-        //   drawerItemPress: () => {
-        //     dispatch(menuState(!menuStateValue));
-        //   },
-        // }}
-      />
-      <Drawer.Screen
-        name="timestamp"
-        component={Items}
-        // listeners={{
-        //   drawerItemPress: () => {
-        //     dispatch(menuState(!menuStateValue));
-        //   },
-        // }}
-      />
-      <Drawer.Screen
-        name="applauds"
-        component={Items}
-        // listeners={{
-        //   drawerItemPress: () => {
-        //     dispatch(menuState(!menuStateValue));
-        //   },
-        // }}
-      />
-      <Drawer.Screen
-        name="compassions"
-        component={Items}
-        // listeners={{
-        //   drawerItemPress: () => {
-        //     dispatch(menuState(!menuStateValue));
-        //   },
-        // }}
-      />
-      <Drawer.Screen
-        name="brokens"
-        component={Items}
-        // listeners={{
-        //   drawerItemPress: () => {
-        //     dispatch(menuState(!menuStateValue));
-        //   },
-        // }}
-      />
-      <Drawer.Screen
-        name="justNos"
-        component={Items}
-        // listeners={{
-        //   drawerItemPress: () => {
-        //     dispatch(menuState(!menuStateValue));
-        //   },
-        // }}
-      />
+      <Drawer.Screen name="items" component={Items} />
+      <Drawer.Screen name="timestamp" component={Newest} />
+      <Drawer.Screen name="applauds" component={Applauds} />
+      <Drawer.Screen name="compassions" component={Compassions} />
+      <Drawer.Screen name="brokens" component={Brokens} />
+      <Drawer.Screen name="justNos" component={JustNos} />
     </Drawer.Navigator>
   );
 };

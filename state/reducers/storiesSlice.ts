@@ -55,7 +55,6 @@ export const myStories = createAsyncThunk(
 export const ReactedToStories = createAsyncThunk(
   "ReactedToStories",
   async ({ userId }: any) => {
-    console.log("userId redux", userId);
     const results: any = [];
 
     const yo = collection(db, "stories");
@@ -124,22 +123,7 @@ export const ReactedToStories = createAsyncThunk(
         avatar: avatar,
       });
     });
-    // const promises = results.docs.map(async (docs: any) => {
-    //   const username = await (
-    //     await getDoc(doc(db, "users", docs.data().writerId))
-    //   ).data().username;
-    //   const avatar = await (
-    //     await getDoc(doc(db, "users", docs.data().writerId))
-    //   ).data().avatar;
-    //   return {
-    //     ...docs.data(),
-    //     id: docs.id,
-    //     username: username,
-    //     avatar: avatar,
-    //   };
-    // });
     const result = await Promise.all(results);
-    // console.log("result", result);
 
     return result;
   }
@@ -166,10 +150,6 @@ export const loadStories = createAsyncThunk(
       };
     });
     const resultInitial = await Promise.all(promises);
-    console.log(
-      "dddd",
-      resultInitial.filter((x) => x.applauds)
-    );
 
     try {
       await AsyncStorage.setItem(
@@ -210,7 +190,6 @@ export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
 
     return res;
   } catch (e) {
-    console.error("Error adding document: ", e);
     Alert.alert("action failed please try again");
   }
 });
@@ -233,7 +212,6 @@ export const addStories = createAsyncThunk(
 
       return res;
     } catch (e) {
-      console.error("Error adding document: ", e);
       Alert.alert("action failed please try again");
     }
   }
@@ -242,7 +220,6 @@ export const addStories = createAsyncThunk(
 export const updateStories = createAsyncThunk(
   "updateStories",
   async ({ title, content, storyId }: any) => {
-    console.log("here we go again", storyId);
     try {
       const res = await updateDoc(doc(db, "stories", storyId), {
         title: title,
@@ -251,7 +228,6 @@ export const updateStories = createAsyncThunk(
 
       return res;
     } catch (e) {
-      console.error("Error adding document: ", e);
       Alert.alert("action failed please try again");
     }
   }
@@ -260,13 +236,11 @@ export const updateStories = createAsyncThunk(
 export const removeStory = createAsyncThunk(
   "removeStory",
   async ({ storyId }: any) => {
-    console.log("here we go again delete", storyId);
     try {
       const res = await deleteDoc(doc(db, "stories", storyId));
 
       return res;
     } catch (e) {
-      console.error("Error adding document: ", e);
       Alert.alert("action failed please try again");
     }
   }
@@ -281,7 +255,6 @@ export const addCommentNumberToStory = createAsyncThunk(
       });
       return res;
     } catch (e) {
-      console.error("Error adding document: ", e);
       Alert.alert("action failed please try again");
     }
   }
@@ -296,7 +269,6 @@ export const substractCommentNumberToStory = createAsyncThunk(
       });
       return res;
     } catch (e) {
-      console.error("Error adding document: ", e);
       Alert.alert("action failed please try again");
     }
   }
@@ -323,7 +295,6 @@ export const vote = createAsyncThunk("vote", async (infos: any) => {
           }));
     return res;
   } catch (e) {
-    console.error("Error adding document: ", e);
     Alert.alert("action failed please try again");
   }
 });
@@ -337,7 +308,6 @@ export const voteBroken = createAsyncThunk(
       });
       return res;
     } catch (e) {
-      console.error("Error adding document: ", e);
       Alert.alert("action failed please try again");
     }
   }
@@ -350,7 +320,6 @@ export const voteWow = createAsyncThunk("voteApplaud", async (infos: any) => {
     });
     return res;
   } catch (e) {
-    console.error("Error adding document: ", e);
     Alert.alert("action failed please try again");
   }
 });

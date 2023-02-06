@@ -18,12 +18,6 @@ const FooterOfStory = ({ item }: any) => {
   const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
 
-  console.log("ZZZZ", item.id);
-
-  //   useEffect(() => {
-  //     menuStateValue ? navigation.openDrawer() : navigation.closeDrawer();
-  //   }, [menuStateValue]);
-
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
   };

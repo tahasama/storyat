@@ -37,7 +37,6 @@ const StoryModal = (story) => {
   const { user } = useAppSelector(getAuthData);
   const { myupdateStoryState } = useAppSelector(getstoriesData);
   const pageName = useRoute().name;
-  console.log("myupdateStoryState", pageName);
 
   // useEffect(() => {
   //   dispatch(updateStoriesState({ title: "", content: "", id: "" }));

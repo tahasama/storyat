@@ -83,36 +83,34 @@ const Index = () => {
           </View>
         )}
         <Stack.Navigator
-          screenOptions={{
-            header: () => <Title />,
-          }}
+          // screenOptions={{
+          //   header: () => <Title />,
+          // }}
           initialRouteName={!user ? "login" : "lll"}
         >
-          <Stack.Group>
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="lll"
-              component={Lll}
-            />
-            <Stack.Screen name="item" component={Item} />
-            <Stack.Screen name="reply" component={Reply} />
-            <Stack.Screen
-              options={{ headerShown: false }}
-              name="login"
-              component={Login}
-            />
-            <Stack.Screen name="logout" component={Logout} />
-            <Stack.Screen
-              name="profile"
-              component={Profile}
-              options={{ animation: "slide_from_bottom" }}
-            />
-            <Stack.Screen
-              name="actions"
-              component={Actions}
-              options={{ animation: "slide_from_right" }}
-            />
-          </Stack.Group>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="lll"
+            component={Lll}
+          />
+          <Stack.Screen name="item" component={Item} />
+          <Stack.Screen name="reply" component={Reply} />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="login"
+            component={Login}
+          />
+          <Stack.Screen name="logout" component={Logout} />
+          <Stack.Screen
+            name="profile"
+            component={Profile}
+            options={{ animation: "slide_from_bottom" }}
+          />
+          <Stack.Screen
+            name="actions"
+            component={Actions}
+            options={{ animation: "slide_from_right" }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </>

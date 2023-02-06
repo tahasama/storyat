@@ -18,10 +18,7 @@ import {
   updateNumOfCommentState,
   updateStory,
   updateWowState,
-  voteApplaud,
-  voteBroken,
-  voteCompassion,
-  voteWow,
+  vote,
 } from "./state/reducers/storiesSlice";
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -192,7 +189,6 @@ const GetHeader = ({ navigation, route, storyId }) => {
   }, []);
 
   const handleRemoveStory = (item) => {
-    console.log("IIIII", item.id);
     shake();
     dispatch(removeStory({ storyId: item.id })).then(() =>
       navigation.navigate("items")

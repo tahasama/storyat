@@ -23,14 +23,28 @@ const MenuButton = () => {
       <TouchableOpacity
         onPress={() => {
           {
-            route.name !== "lll"
-              ? navigation.dispatch(popAction)
-              : dispatch(menuState(!menuStateValue));
+            [
+              "items",
+              "compassions",
+              "brokens",
+              "justNos",
+              "timestamp",
+              "applauds",
+            ].includes(route.name)
+              ? navigation.openDrawer()
+              : navigation.dispatch(popAction);
           }
         }}
         style={styles.button}
       >
-        {route.name === "lll" ? (
+        {[
+          "items",
+          "compassions",
+          "brokens",
+          "justNos",
+          "timestamp",
+          "applauds",
+        ].includes(route.name) ? (
           <Entypo name="menu" size={38} color="#646464" />
         ) : (
           <AntDesign name="left" size={30} color="#646464" />

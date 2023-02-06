@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -13,9 +13,6 @@ import {
 
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData, getUser } from "./state/reducers/authSlice";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import StoryModal from "./StoryModal";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 import {
@@ -24,12 +21,14 @@ import {
   loadStories,
   updateInitilalResultState,
   // updateResultState,
-  voteApplaud,
-  voteBroken,
-  voteCompassion,
-  voteWow,
+  // voteApplaud,
 } from "./state/reducers/storiesSlice";
 import { useIsFocused, useRoute } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import HeadOfStory from "./HeadOfStory";
+import BodyOfStory from "./BodyOfStory";
+import FooterOfStory from "./FooterOfStory";
 
 const Items = ({ navigation }) => {
   const dispatch = useAppDispatch();
@@ -39,136 +38,56 @@ const Items = ({ navigation }) => {
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const pageName = useRoute().name;
 
-  const randomm = () => {
-    let yyy = [...resultInitial];
-    return yyy.sort(() => Math.random() - 0.3);
-  };
-
-  // const randomMore = () => {
-  //   let yyy = [...resultLoadMore];
-  //   return yyy.sort(() => Math.random() - 0.3);
-  // };
-
-  // const handleLoadMore = async () => {
-  //   setLoadingMore(true);
-  //   dispatch(
-  //     loadMoreStories({
-  //       pageName: pageName,
-  //       resultLength:
-  //         resultLoadMore.length === 0
-  //           ? resultInitial.length
-  //           : resultLoadMore.length,
-  //       resultInitial:
-  //         resultLoadMore.length === 0 ? resultInitial : resultLoadMore,
-  //     })
-  //   );
-  //   setLoadingMore(false);
-  // };
+  const datas = useMemo(async () => {
+    let resultInitial2 = [...data];
+    return;
+  }, [pageName]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    dispatch(loadStories({ pageName: pageName }));
+    data.length !== 0 && dispatch(loadStories(pageName));
 
     setRefreshing(false);
   };
 
-  const handleOnpress = (item) => {
-    navigation.navigate("item", { item: item });
-    setSelectedId(item.id);
-  };
+  let result = async () =>
+    pageName === "applauds"
+      ? await AsyncStorage.getItem("myStoredDataApplauds")
+      : pageName === "compassions"
+      ? await AsyncStorage.getItem("myStoredDataCompassions")
+      : pageName === "brokens"
+      ? await AsyncStorage.getItem("myStoredDataBrokens")
+      : pageName === "justNos"
+      ? await AsyncStorage.getItem("myStoredDataJustNos")
+      : pageName === "timestamp"
+      ? await AsyncStorage.getItem("myStoredDataTimestamp")
+      : await AsyncStorage.getItem("myStoredDataRandom");
 
   useEffect(() => {
-    isFocused &&
+    setTimeout(() => {
+      result().then((res) => setData(JSON.parse(res)));
+    }, 750);
+  }, []);
+
+  console.log("bro", data);
+
+  useEffect(() => {
+    let isSubscribed =
+      isFocused &&
       (dispatch(menuState(false)),
       setLoading(true),
-      // dispatch(updateResultState([])),
       dispatch(updateInitilalResultState([])),
-      dispatch(loadStories({ pageName: pageName })),
+      data.length === 0 && dispatch(loadStories(pageName)),
       setLoading(false));
+    return () => {
+      isSubscribed;
+    };
   }, [isFocused]);
-
-  useEffect(() => {
-    menuStateValue ? navigation.openDrawer() : navigation.closeDrawer();
-  }, [menuStateValue]);
-
-  const handleApplauded = (item) => {
-    const voteData = {
-      voter: user.id,
-      storyId: item.id,
-    };
-    const voteArray = [...item.applauds];
-
-    const xxx = () => {
-      return voteArray.push(user.id);
-    };
-
-    const yyy = () => {
-      return voteArray.pop();
-    };
-    item.applauds.length === 0 ? xxx() : yyy();
-
-    // dispatch(updateApplaudState(outputArray));
-
-    dispatch(
-      voteApplaud({
-        voteData,
-        outputArray: voteArray,
-      })
-    );
-    dispatch(loadStories({ pageName: pageName }));
-  };
-  const handleFeelingIt = (item) => {
-    const voteData = {
-      voter: user.id,
-      storyId: item.id,
-    };
-    const voteArray = [...item.compassions];
-    item.compassions.filter((zzz) => zzz === user.id).length === 0
-      ? voteArray.push(voteData.voter)
-      : voteArray.pop();
-    dispatch(
-      voteCompassion({
-        voteData,
-        voteArray,
-      })
-    ).then(() => dispatch(loadStories({ pageName: pageName })));
-  };
-  const handleHeartBreaking = (item) => {
-    const voteData = {
-      voter: user.id,
-      storyId: item.id,
-    };
-    const voteArray = [...item.brokens];
-    item.brokens.filter((zzz) => zzz === user.id).length === 0
-      ? voteArray.push(voteData.voter)
-      : voteArray.pop();
-    dispatch(
-      voteBroken({
-        voteData,
-        voteArray,
-      })
-    ).then(() => dispatch(loadStories({ pageName: pageName })));
-  };
-  const handleCantDealWithThis = (item) => {
-    const voteData = {
-      voter: user.id,
-      storyId: item.id,
-    };
-    const voteArray = [...item.justNos];
-    item.justNos.filter((zzz) => zzz === user.id).length === 0
-      ? voteArray.push(voteData.voter)
-      : voteArray.pop();
-    dispatch(
-      voteWow({
-        voteData,
-        voteArray,
-      })
-    ).then(() => dispatch(loadStories({ pageName: pageName })));
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -193,159 +112,12 @@ const Items = ({ navigation }) => {
               onRefresh={handleRefresh}
             />
           }
-          data={
-            pageName !== "items"
-              ? //   ? resultLoadMore.length === 0
-                resultInitial
-              : //     : resultLoadMore
-                //   : resultLoadMore.length === 0
-                randomm()
-            // : randomMore()
-          }
+          data={data}
           renderItem={({ item }) => (
             <View style={styles.item}>
-              <TouchableOpacity
-                onPress={() => (
-                  dispatch(getUser(item.writerId)),
-                  navigation.navigate("profile", { notActualUser: true })
-                )}
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={{
-                    uri: item.avatar,
-                  }}
-                  style={{
-                    width: 30,
-                    height: 30,
-                    borderRadius: 50,
-                    marginHorizontal: 10,
-                    marginVertical: 18,
-                  }}
-                />
-                <Text style={{ fontSize: 16, color: "white" }}>
-                  {item.username}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleOnpress(item);
-                }}
-              >
-                <Text style={[styles.title, { textAlign: "center" }]}>
-                  {item.title}
-                </Text>
-                <Text
-                  style={[
-                    styles.title,
-                    { marginHorizontal: 10, color: "#9fa3a7", fontSize: 20 },
-                  ]}
-                  numberOfLines={2}
-                >
-                  {"\t"} {item.content}
-                </Text>
-              </TouchableOpacity>
-              <View
-                style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-              >
-                <TouchableOpacity
-                  onPress={() => handleApplauded(item)}
-                  style={{ flexDirection: "row" }}
-                >
-                  <MaterialCommunityIcons
-                    name="hand-clap"
-                    color={
-                      item.applauds.filter((zzz) => zzz === user.id).length ===
-                      0
-                        ? "#707070"
-                        : "#73481c"
-                    }
-                    size={28}
-                  />
-                  {item.applauds.length !== 0 && (
-                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
-                      {item.applauds.length}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleFeelingIt(item)}
-                  style={{ flexDirection: "row" }}
-                >
-                  <MaterialCommunityIcons
-                    name="heart"
-                    color={
-                      item.compassions.filter((zzz) => zzz === user.id)
-                        .length === 0
-                        ? "#707070"
-                        : "#4c0000"
-                    }
-                    size={28}
-                  />
-                  {item.compassions.length !== 0 && (
-                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
-                      {item.compassions.length}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleHeartBreaking(item)}
-                  style={{ flexDirection: "row" }}
-                >
-                  <MaterialCommunityIcons
-                    name="heart-broken"
-                    color={
-                      item.brokens.filter((zzz) => zzz === user.id).length === 0
-                        ? "#707070"
-                        : "#5900b2"
-                    }
-                    size={28}
-                  />
-                  {item.brokens.length !== 0 && (
-                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
-                      {item.brokens.length}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleCantDealWithThis(item)}
-                  style={{ flexDirection: "row" }}
-                >
-                  <Feather
-                    name="trending-down"
-                    color={
-                      item.justNos.filter((zzz) => zzz === user.id).length === 0
-                        ? "#707070"
-                        : "#305a63"
-                    }
-                    size={28}
-                  />
-                  {item.justNos.length !== 0 && (
-                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
-                      {item.justNos.length}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleOnpress(item)}
-                  style={{
-                    flexDirection: "row",
-                    // alignItems: "center",
-                  }}
-                >
-                  <FontAwesome name="comments" color={"#707070"} size={28} />
-
-                  {item.numOfComments !== 0 && (
-                    <Text style={{ color: "#9db0c0", fontSize: 11 }}>
-                      {item.numOfComments}
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
+              <HeadOfStory item={item} />
+              <BodyOfStory item={item} />
+              <FooterOfStory item={item} />
               <View
                 style={{
                   borderBottomColor: "grey",

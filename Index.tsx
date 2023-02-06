@@ -1,5 +1,5 @@
 import { StatusBar, StyleSheet, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Item from "./Item";
 import Login from "./Login";
@@ -24,6 +24,9 @@ const Index = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(true);
+  // const route = useRoute();
+
+  // console.log("88888", route);
 
   const unsubscribe = () =>
     !user &&
@@ -81,15 +84,23 @@ const Index = () => {
         )}
         <Stack.Navigator
           screenOptions={{
-            header: () => (user && !loading ? <Title /> : null),
+            header: () => <Title />,
           }}
           initialRouteName={!user ? "login" : "lll"}
         >
           <Stack.Group>
-            <Stack.Screen name="lll" component={Lll} />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="lll"
+              component={Lll}
+            />
             <Stack.Screen name="item" component={Item} />
             <Stack.Screen name="reply" component={Reply} />
-            <Stack.Screen name="login" component={Login} />
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name="login"
+              component={Login}
+            />
             <Stack.Screen name="logout" component={Logout} />
             <Stack.Screen
               name="profile"

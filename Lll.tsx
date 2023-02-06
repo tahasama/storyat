@@ -1,9 +1,12 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Text, Button } from "react-native";
 import React, { useEffect } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Items from "./Items";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getHeaderData, menuState } from "./state/reducers/headerSlice";
+import FooterOfStory from "./FooterOfStory";
+import Title from "./Title";
+import { DrawerActions } from "@react-navigation/native";
 
 const Drawer = createDrawerNavigator();
 
@@ -16,74 +19,74 @@ const Lll = () => {
   }, []);
 
   return (
-    <>
-      <Drawer.Navigator
-        initialRouteName="items"
-        useLegacyImplementation
-        screenOptions={{
-          header: () => null,
-          drawerStyle: { backgroundColor: "#041820" },
-          drawerInactiveTintColor: "#9BA5A9",
-          swipeEnabled: true,
-          overlayColor: "transparent",
-        }}
-      >
-        <Drawer.Screen
-          name="items"
-          component={Items}
-          listeners={{
-            drawerItemPress: () => {
-              dispatch(menuState(!menuStateValue));
-            },
-          }}
-        />
-        <Drawer.Screen
-          name="timestamp"
-          component={Items}
-          listeners={{
-            drawerItemPress: () => {
-              dispatch(menuState(!menuStateValue));
-            },
-          }}
-        />
-        <Drawer.Screen
-          name="applauds"
-          component={Items}
-          listeners={{
-            drawerItemPress: () => {
-              dispatch(menuState(!menuStateValue));
-            },
-          }}
-        />
-        <Drawer.Screen
-          name="compassions"
-          component={Items}
-          listeners={{
-            drawerItemPress: () => {
-              dispatch(menuState(!menuStateValue));
-            },
-          }}
-        />
-        <Drawer.Screen
-          name="brokens"
-          component={Items}
-          listeners={{
-            drawerItemPress: () => {
-              dispatch(menuState(!menuStateValue));
-            },
-          }}
-        />
-        <Drawer.Screen
-          name="justNos"
-          component={Items}
-          listeners={{
-            drawerItemPress: () => {
-              dispatch(menuState(!menuStateValue));
-            },
-          }}
-        />
-      </Drawer.Navigator>
-    </>
+    <Drawer.Navigator
+      // initialRouteName="items"
+      // useLegacyImplementation
+      // drawerType="front"
+      screenOptions={{
+        header: (props) => <Title />,
+
+        drawerStyle: { backgroundColor: "#041820" },
+        drawerInactiveTintColor: "#9BA5A9",
+        swipeEnabled: true,
+        // overlayColor: "transparent",
+      }}
+    >
+      <Drawer.Screen
+        name="items"
+        component={Items}
+        // listeners={{
+        //   drawerItemPress: () => {
+        //     dispatch(menuState(!menuStateValue));
+        //   },
+        // }}
+      />
+      <Drawer.Screen
+        name="timestamp"
+        component={Items}
+        // listeners={{
+        //   drawerItemPress: () => {
+        //     dispatch(menuState(!menuStateValue));
+        //   },
+        // }}
+      />
+      <Drawer.Screen
+        name="applauds"
+        component={Items}
+        // listeners={{
+        //   drawerItemPress: () => {
+        //     dispatch(menuState(!menuStateValue));
+        //   },
+        // }}
+      />
+      <Drawer.Screen
+        name="compassions"
+        component={Items}
+        // listeners={{
+        //   drawerItemPress: () => {
+        //     dispatch(menuState(!menuStateValue));
+        //   },
+        // }}
+      />
+      <Drawer.Screen
+        name="brokens"
+        component={Items}
+        // listeners={{
+        //   drawerItemPress: () => {
+        //     dispatch(menuState(!menuStateValue));
+        //   },
+        // }}
+      />
+      <Drawer.Screen
+        name="justNos"
+        component={Items}
+        // listeners={{
+        //   drawerItemPress: () => {
+        //     dispatch(menuState(!menuStateValue));
+        //   },
+        // }}
+      />
+    </Drawer.Navigator>
   );
 };
 

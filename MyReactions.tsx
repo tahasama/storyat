@@ -30,14 +30,6 @@ import { menuState } from "./state/reducers/headerSlice";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
-import { useRoute } from "@react-navigation/native";
-import {
-  voteApplaud,
-  voteBroken,
-  voteCompassion,
-  voteWow,
-} from "./state/reducers/storiesSlice";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Reactions from "./Reactions";
 
 function MyReactions({ navigation, theUser }: any) {

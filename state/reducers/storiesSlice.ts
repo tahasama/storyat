@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addDoc,
@@ -148,17 +149,8 @@ export const loadStories = createAsyncThunk(
   "loadStories",
   async ({ pageName }: any) => {
     const yo = collection(db, "stories");
-    const g =
-      pageName === "items" || pageName === ""
-        ? query(yo, orderBy("timestamp", "desc"))
-        : query(
-            yo,
-            where(pageName, "!=", []),
-            orderBy(pageName, "desc")
-            // limit(4)
-          );
 
-    const querySnapshot = await getDocs(g);
+    const querySnapshot = await getDocs(yo);
     const promises = querySnapshot.docs.map(async (docs: any) => {
       const username = await (
         await getDoc(doc(db, "users", docs.data().writerId))
@@ -174,6 +166,40 @@ export const loadStories = createAsyncThunk(
       };
     });
     const resultInitial = await Promise.all(promises);
+    console.log(
+      "dddd",
+      resultInitial.filter((x) => x.applauds)
+    );
+
+    try {
+      await AsyncStorage.setItem(
+        "myStoredDataApplauds",
+        JSON.stringify(resultInitial.filter((x) => x.applauds.length !== 0))
+      );
+
+      await AsyncStorage.setItem(
+        "myStoredDataCompassions",
+        JSON.stringify(resultInitial.filter((x) => x.compassions.length !== 0))
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataBrokens",
+        JSON.stringify(resultInitial.filter((x) => x.brokens.length !== 0))
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataJustNos",
+        JSON.stringify(resultInitial.filter((x) => x.justNos.length !== 0))
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataTimestamp",
+        JSON.stringify(resultInitial.filter((x) => x.timestamp.length !== 0))
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataRandom",
+        JSON.stringify(resultInitial.sort(() => Math.random() - 0.3))
+      );
+    } catch (error) {
+      console.error(error);
+    }
     return resultInitial;
   }
 );
@@ -276,35 +302,31 @@ export const substractCommentNumberToStory = createAsyncThunk(
   }
 );
 
-export const voteApplaud = createAsyncThunk(
-  "voteApplaud",
-  async (infos: any) => {
-    try {
-      const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
-        applauds: infos.outputArray,
-      });
-      return res;
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
-    }
+export const vote = createAsyncThunk("vote", async (infos: any) => {
+  try {
+    const res =
+      infos.reaction === "applauds"
+        ? await updateDoc(doc(db, "stories", infos.voteData.storyId), {
+            applauds: infos.outputArray,
+          })
+        : infos.reaction === "compassions"
+        ? await updateDoc(doc(db, "stories", infos.voteData.storyId), {
+            compassions: infos.outputArray,
+          })
+        : infos.reaction === "brokens"
+        ? await updateDoc(doc(db, "stories", infos.voteData.storyId), {
+            brokens: infos.outputArray,
+          })
+        : infos.reaction === "justNos" &&
+          (await updateDoc(doc(db, "stories", infos.voteData.storyId), {
+            justNos: infos.outputArray,
+          }));
+    return res;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    Alert.alert("action failed please try again");
   }
-);
-
-export const voteCompassion = createAsyncThunk(
-  "voteApplaud",
-  async (infos: any) => {
-    try {
-      const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
-        compassions: infos.voteArray,
-      });
-      return res;
-    } catch (e) {
-      console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
-    }
-  }
-);
+});
 
 export const voteBroken = createAsyncThunk(
   "voteApplaud",

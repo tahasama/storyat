@@ -5,10 +5,19 @@ import Options from "./Options";
 
 const Title = () => {
   return (
-    <View style={styles.buttonContainer}>
-      <MenuButton />
-      <Text style={styles.button}>Storyat</Text>
-      <Options />
+    <View>
+      <View style={styles.buttonContainer}>
+        <MenuButton />
+        <Text style={styles.button}>Storyat</Text>
+        <Options />
+      </View>
+      <View
+        style={{
+          borderBottomColor: "grey",
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          // marginTop: 15,
+        }}
+      />
     </View>
   );
 };

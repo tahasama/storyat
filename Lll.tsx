@@ -7,8 +7,21 @@ import Brokens from "./DrawerActions/Brokens";
 import Compassions from "./DrawerActions/Compassions";
 import Newest from "./DrawerActions/Newest";
 import Items from "./Items";
+import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
+import { useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "./state/hooks";
 
 const Lll = () => {
+  const dispatch = useAppDispatch();
+  const { resultInitial } = useAppSelector(getstoriesData);
+
+  useEffect(() => {
+    let isSubscribed = resultInitial.length === 0 && dispatch(loadStories());
+    return () => {
+      isSubscribed;
+    };
+  }, []);
+
   const Drawer = createDrawerNavigator();
   return (
     <Drawer.Navigator

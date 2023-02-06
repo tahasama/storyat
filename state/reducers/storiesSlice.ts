@@ -129,60 +129,57 @@ export const ReactedToStories = createAsyncThunk(
   }
 );
 
-export const loadStories = createAsyncThunk(
-  "loadStories",
-  async ({ pageName }: any) => {
-    const yo = collection(db, "stories");
+export const loadStories = createAsyncThunk("loadStories", async () => {
+  const yo = collection(db, "stories");
 
-    const querySnapshot = await getDocs(yo);
-    const promises = querySnapshot.docs.map(async (docs: any) => {
-      const username = await (
-        await getDoc(doc(db, "users", docs.data().writerId))
-      ).data().username;
-      const avatar = await (
-        await getDoc(doc(db, "users", docs.data().writerId))
-      ).data().avatar;
-      return {
-        ...docs.data(),
-        id: docs.id,
-        username: username,
-        avatar: avatar,
-      };
-    });
-    const resultInitial = await Promise.all(promises);
+  const querySnapshot = await getDocs(yo);
+  const promises = querySnapshot.docs.map(async (docs: any) => {
+    const username = await (
+      await getDoc(doc(db, "users", docs.data().writerId))
+    ).data().username;
+    const avatar = await (
+      await getDoc(doc(db, "users", docs.data().writerId))
+    ).data().avatar;
+    return {
+      ...docs.data(),
+      id: docs.id,
+      username: username,
+      avatar: avatar,
+    };
+  });
+  const resultInitial = await Promise.all(promises);
 
-    try {
-      await AsyncStorage.setItem(
-        "myStoredDataApplauds",
-        JSON.stringify(resultInitial.filter((x) => x.applauds.length !== 0))
-      );
+  try {
+    await AsyncStorage.setItem(
+      "myStoredDataApplauds",
+      JSON.stringify(resultInitial.filter((x) => x.applauds.length !== 0))
+    );
 
-      await AsyncStorage.setItem(
-        "myStoredDataCompassions",
-        JSON.stringify(resultInitial.filter((x) => x.compassions.length !== 0))
-      );
-      await AsyncStorage.setItem(
-        "myStoredDataBrokens",
-        JSON.stringify(resultInitial.filter((x) => x.brokens.length !== 0))
-      );
-      await AsyncStorage.setItem(
-        "myStoredDataJustNos",
-        JSON.stringify(resultInitial.filter((x) => x.justNos.length !== 0))
-      );
-      await AsyncStorage.setItem(
-        "myStoredDataTimestamp",
-        JSON.stringify(resultInitial.filter((x) => x.timestamp.length !== 0))
-      );
-      await AsyncStorage.setItem(
-        "myStoredDataRandom",
-        JSON.stringify(resultInitial.sort(() => Math.random() - 0.3))
-      );
-    } catch (error) {
-      console.error(error);
-    }
-    return resultInitial;
+    await AsyncStorage.setItem(
+      "myStoredDataCompassions",
+      JSON.stringify(resultInitial.filter((x) => x.compassions.length !== 0))
+    );
+    await AsyncStorage.setItem(
+      "myStoredDataBrokens",
+      JSON.stringify(resultInitial.filter((x) => x.brokens.length !== 0))
+    );
+    await AsyncStorage.setItem(
+      "myStoredDataJustNos",
+      JSON.stringify(resultInitial.filter((x) => x.justNos.length !== 0))
+    );
+    await AsyncStorage.setItem(
+      "myStoredDataTimestamp",
+      JSON.stringify(resultInitial.filter((x) => x.timestamp.length !== 0))
+    );
+    await AsyncStorage.setItem(
+      "myStoredDataRandom",
+      JSON.stringify(resultInitial.sort(() => Math.random() - 0.3))
+    );
+  } catch (error) {
+    console.error(error);
   }
-);
+  return resultInitial;
+});
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
   try {

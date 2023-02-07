@@ -17,6 +17,7 @@ import {
   addStories,
   getstoriesData,
   loadStories,
+  reloadInitialData,
   updateStories,
   updateStoriesState,
 } from "./state/reducers/storiesSlice";
@@ -50,7 +51,7 @@ const StoryModal = (story) => {
           .then(() => setStatus("success"))
           .then(() => (setContent(""), setTitle(""))),
         setTimeout(() => {
-          dispatch(loadStories());
+          dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
         }, 250))
       : dispatch(
           updateStories({
@@ -270,3 +271,6 @@ const styles = StyleSheet.create({
 });
 
 export default StoryModal;
+function reloadData(arg0: boolean): any {
+  throw new Error("Function not implemented.");
+}

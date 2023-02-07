@@ -161,7 +161,7 @@ export const ReactedToStories = createAsyncThunk(
 
 export const loadStories = createAsyncThunk("loadStories", async () => {
   const yo = collection(db, "stories");
-
+  console.log("loading from redux");
   const querySnapshot = await getDocs(yo);
   const promises = querySnapshot.docs.map(async (docs: any) => {
     const username = await (
@@ -178,7 +178,10 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
     };
   });
   const resultInitial = await Promise.all(promises);
-
+  console.log(
+    "first data",
+    resultInitial.map((x) => x.title)
+  );
   try {
     await AsyncStorage.setItem(
       "myStoredDataApplauds",
@@ -381,6 +384,7 @@ export interface storiesProps {
 
     NumOfCommentState: number;
     // loadmore: number;
+    reloadState: boolean;
   };
 }
 
@@ -413,6 +417,7 @@ export const storiesInitialState = {
   // loadmore: 0,
   myupdateStoriesState: {},
   myupdateStoryState: [],
+  reloadState: false,
 };
 
 export const storiesSlice = createSlice({
@@ -452,6 +457,9 @@ export const storiesSlice = createSlice({
     updateStory: (state, action) => {
       state.myupdateStoryState = action.payload;
     },
+    reloadInitialData: (state, action) => {
+      state.reloadState = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
@@ -485,5 +493,6 @@ export const {
   reactedToStoriesState,
   updateStoriesState,
   updateStory,
+  reloadInitialData,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

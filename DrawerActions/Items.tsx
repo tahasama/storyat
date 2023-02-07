@@ -19,6 +19,7 @@ import {
   getstoriesData,
   // loadMoreStories,
   loadStories,
+  reloadInitialData,
   updateInitilalResultState,
   // updateResultState,
   // voteApplaud,
@@ -34,7 +35,7 @@ const Items = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const { menuStateValue } = useAppSelector(getHeaderData);
-  const { resultInitial } = useAppSelector(getstoriesData);
+  const { resultInitial, reloadState } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
@@ -45,13 +46,15 @@ const Items = () => {
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
 
   useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      result()
-        .then((res) => setData(JSON.parse(res)))
-        .then(() => setLoading(false));
-    }, 750);
-  }, []);
+    reloadState &&
+      (setLoading(true),
+      setTimeout(() => {
+        result()
+          .then((res) => setData(JSON.parse(res)))
+          .then(() => setLoading(false))
+          .then(() => dispatch(reloadInitialData(false)));
+      }, 750));
+  }, [reloadState]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -59,7 +62,10 @@ const Items = () => {
 
     setRefreshing(false);
   };
-
+  console.log(
+    "data renew",
+    data.map((x) => x.title)
+  );
   return (
     <SafeAreaView style={styles.container}>
       {loading || loadingMore ? (

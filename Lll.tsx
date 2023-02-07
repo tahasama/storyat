@@ -7,7 +7,11 @@ import Brokens from "./DrawerActions/Brokens";
 import Compassions from "./DrawerActions/Compassions";
 import Newest from "./DrawerActions/Newest";
 import Items from "./DrawerActions/Items";
-import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
+import {
+  getstoriesData,
+  loadStories,
+  reloadInitialData,
+} from "./state/reducers/storiesSlice";
 import { useDispatch } from "react-redux";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import Title from "./Title";
@@ -18,18 +22,23 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const Lll = () => {
   const dispatch = useAppDispatch();
-  const { resultInitial } = useAppSelector(getstoriesData);
+  const { resultInitial, reloadState } = useAppSelector(getstoriesData);
   const [data, setData] = useState([]);
-  const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
+  // const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
+  // console.log("first reloadState", reloadState);
+
+  // useEffect(() => {
+  //   reloadState &&
+  //     setTimeout(() => {
+  //       result().then((res) => setData(JSON.parse(res)));
+  //       // .then(() => dispatch(reloadInitialData(false)));
+  //     }, 750);
+  // }, [reloadState]);
 
   useEffect(() => {
-    setTimeout(() => {
-      result().then((res) => setData(JSON.parse(res)));
-    }, 750);
-  }, []);
-
-  useEffect(() => {
-    let isSubscribed = resultInitial.length === 0 && dispatch(loadStories());
+    let isSubscribed = console.log("first loadstories");
+    resultInitial.length === 0 &&
+      dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
     return () => {
       isSubscribed;
     };
@@ -46,6 +55,7 @@ const Lll = () => {
         drawerStyle: { backgroundColor: "#041820" },
         drawerInactiveTintColor: "#9BA5A9",
         swipeEnabled: true,
+        headerStyle: { marginTop: 30 },
       }}
     >
       <Drawer.Screen

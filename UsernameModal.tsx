@@ -19,7 +19,6 @@ import {
   updateUsername,
   updateUsernameState,
 } from "./state/reducers/authSlice";
-import { addStories, loadStories } from "./state/reducers/storiesSlice";
 import { useRoute } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;

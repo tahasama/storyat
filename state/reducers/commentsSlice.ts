@@ -95,6 +95,8 @@ export const loadAllComments = createAsyncThunk(
       return docs.data();
     });
     const resultComments = await Promise.all(promises);
+    console.log("resultComments", resultComments);
+
     let xxx = [];
     const promisess = resultComments.map(async (ccc) => {
       const res = await getDoc(doc(db, "stories", ccc.storyId));
@@ -126,6 +128,9 @@ export const loadAllComments = createAsyncThunk(
       }
       return acc;
     }, []);
+
+    console.log("asft", outputArray.length);
+
     try {
       await AsyncStorage.setItem(
         "myStoredComments",

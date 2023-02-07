@@ -1,36 +1,35 @@
 import {
   getAuth,
-  GoogleAuthProvider,
   signInWithCredential,
+  FacebookAuthProvider,
 } from "firebase/auth";
 import { Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import React from "react";
 import { useEffect } from "react";
 
-import { useIdTokenAuthRequest } from "expo-auth-session/build/providers/Google";
+import * as AuthSession from "expo-auth-session";
+
+import { useAuthRequest } from "expo-auth-session/build/providers/Facebook";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "../firebase";
 
 const GoogleLogin = () => {
-  const [request, response, promptAsync] = useIdTokenAuthRequest({
-    clientId: process.env.REACT_APP_CLIENT_ID_WEB,
+  const [request, response, promptAsync] = useAuthRequest({
+    responseType: AuthSession.ResponseType.Token,
+    expoClientId: process.env.REACT_APP_FACEBOOK_APP_ID,
   });
 
-  const PicId = () => {
-    return Math.floor(Math.random() * 1084);
-  };
   useEffect(() => {
     if (response?.type === "success") {
-      const { id_token } = response.params;
+      const { access_token } = response.params;
       const auth = getAuth();
-      const credential = GoogleAuthProvider.credential(id_token);
+      const credential = FacebookAuthProvider.credential(access_token);
       signInWithCredential(auth, credential).then(async (cred) => {
         const q = query(
           collection(db, "users"),
           where("firebaseUserId", "==", cred.user.uid)
         );
         const querySnapshot = (await getDocs(q)).docs.length;
-
         try {
           querySnapshot === 0 &&
             (await addDoc(collection(db, "users"), {
@@ -38,7 +37,7 @@ const GoogleLogin = () => {
               firebaseUserId: cred.user.uid,
               writer: cred.user.email,
               timestamp: Date.now(),
-              avatar: `https://picsum.photos/id/${PicId()}/200/300`,
+              avatar: "",
             }));
         } catch (e) {
           console.error("Error adding document: ", e);
@@ -55,7 +54,7 @@ const GoogleLogin = () => {
       style={styles.button3}
       disabled={!request}
     >
-      <Text style={styles.buttonText}>Login with Google</Text>
+      <Text style={styles.buttonText}>Login with FaceBook</Text>
     </TouchableOpacity>
   );
 };

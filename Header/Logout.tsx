@@ -2,11 +2,10 @@ import { signOut } from "firebase/auth";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { auth } from "./firebase";
-import { useNavigation } from "@react-navigation/core";
-import { resetUser } from "./state/reducers/authSlice";
 import { useDispatch } from "react-redux";
-import * as SecureStore from "expo-secure-store";
+import { useNavigation } from "@react-navigation/native";
+import { auth } from "../firebase";
+import { resetUser } from "../state/reducers/authSlice";
 
 const Logout = () => {
   const navigation = useNavigation<any>();

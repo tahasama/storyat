@@ -1,7 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 // import itnReducer from "./reducers/itnSlice";
 import authSlice from "./reducers/authSlice";
-import headerSlice from "./reducers/headerSlice";
 import storiesSlice from "./reducers/storiesSlice";
 import commentsSlice from "./reducers/commentsSlice";
 import repliesSlice from "./reducers/repliesSlice";
@@ -10,7 +9,6 @@ export const store = configureStore({
   reducer: {
     // itnz: itnReducer
     authUser: authSlice,
-    headerStates: headerSlice,
     storiesStates: storiesSlice,
     commentsStates: commentsSlice,
     repliesStates: repliesSlice,

@@ -1,47 +1,21 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  SafeAreaView,
-  ActivityIndicator,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import { StyleSheet } from "react-native";
+import React from "react";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
-import { useAppSelector, useAppDispatch } from "../state/hooks";
-import { getAuthData } from "../state/reducers/authSlice";
-import { menuState } from "../state/reducers/headerSlice";
-import {
-  getstoriesData,
-  myStories,
-  ReactedToStories,
-} from "../state/reducers/storiesSlice";
 import Applauds from "../TabsActions/Applauds";
 import Compassions from "../TabsActions/Compassions";
 import Brokens from "../TabsActions/Brokens";
 import JustNos from "../TabsActions/JustNos";
-import { AllComments, getcommentsData } from "../state/reducers/commentsSlice";
 
-function MyReactions({ navigation, theUser }: any) {
-  const { resultReactions } = useAppSelector(getstoriesData);
-  const { user } = useAppSelector(getAuthData);
-  const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState(false);
-  const { result } = useAppSelector(getstoriesData);
-  const { votedComments } = useAppSelector(getcommentsData);
-
+function MyReactions() {
   const Tab = createBottomTabNavigator();
 
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarActiveBackgroundColor: "#213242",
-        // tabBarInactiveBackgroundColor: "#051e2d",
         header: () => null,
         tabBarItemStyle: { borderRadius: 20 },
         tabBarStyle: { backgroundColor: "#051e2d" },

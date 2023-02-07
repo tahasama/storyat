@@ -2,8 +2,8 @@ import { StatusBar, StyleSheet, View } from "react-native";
 import { NavigationContainer, useRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Item from "./Item";
-import Login from "./Login";
-import Logout from "./Logout";
+import Login from "./Login/Login";
+import Logout from "./Header/Logout";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase";
@@ -11,20 +11,18 @@ import { getAuthData, saveUser } from "./state/reducers/authSlice";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import React from "react";
 import { useFonts } from "expo-font";
-import Lll from "./Lll";
-import Title from "./Title";
+import Lll from "./Header/Lll";
+import Title from "./Header/Title";
 import Reply from "./Reply";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import Profile from "./Profile";
 import Actions from "./Actions";
-import * as SecureStore from "expo-secure-store";
 
 const Index = () => {
   const Stack = createNativeStackNavigator();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(true);
-  // const route = useRoute();
 
   const unsubscribe = () =>
     !user &&
@@ -40,8 +38,6 @@ const Index = () => {
           querySnapshot.forEach((doc: any) =>
             result.push({ ...doc.data(), id: doc.id })
           );
-
-          // storeData("myUser", result[0]).then(() => getData("myUser"));
           dispatch(saveUser(result[0]));
         }, 500);
       } else {

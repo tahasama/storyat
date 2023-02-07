@@ -2,7 +2,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth, db } from "./firebase";
+import { auth, db } from "../firebase";
 import {
   View,
   Text,
@@ -14,32 +14,25 @@ import {
 import React from "react";
 import { useEffect, useState } from "react";
 
-import Splash from "./Splash";
+import Splash from "../Splash";
 
 import * as WebBrowser from "expo-web-browser";
 import GoogleLogin from "./GoogleLogin";
 import FaceBookLogin from "./FaceBookLogin";
-import { getAuthData } from "./state/reducers/authSlice";
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getHeaderData, menuState } from "./state/reducers/headerSlice";
+import { getAuthData } from "../state/reducers/authSlice";
+import { useAppSelector } from "../state/hooks";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = ({ navigation, route }) => {
   const para = route.params;
-  const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
-  const { menuStateValue } = useAppSelector(getHeaderData);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(menuState(!menuStateValue));
-
     user && !loading && navigation.replace("lll");
   }, [loading, user]);
 
@@ -72,7 +65,6 @@ const Login = ({ navigation, route }) => {
               avatar: `https://picsum.photos/id/${PicId()}/200/300`,
             }));
         } catch (e) {
-          console.error("Error adding document: ", e);
           Alert.alert("action failed please try again");
         }
       })

@@ -27,7 +27,7 @@ import Feather from "@expo/vector-icons/Feather";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const StoryModal = (story) => {
+const StoryModal = () => {
   const dispatch = useAppDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("");
@@ -38,12 +38,6 @@ const StoryModal = (story) => {
   const { user } = useAppSelector(getAuthData);
   const { myupdateStoryState } = useAppSelector(getstoriesData);
   const pageName = useRoute().name;
-
-  console.log("woooow", pageName);
-
-  // useEffect(() => {
-  //   dispatch(updateStoriesState({ title: "", content: "", id: "" }));
-  // }, []);
 
   const vvv = () => {
     pageName !== "item"

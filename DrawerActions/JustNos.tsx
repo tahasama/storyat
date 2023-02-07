@@ -1,39 +1,21 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
-  Image,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-
-import { useIsFocused, useRoute } from "@react-navigation/native";
-import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAppDispatch, useAppSelector } from "../state/hooks";
-import { getAuthData } from "../state/reducers/authSlice";
-import { getHeaderData } from "../state/reducers/headerSlice";
-import { getstoriesData } from "../state/reducers/storiesSlice";
 import StoryModal from "../StoryModal";
-import FooterOfStory from "../FooterOfStory";
-import BodyOfStory from "../BodyOfStory";
-import HeadOfStory from "../HeadOfStory";
+import FooterOfStory from "../Story/FooterOfStory";
+import BodyOfStory from "../Story/BodyOfStory";
+import HeadOfStory from "../Story/HeadOfStory";
 
 const JustNos = () => {
-  const dispatch = useAppDispatch();
-  const { user } = useAppSelector(getAuthData);
-  const { menuStateValue } = useAppSelector(getHeaderData);
-  const { resultInitial } = useAppSelector(getstoriesData);
-  const [selectedId, setSelectedId] = useState(null);
-  const isFocused = useIsFocused();
   const [loading, setLoading] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const pageName = useRoute().name;
   const [data, setData] = useState([]);
   const result = async () => await AsyncStorage.getItem("myStoredDataJustNos");
 
@@ -48,7 +30,7 @@ const JustNos = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading || loadingMore ? (
+      {loading ? (
         <View
           style={{
             alignItems: "center",
@@ -87,7 +69,6 @@ const JustNos = () => {
           keyExtractor={(item) => {
             return item.id;
           }}
-          extraData={selectedId}
         />
       )}
 

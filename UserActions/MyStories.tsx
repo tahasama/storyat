@@ -1,38 +1,19 @@
 import {
   View,
-  Text,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
-  Image,
   SafeAreaView,
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
-import { useAppDispatch, useAppSelector } from "../state/hooks";
-import {
-  getstoriesData,
-  loadStories,
-  myStories,
-} from "../state/reducers/storiesSlice";
-import { getAuthData } from "../state/reducers/authSlice";
-import { menuState } from "../state/reducers/headerSlice";
-import HeadOfStory from "../HeadOfStory";
-import BodyOfStory from "../BodyOfStory";
-import FooterOfStory from "../FooterOfStory";
+import HeadOfStory from "../Story/HeadOfStory";
+import BodyOfStory from "../Story/BodyOfStory";
+import FooterOfStory from "../Story/FooterOfStory";
 import StoryModal from "../StoryModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-function MyStories({ navigation, route, theUser }: any) {
-  const { result } = useAppSelector(getstoriesData);
-  const dispatch = useAppDispatch();
+function MyStories() {
   const [loading, setLoading] = useState(false);
-  const { user } = useAppSelector(getAuthData);
   const [data, setData] = useState([]);
 
   const storedResult = async () =>

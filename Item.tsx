@@ -14,7 +14,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData, getUser } from "./state/reducers/authSlice";
 
-import { storyRoute } from "./state/reducers/headerSlice";
 import {
   getcommentsData,
   loadcomments,
@@ -27,16 +26,14 @@ import Entypo from "@expo/vector-icons/Entypo";
 import {} from "./state/reducers/repliesSlice";
 import {
   addCommentNumberToStory,
-  getstoriesData,
   substractCommentNumberToStory,
   updateStory,
 } from "./state/reducers/storiesSlice";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
-// import GetHeader from "./GetHeader";
-import FooterOfStory from "./FooterOfStory";
-import HeadOfStory from "./HeadOfStory";
-import BodyOfStory from "./BodyOfStory";
+import FooterOfStory from "./Story/FooterOfStory";
+import HeadOfStory from "./Story/HeadOfStory";
+import BodyOfStory from "./Story/BodyOfStory";
 
 const Item = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
@@ -44,7 +41,6 @@ const Item = ({ navigation, route }) => {
   const ccc = route.params;
   const { user } = useAppSelector(getAuthData);
   const { result } = useAppSelector(getcommentsData);
-  const { myupdateStoriesState } = useAppSelector(getstoriesData);
 
   const [commentIdLoading, setCommentIdLoading] = useState("");
   const [comment, setComment] = useState("");
@@ -58,10 +54,6 @@ const Item = ({ navigation, route }) => {
   useEffect(() => {
     dispatch(updateStory(ccc.item));
   }, []);
-
-  useEffect(() => {
-    dispatch(storyRoute(ccc.item.id));
-  }, [ccc.item.id]);
 
   useEffect(() => {
     isFocused && dispatch(loadcomments(ccc.item.id));

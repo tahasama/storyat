@@ -4,8 +4,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
-  Dimensions,
-  Button,
   Pressable,
   ActivityIndicator,
 } from "react-native";
@@ -13,7 +11,6 @@ import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import {
   getAuthData,
-  getUser,
   updateUserImage,
   updateUserImageState,
 } from "./state/reducers/authSlice";
@@ -29,28 +26,36 @@ import {
   getcommentsData,
   loadAllComments,
 } from "./state/reducers/commentsSlice";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import * as ImagePicker from "expo-image-picker";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./firebase";
 import { useNavigation } from "@react-navigation/native";
-import { menuState } from "./state/reducers/headerSlice";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import UsernameModal from "./UsernameModal";
 
 const Profile = ({ route }: any) => {
-  const windowWidth = Dimensions.get("window").width;
-  const windowHeight = Dimensions.get("window").height;
   const [loading, setLoading] = useState(false);
-  const { result, resultReactions, myReactedToStories } =
-    useAppSelector(getstoriesData);
+  const { result, resultReactions } = useAppSelector(getstoriesData);
   const { resultComments } = useAppSelector(getcommentsData);
   const { image, user, newuser, username } = useAppSelector(getAuthData);
-  // const [userId, setuserId] = useState<any>();
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
-  // const userId =
-  //   route.params.theUser === undefined ? user.id : route.params.theUser.id;
+
+  console.log("resultComments", resultComments);
+
+  useEffect(() => {
+    let isSubscribed =
+      resultComments.length === 0 &&
+      dispatch(loadAllComments({ userId: user.id }));
+    result.length === 0 && dispatch(myStories({ userId: user.id })); // temporary solution
+    resultReactions.length === 0 &&
+      dispatch(ReactedToStories({ userId: user.id }));
+
+    return () => {
+      isSubscribed;
+    };
+  }, []);
+
   const pickImageAsync = async () => {
     setLoading(true);
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -71,43 +76,26 @@ const Profile = ({ route }: any) => {
             dispatch(updateUserImage({ userImage: res, userId: user.id }));
           }, 2000),
             setLoading(false);
-          // dispatch(updateUserImage({ userImage: res, userId: user.id }));
         })
 
         .catch((error) => {
           setLoading(false);
-          console.error("some error", error.message);
         });
     } else {
       setLoading(false);
     }
   };
-  // const userId = user.id !== route.params.theUser ? newuser : user;
-  useEffect(() => {
-    // !newuser ? setuserId(user) : setuserId(newuser);
-  }, []);
 
   const userId = route.params.notActualUser !== true ? user : newuser;
-
-  // const joined1 = new DateFormat
 
   const handleOnpress = () => {
     navigation.navigate("actions", { userId: userId });
   };
 
-  // const HandleUsername = () => {
-  //   dispatch(updateUsername(userId.id));
-  // };
-
   useEffect(() => {
-    dispatch(menuState(false)),
-      // setLoading(true),
-      dispatch(myStories({ pageName: userId.id }));
+    dispatch(myStories({ pageName: userId.id }));
     dispatch(ReactedToStories({ userId: userId.id }));
     dispatch(loadAllComments({ userId: userId.id }));
-
-    // dispatch(ReactedToStories({ pageName: user.id })),
-    // setLoading(false);
   }, [userId.id]);
 
   return (

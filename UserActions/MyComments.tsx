@@ -1,46 +1,18 @@
 import {
   View,
-  Text,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
-  Image,
   SafeAreaView,
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../state/hooks";
-import {
-  getstoriesData,
-  getStory,
-  loadStories,
-  myStories,
-  ReactedToStories,
-  // updateResultState,
-} from "../state/reducers/storiesSlice";
-import { getAuthData } from "../state/reducers/authSlice";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import StoryModal from "../StoryModal";
-import {
-  AllComments,
-  getcommentsData,
-  loadAllComments,
-} from "../state/reducers/commentsSlice";
-import { menuState } from "../state/reducers/headerSlice";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FooterOfStory from "../FooterOfStory";
-import BodyOfStory from "../BodyOfStory";
-import HeadOfStory from "../HeadOfStory";
+import FooterOfStory from "../Story/FooterOfStory";
+import BodyOfStory from "../Story/BodyOfStory";
+import HeadOfStory from "../Story/HeadOfStory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-function MyComments({ navigation }) {
-  const { resultComments } = useAppSelector(getcommentsData);
-  const { user } = useAppSelector(getAuthData);
-  const dispatch = useAppDispatch();
+function MyComments() {
   const [loading, setLoading] = useState(false);
-
   const [data, setData] = useState([]);
 
   const storedResult = async () =>
@@ -86,7 +58,6 @@ function MyComments({ navigation }) {
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
-          // extraData={selectedId}
         />
       )}
     </SafeAreaView>
@@ -97,15 +68,12 @@ export default MyComments;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#333333",
     backgroundColor: "#051e28",
   },
 
   item: {
     padding: 8,
     marginVertical: 8,
-    // marginHorizontal: 16,
-    // backgroundColor: "red",
     flex: 1,
   },
   title: {
@@ -125,17 +93,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     padding: 20,
-    // backgroundColor: "transparent",
     backgroundColor: "#051E28",
   },
   buttonContainer1: {
     flexDirection: "row",
     justifyContent: "center",
-    // backgroundColor: "#051E28",
-    // backgroundColor: "#002244",
     backgroundColor: "#332FD0",
-    // zIndex: 99,
-
     alignItems: "center",
     height: 80,
     width: 80,

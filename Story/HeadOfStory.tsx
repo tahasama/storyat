@@ -2,13 +2,13 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useCallback, useRef } from "react";
 import { Text, TouchableOpacity, Image, Animated, View } from "react-native";
 
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, getUser } from "./state/reducers/authSlice";
-import { removeStory } from "./state/reducers/storiesSlice";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { getAuthData, getUser } from "../state/reducers/authSlice";
+import { removeStory } from "../state/reducers/storiesSlice";
 import { useRoute } from "@react-navigation/native";
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import StoryModal from "./StoryModal";
+import StoryModal from "../StoryModal";
 
 const HeadOfStory = ({ item }: any) => {
   const dispatch = useAppDispatch();

@@ -2,19 +2,13 @@ import { View, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
-
-import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { useNavigation, StackActions } from "@react-navigation/core";
 import { useRoute } from "@react-navigation/native";
-import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 
 const MenuButton = () => {
-  const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
 
   const route = useRoute();
-
-  const { menuStateValue } = useAppSelector(getHeaderData);
 
   const popAction = StackActions.pop(1);
 

@@ -25,23 +25,18 @@ import {
   getcommentsData,
   loadAllComments,
 } from "./state/reducers/commentsSlice";
-import { menuState } from "./state/reducers/headerSlice";
 import MyComments from "./UserActions/MyComments";
 import MyVotedComments from "./UserActions/MyVotedComments";
 import MyReactions from "./UserActions/MyReactions";
 import MyStories from "./UserActions/MyStories";
 
-const Actions = ({ navigation, route, userId }) => {
+const Actions = () => {
   const { user } = useAppSelector(getAuthData);
-  const [selectedId, setSelectedId] = useState(null);
-  const [loading, setLoading] = useState(false);
+
   const dispatch = useAppDispatch();
   const { resultComments } = useAppSelector(getcommentsData);
   const { result, resultReactions } = useAppSelector(getstoriesData);
   const { votedComments } = useAppSelector(getcommentsData);
-
-  // console.log("theUser88", route.params.userId.id);
-  console.log("theUser88", route.params.userId.id);
 
   useEffect(() => {
     let isSubscribed =

@@ -13,7 +13,6 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData, getUser } from "./state/reducers/authSlice";
-import { getHeaderData, commentRoute } from "./state/reducers/headerSlice";
 import {
   getrepliesData,
   loadreplies,
@@ -43,10 +42,6 @@ const Reply = ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState(null);
   const dispatch = useAppDispatch();
   const { result } = useAppSelector(getrepliesData);
-
-  useEffect(() => {
-    dispatch(commentRoute(ccc.item.id));
-  }, [ccc.item.id]);
 
   useEffect(() => {
     dispatch(loadreplies(ccc.item.id));

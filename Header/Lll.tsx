@@ -1,21 +1,19 @@
-import { StyleSheet, TouchableOpacity, View, Text, Button } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+import { StyleSheet } from "react-native";
+import React, { useEffect } from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import Applauds from "./DrawerActions/Applauds";
-import JustNos from "./DrawerActions/JustNos";
-import Brokens from "./DrawerActions/Brokens";
-import Compassions from "./DrawerActions/Compassions";
-import Newest from "./DrawerActions/Newest";
-import Items from "./DrawerActions/Items";
+import Applauds from "../DrawerActions/Applauds";
+import JustNos from "../DrawerActions/JustNos";
+import Brokens from "../DrawerActions/Brokens";
+import Compassions from "../DrawerActions/Compassions";
+import Newest from "../DrawerActions/Newest";
+import Items from "../DrawerActions/Items";
 import {
   getstoriesData,
   loadStories,
   reloadInitialData,
-} from "./state/reducers/storiesSlice";
-import { useDispatch } from "react-redux";
-import { useAppDispatch, useAppSelector } from "./state/hooks";
+} from "../state/reducers/storiesSlice";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
 import Title from "./Title";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
@@ -23,21 +21,10 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 const Lll = () => {
   const dispatch = useAppDispatch();
   const { resultInitial, reloadState } = useAppSelector(getstoriesData);
-  const [data, setData] = useState([]);
-  // const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
-  // console.log("first reloadState", reloadState);
-
-  // useEffect(() => {
-  //   reloadState &&
-  //     setTimeout(() => {
-  //       result().then((res) => setData(JSON.parse(res)));
-  //       // .then(() => dispatch(reloadInitialData(false)));
-  //     }, 750);
-  // }, [reloadState]);
 
   useEffect(() => {
-    let isSubscribed = console.log("first loadstories");
-    resultInitial.length === 0 &&
+    let isSubscribed =
+      resultInitial.length === 0 &&
       dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
     return () => {
       isSubscribed;
@@ -47,9 +34,6 @@ const Lll = () => {
   const Drawer = createDrawerNavigator();
   return (
     <Drawer.Navigator
-      // defaultScreenOptions={{ unmountOnBlur: true }}
-      //   header: () => <Title />,
-
       screenOptions={{
         header: () => <Title />,
         drawerStyle: { backgroundColor: "#041820" },

@@ -15,11 +15,10 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
-import { getAuthData, resetUser } from "./state/reducers/authSlice";
-import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
-import { menuState } from "./state/reducers/headerSlice";
-import { useAppSelector } from "./state/hooks";
+import { useAppSelector } from "../state/hooks";
+import { auth } from "../firebase";
+import { getAuthData, resetUser } from "../state/reducers/authSlice";
 
 const Options = () => {
   const windowWidth = Dimensions.get("window").width;
@@ -192,7 +191,7 @@ const Options = () => {
       </Modal>
       <Pressable
         style={[styles.buttonContainer]}
-        onPress={() => (setModalVisible(true), dispatch(menuState(false)))}
+        onPress={() => setModalVisible(true)}
       >
         <FontAwesome name="user-circle-o" size={28} color="#646464" />
       </Pressable>

@@ -1,22 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import { getAuthData, getUser } from "./state/reducers/authSlice";
-
 import { useNavigation } from "@react-navigation/native";
-import { getHeaderData, menuState } from "./state/reducers/headerSlice";
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { vote } from "./state/reducers/storiesSlice";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { getAuthData } from "../state/reducers/authSlice";
+import { vote } from "../state/reducers/storiesSlice";
 
 const FooterOfStory = ({ item }: any) => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
   const { user } = useAppSelector(getAuthData);
-  const { menuStateValue } = useAppSelector(getHeaderData);
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });

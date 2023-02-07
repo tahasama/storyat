@@ -1,27 +1,18 @@
 import {
   View,
-  Text,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
-  Image,
   SafeAreaView,
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
-import HeadOfStory from "../HeadOfStory";
-import BodyOfStory from "../BodyOfStory";
-import FooterOfStory from "../FooterOfStory";
-import { AllComments, getcommentsData } from "../state/reducers/commentsSlice";
-import { useAppDispatch, useAppSelector } from "../state/hooks";
-import { getAuthData } from "../state/reducers/authSlice";
+import HeadOfStory from "../Story/HeadOfStory";
+import BodyOfStory from "../Story/BodyOfStory";
+import FooterOfStory from "../Story/FooterOfStory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-function MyVotedComments({ navigation }) {
-  const { votedComments } = useAppSelector(getcommentsData);
-  const { user } = useAppSelector(getAuthData);
-  const dispatch = useAppDispatch();
+function MyVotedComments() {
   const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState([]);
@@ -69,7 +60,6 @@ function MyVotedComments({ navigation }) {
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
-          //   extraData={selectedId}
         />
       )}
     </SafeAreaView>
@@ -80,15 +70,12 @@ export default MyVotedComments;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#333333",
     backgroundColor: "#051e28",
   },
 
   item: {
     padding: 8,
     marginVertical: 8,
-    // marginHorizontal: 16,
-    // backgroundColor: "red",
     flex: 1,
   },
   title: {

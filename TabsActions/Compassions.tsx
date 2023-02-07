@@ -39,9 +39,12 @@ const Compassions = () => {
     await AsyncStorage.getItem("myStoredDataCompassionsReaction");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      result().then((res) => setData(JSON.parse(res)));
-    }, 750);
+      result()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
+    }, 350);
   }, []);
 
   return (

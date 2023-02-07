@@ -39,14 +39,17 @@ function MyStories({ navigation, route, theUser }: any) {
     await AsyncStorage.getItem("myStoredStories");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      storedResult().then((res) => setData(JSON.parse(res)));
-    }, 750);
+      storedResult()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
+    }, 350);
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      {result.length === undefined ? (
+      {loading ? (
         <View
           style={{
             alignItems: "center",

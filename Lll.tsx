@@ -12,6 +12,9 @@ import { useDispatch } from "react-redux";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import Title from "./Title";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const Lll = () => {
   const dispatch = useAppDispatch();
@@ -37,6 +40,7 @@ const Lll = () => {
     <Drawer.Navigator
       // defaultScreenOptions={{ unmountOnBlur: true }}
       //   header: () => <Title />,
+
       screenOptions={{
         header: () => <Title />,
         drawerStyle: { backgroundColor: "#041820" },
@@ -44,12 +48,74 @@ const Lll = () => {
         swipeEnabled: true,
       }}
     >
-      <Drawer.Screen name="items" component={Items} />
-      <Drawer.Screen name="timestamp" component={Newest} />
-      <Drawer.Screen name="applauds" component={Applauds} />
-      <Drawer.Screen name="compassions" component={Compassions} />
-      <Drawer.Screen name="brokens" component={Brokens} />
-      <Drawer.Screen name="justNos" component={JustNos} />
+      <Drawer.Screen
+        name="items"
+        component={Items}
+        options={{
+          title: "Home",
+          drawerIcon: () => (
+            <FontAwesome5 name="home" color={"#757569"} size={26} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="timestamp"
+        component={Newest}
+        options={{
+          title: "Trending",
+          drawerIcon: () => (
+            <Feather name="trending-up" color="#1919a9" size={30} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="applauds"
+        component={Applauds}
+        options={{
+          title: "Applauded",
+          drawerIcon: () => (
+            <MaterialCommunityIcons
+              name="hand-clap"
+              color={"#503213"}
+              size={30}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="compassions"
+        component={Compassions}
+        options={{
+          title: "Liked",
+          drawerIcon: () => (
+            <MaterialCommunityIcons name="heart" color={"#3c0000"} size={30} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="brokens"
+        component={Brokens}
+        options={{
+          title: "Heart Breaking",
+          drawerIcon: () => (
+            <MaterialCommunityIcons
+              name="heart-broken"
+              color={"#3e007c"}
+              size={30}
+            />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="justNos"
+        component={JustNos}
+        options={{
+          title: "Trending",
+          drawerIcon: () => (
+            <Feather name="trending-down" color="#213e45" size={30} />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 };

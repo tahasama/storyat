@@ -38,11 +38,13 @@ const JustNos = () => {
   const result = async () => await AsyncStorage.getItem("myStoredDataJustNos");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      result().then((res) => setData(JSON.parse(res)));
+      result()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
     }, 750);
   }, []);
-  console.log("JustNos");
 
   return (
     <SafeAreaView style={styles.container}>

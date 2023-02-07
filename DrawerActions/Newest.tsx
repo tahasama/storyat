@@ -39,11 +39,14 @@ const Newest = () => {
     await AsyncStorage.getItem("myStoredDataTimestamp");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      result().then((res) => setData(JSON.parse(res)));
+      result()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
     }, 750);
   }, []);
-  console.log("Newest");
+
   return (
     <SafeAreaView style={styles.container}>
       {loading || loadingMore ? (

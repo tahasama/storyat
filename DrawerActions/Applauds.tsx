@@ -38,15 +38,17 @@ const Applauds = () => {
   const result = async () => await AsyncStorage.getItem("myStoredDataApplauds");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      result().then((res) => setData(JSON.parse(res)));
-    }, 750);
+      result()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
+    }, 350);
   }, []);
-  console.log("Applauds");
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading || loadingMore ? (
+      {loading ? (
         <View
           style={{
             alignItems: "center",

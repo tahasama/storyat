@@ -22,6 +22,7 @@ function MyVotedComments({ navigation }) {
   const { votedComments } = useAppSelector(getcommentsData);
   const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState([]);
 
@@ -29,14 +30,17 @@ function MyVotedComments({ navigation }) {
     await AsyncStorage.getItem("myStoredVotedComments");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      storedResult().then((res) => setData(JSON.parse(res)));
-    }, 750);
+      storedResult()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
+    }, 350);
   }, []);
-  console.log("data", data);
+
   return (
     <SafeAreaView style={styles.container}>
-      {data.length === undefined ? (
+      {loading ? (
         <View
           style={{
             alignItems: "center",

@@ -33,7 +33,10 @@ import {
 } from "./state/reducers/storiesSlice";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
-import GetHeader from "./GetHeader";
+// import GetHeader from "./GetHeader";
+import FooterOfStory from "./FooterOfStory";
+import HeadOfStory from "./HeadOfStory";
+import BodyOfStory from "./BodyOfStory";
 
 const Item = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
@@ -198,6 +201,41 @@ const Item = ({ navigation, route }) => {
       { iterations: 2 }
     ).start();
   }, []);
+
+  const getHeader = (storyId) => (
+    <View>
+      <HeadOfStory item={ccc.item} />
+      <BodyOfStory item={ccc.item} />
+      <FooterOfStory item={ccc.item} />
+      <View
+        style={{
+          marginTop: 15,
+          paddingTop: 15,
+          paddingBottom: 10,
+          borderTopColor: "grey",
+          borderTopWidth: StyleSheet.hairlineWidth,
+        }}
+      >
+        <Text
+          style={{
+            color: "#7f6c33",
+            fontSize: 14,
+            marginLeft: 5,
+            marginTop: 5,
+            fontFamily: "",
+            fontWeight: "700",
+            borderColor: "#7f6c33",
+            borderWidth: 1,
+            width: "25%",
+            padding: 7,
+            borderRadius: 8,
+          }}
+        >
+          Comments :
+        </Text>
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -364,21 +402,7 @@ const Item = ({ navigation, route }) => {
           return item.id;
         }}
         extraData={selectedId}
-        ListHeaderComponent={GetHeader({
-          navigation,
-          route,
-          storyId: ccc.item.id,
-        })}
-        // ListFooterComponent={getFooter}
-        // ListFooterComponentStyle={{
-        //   backgroundColor: "#495C83",
-        //   borderRadius: 50,
-        //   padding: 26,
-        //   elevation: 4,
-        //   position: "absolute",
-        //   right: 20,
-        //   bottom: 60,
-        // }}
+        ListHeaderComponent={getHeader}
       />
       <View
         style={{

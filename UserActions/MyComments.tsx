@@ -39,6 +39,7 @@ function MyComments({ navigation }) {
   const { resultComments } = useAppSelector(getcommentsData);
   const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
 
   const [data, setData] = useState([]);
 
@@ -46,14 +47,17 @@ function MyComments({ navigation }) {
     await AsyncStorage.getItem("myStoredComments");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      storedResult().then((res) => setData(JSON.parse(res)));
-    }, 750);
+      storedResult()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
+    }, 350);
   }, []);
 
   return (
     <SafeAreaView style={styles.container}>
-      {resultComments.length === undefined ? (
+      {loading ? (
         <View
           style={{
             alignItems: "center",

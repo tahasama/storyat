@@ -38,11 +38,13 @@ const Brokens = () => {
   const result = async () => await AsyncStorage.getItem("myStoredDataBrokens");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      result().then((res) => setData(JSON.parse(res)));
+      result()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
     }, 750);
   }, []);
-  console.log("Brokens");
 
   return (
     <SafeAreaView style={styles.container}>

@@ -45,8 +45,11 @@ const Items = () => {
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      result().then((res) => setData(JSON.parse(res)));
+      result()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
     }, 750);
   }, []);
 

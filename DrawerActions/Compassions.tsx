@@ -39,11 +39,13 @@ const Compassions = () => {
     await AsyncStorage.getItem("myStoredDataCompassions");
 
   useEffect(() => {
+    setLoading(true);
     setTimeout(() => {
-      result().then((res) => setData(JSON.parse(res)));
+      result()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => setLoading(false));
     }, 750);
   }, []);
-  console.log("Compassions");
 
   return (
     <SafeAreaView style={styles.container}>

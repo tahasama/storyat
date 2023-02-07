@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { compose, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addDoc,
@@ -39,6 +40,7 @@ export const AllComments = createAsyncThunk(
       .map((x) => x.likes.filter((y) => y.liker === data))
       .flat()
       .map((y) => y.storyId);
+    console.log("votedComments", votedComments);
 
     const promisess = votedComments.map(async (ccc) => {
       const res = await getDoc(doc(db, "stories", ccc));
@@ -58,12 +60,26 @@ export const AllComments = createAsyncThunk(
       xxx.push(...xxx, res2);
     });
     const results = await Promise.all(promisess);
+    console.log("xxx", xxx);
 
-    const setRes = new Set(xxx);
+    const outputArray = xxx.reduce((acc: any, curr: any) => {
+      if (!acc.find((obj: any) => obj.id === curr.id)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
+    console.log("outputArray", outputArray);
 
-    const arrRes = Array.from(setRes);
+    try {
+      await AsyncStorage.setItem(
+        "myStoredVotedComments",
+        JSON.stringify(outputArray)
+      );
+    } catch (error) {
+      console.log("error", error);
+    }
 
-    return arrRes;
+    return xxx;
   }
 );
 
@@ -101,11 +117,25 @@ export const loadAllComments = createAsyncThunk(
     });
     const results = await Promise.all(promisess);
 
-    const setRes = new Set(xxx);
+    // const setRes = new Set(xxx);
 
-    const arrRes = Array.from(setRes);
+    // const arrRes = Array.from(setRes);
+    const outputArray = xxx.reduce((acc: any, curr: any) => {
+      if (!acc.find((obj: any) => obj.id === curr.id)) {
+        acc.push(curr);
+      }
+      return acc;
+    }, []);
+    try {
+      await AsyncStorage.setItem(
+        "myStoredComments",
+        JSON.stringify(outputArray)
+      );
+    } catch (error) {
+      console.log("error", error);
+    }
 
-    return arrRes;
+    return xxx;
   }
 );
 

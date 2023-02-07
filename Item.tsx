@@ -207,13 +207,10 @@ const Item = ({ navigation, route }) => {
         renderItem={({ item }) => (
           <View style={styles.commentContainer}>
             <TouchableOpacity
-              onPress={
-                () => (
-                  dispatch(getUser(item.commenter)),
-                  navigation.navigate("profile", { notActualUser: true })
-                )
-                // console.log("commm", item.commenter)
-              }
+              onPress={() => (
+                dispatch(getUser(item.commenter)),
+                navigation.navigate("profile", { notActualUser: true })
+              )}
               style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",

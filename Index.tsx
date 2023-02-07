@@ -26,8 +26,6 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   // const route = useRoute();
 
-  // console.log("88888", route);
-
   const unsubscribe = () =>
     !user &&
     onAuthStateChanged(auth, async (userx) => {
@@ -83,10 +81,10 @@ const Index = () => {
           </View>
         )}
         <Stack.Navigator
-          // screenOptions={{
-          //   header: () => <Title />,
-          // }}
           initialRouteName={!user ? "login" : "lll"}
+          screenOptions={{
+            header: () => <Title />,
+          }}
         >
           <Stack.Screen
             options={{ headerShown: false }}

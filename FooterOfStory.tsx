@@ -23,7 +23,6 @@ const FooterOfStory = ({ item }: any) => {
   };
 
   const handleReactions = ({ item, reaction }) => {
-    console.log("item", item, "reaction", reaction);
     const voteData = {
       voter: user.id,
       storyId: item.id,

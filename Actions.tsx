@@ -20,24 +20,42 @@ import {
 } from "./state/reducers/storiesSlice";
 import { getAuthData } from "./state/reducers/authSlice";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import MyStories from "./MyStories";
 import {
   AllComments,
   getcommentsData,
   loadAllComments,
 } from "./state/reducers/commentsSlice";
 import { menuState } from "./state/reducers/headerSlice";
-import MyComments from "./MyComments";
-import MyReactions from "./MyReactions";
-import MyVotedComments from "./MyVotedComments";
+import MyComments from "./UserActions/MyComments";
+import MyVotedComments from "./UserActions/MyVotedComments";
+import MyReactions from "./UserActions/MyReactions";
+import MyStories from "./UserActions/MyStories";
 
 const Actions = ({ navigation, route, userId }) => {
-  // const { user } = useAppSelector(getAuthData);
+  const { user } = useAppSelector(getAuthData);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
+  const { resultComments } = useAppSelector(getcommentsData);
+  const { result, resultReactions } = useAppSelector(getstoriesData);
+  const { votedComments } = useAppSelector(getcommentsData);
+
   // console.log("theUser88", route.params.userId.id);
   console.log("theUser88", route.params.userId.id);
+
+  useEffect(() => {
+    let isSubscribed =
+      resultComments.length === 0 &&
+      dispatch(loadAllComments({ userId: user.id }));
+    result.length === 0 && dispatch(myStories({ userId: user.id })); // temporary solution
+    votedComments.length === 0 && dispatch(AllComments(user.id));
+    resultReactions.length === 0 &&
+      dispatch(ReactedToStories({ userId: user.id }));
+
+    return () => {
+      isSubscribed;
+    };
+  }, []);
 
   const Tab = createMaterialTopTabNavigator();
 
@@ -61,12 +79,14 @@ const Actions = ({ navigation, route, userId }) => {
     >
       <Tab.Screen
         name="My stories"
-        children={() => <MyStories theUser={route.params.userId.id} />}
+        component={MyStories}
+        // children={() => <MyStories theUser={route.params.userId.id} />}
       />
       <Tab.Screen name="My comments" component={MyComments} />
       <Tab.Screen
         name="My reactions"
-        children={() => <MyReactions theUser={route.params.userId.id} />}
+        component={MyReactions}
+        // children={() => <MyReactions theUser={route.params.userId.id} />}
       />
       <Tab.Screen name="My voted comments" component={MyVotedComments} />
     </Tab.Navigator>

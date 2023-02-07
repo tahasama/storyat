@@ -37,10 +37,6 @@ const GetHeader = ({ navigation, route, storyId }) => {
   const { myupdateStoriesState } = useAppSelector(getstoriesData);
   const [selectedId, setSelectedId] = useState(null);
   const [voteArray, setvoteArray] = useState(ccc.item.applauds);
-  console.log(
-    "myupdateStoriesState",
-    Object.keys(myupdateStoriesState).length === 0
-  );
 
   const {
     applaudState,
@@ -160,8 +156,6 @@ const GetHeader = ({ navigation, route, storyId }) => {
     ).then(() => dispatch(updateWowState(!wowState)));
   };
   myupdateStoriesState;
-  // console.log("ccc", ccc.item.writerId, "and...", user.id);
-  console.log("myupdateStoriesState", myupdateStoriesState);
 
   const anim = useRef(new Animated.Value(0));
 

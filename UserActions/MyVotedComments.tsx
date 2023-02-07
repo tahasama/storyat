@@ -9,50 +9,34 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import {
-  getstoriesData,
-  getStory,
-  loadStories,
-  myStories,
-  ReactedToStories,
-  // updateResultState,
-} from "./state/reducers/storiesSlice";
-import { getAuthData } from "./state/reducers/authSlice";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import StoryModal from "./StoryModal";
-import {
-  AllComments,
-  getcommentsData,
-  loadAllComments,
-} from "./state/reducers/commentsSlice";
-import { menuState } from "./state/reducers/headerSlice";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
-import { useRoute } from "@react-navigation/native";
-import { vote } from "./state/reducers/storiesSlice";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import HeadOfStory from "./HeadOfStory";
-import BodyOfStory from "./BodyOfStory";
-import FooterOfStory from "./FooterOfStory";
-const Reactions = ({ navigation, theUser }: any) => {
-  const { resultReactions, myReactedToStories } =
-    useAppSelector(getstoriesData);
+
+import HeadOfStory from "../HeadOfStory";
+import BodyOfStory from "../BodyOfStory";
+import FooterOfStory from "../FooterOfStory";
+import { AllComments, getcommentsData } from "../state/reducers/commentsSlice";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { getAuthData } from "../state/reducers/authSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+function MyVotedComments({ navigation }) {
+  const { votedComments } = useAppSelector(getcommentsData);
   const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState(false);
-  const pageName = useRoute().name;
+
+  const [data, setData] = useState([]);
+
+  const storedResult = async () =>
+    await AsyncStorage.getItem("myStoredVotedComments");
 
   useEffect(() => {
-    setLoading(true),
-      dispatch(ReactedToStories({ userId: theUser })),
-      setLoading(false);
+    setTimeout(() => {
+      storedResult().then((res) => setData(JSON.parse(res)));
+    }, 750);
   }, []);
-
+  console.log("data", data);
   return (
     <SafeAreaView style={styles.container}>
-      {resultReactions.length === undefined ? (
+      {data.length === undefined ? (
         <View
           style={{
             alignItems: "center",
@@ -65,22 +49,12 @@ const Reactions = ({ navigation, theUser }: any) => {
         </View>
       ) : (
         <FlatList
-          data={
-            pageName === "applauds"
-              ? resultReactions.filter((x) => x.applauds.includes(theUser))
-              : pageName === "compassions"
-              ? resultReactions.filter((x) => x.compassions.includes(theUser))
-              : pageName === "brokens"
-              ? resultReactions.filter((x) => x.brokens.includes(theUser))
-              : pageName === "justNos" &&
-                resultReactions.filter((x) => x.justNos.includes(theUser))
-          }
+          data={data}
           renderItem={({ item }) => (
             <View style={styles.item}>
               <HeadOfStory item={item} />
               <BodyOfStory item={item} />
               <FooterOfStory item={item} />
-
               <View
                 style={{
                   borderBottomColor: "grey",
@@ -91,15 +65,13 @@ const Reactions = ({ navigation, theUser }: any) => {
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
-
-          // extraData={selectedId}
+          //   extraData={selectedId}
         />
       )}
     </SafeAreaView>
   );
-};
-
-export default Reactions;
+}
+export default MyVotedComments;
 
 const styles = StyleSheet.create({
   container: {

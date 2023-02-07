@@ -48,7 +48,7 @@ const StoryModal = (story) => {
           .then(() => setStatus("success"))
           .then(() => (setContent(""), setTitle(""))),
         setTimeout(() => {
-          dispatch(loadStories({ pageName: pageName }));
+          dispatch(loadStories());
         }, 250))
       : dispatch(
           updateStories({

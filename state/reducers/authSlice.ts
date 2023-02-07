@@ -39,12 +39,9 @@ export const updateUserImage = createAsyncThunk(
 
 export const getUser = createAsyncThunk("getUser", async (userId: any) => {
   try {
-    console.log("ddddooo", userId);
-
     const res = await getDoc(doc(db, "users", userId));
     return { ...res.data(), id: res.id };
 
-    console.log("dddd", res);
     return res;
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -59,7 +56,6 @@ export const updateUsername = createAsyncThunk(
       const res = await updateDoc(doc(db, "users", userId), {
         username: username,
       });
-      console.log("dddd", res);
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);

@@ -9,39 +9,31 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import {
-  getstoriesData,
-  getStory,
-  loadStories,
-  myStories,
-  ReactedToStories,
-  // updateResultState,
-} from "./state/reducers/storiesSlice";
-import { getAuthData } from "./state/reducers/authSlice";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import StoryModal from "./StoryModal";
-import {
-  AllComments,
-  getcommentsData,
-  loadAllComments,
-} from "./state/reducers/commentsSlice";
-import { menuState } from "./state/reducers/headerSlice";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
-import Reactions from "./Reactions";
+import { useAppSelector, useAppDispatch } from "../state/hooks";
+import { getAuthData } from "../state/reducers/authSlice";
+import { menuState } from "../state/reducers/headerSlice";
+import {
+  getstoriesData,
+  myStories,
+  ReactedToStories,
+} from "../state/reducers/storiesSlice";
+import Applauds from "../TabsActions/Applauds";
+import Compassions from "../TabsActions/Compassions";
+import Brokens from "../TabsActions/Brokens";
+import JustNos from "../TabsActions/JustNos";
+import { AllComments, getcommentsData } from "../state/reducers/commentsSlice";
 
 function MyReactions({ navigation, theUser }: any) {
   const { resultReactions } = useAppSelector(getstoriesData);
   const { user } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-  // console.log("787878", theUser);
-
-  useEffect(() => {
-    dispatch(menuState(false));
-  }, []);
+  const { result } = useAppSelector(getstoriesData);
+  const { votedComments } = useAppSelector(getcommentsData);
 
   const Tab = createBottomTabNavigator();
 
@@ -57,7 +49,7 @@ function MyReactions({ navigation, theUser }: any) {
     >
       <Tab.Screen
         name="applauds"
-        children={() => <Reactions theUser={theUser} />}
+        component={Applauds}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
@@ -71,7 +63,7 @@ function MyReactions({ navigation, theUser }: any) {
       />
       <Tab.Screen
         name="compassions"
-        children={() => <Reactions theUser={theUser} />}
+        component={Compassions}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
@@ -81,7 +73,7 @@ function MyReactions({ navigation, theUser }: any) {
       />
       <Tab.Screen
         name="brokens"
-        children={() => <Reactions theUser={theUser} />}
+        component={Brokens}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (
@@ -95,7 +87,7 @@ function MyReactions({ navigation, theUser }: any) {
       />
       <Tab.Screen
         name="justNos"
-        children={() => <Reactions theUser={theUser} />}
+        component={JustNos}
         options={{
           tabBarShowLabel: false,
           tabBarIcon: ({ color, size }) => (

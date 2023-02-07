@@ -188,13 +188,10 @@ const Reply = ({ navigation, route }) => {
     return (
       <View style={styles.subContainer}>
         <TouchableOpacity
-          onPress={
-            () => (
-              dispatch(getUser(ccc.item.commenter)),
-              navigation.navigate("profile", { notActualUser: true })
-            )
-            // console.log("commm", item.commenter)
-          }
+          onPress={() => (
+            dispatch(getUser(ccc.item.commenter)),
+            navigation.navigate("profile", { notActualUser: true })
+          )}
           style={{
             flexDirection: "row",
             justifyContent: "flex-start",
@@ -250,13 +247,10 @@ const Reply = ({ navigation, route }) => {
         renderItem={({ item }) => (
           <View style={styles.replyContainer}>
             <TouchableOpacity
-              onPress={
-                () => (
-                  dispatch(getUser(item.replier)),
-                  navigation.navigate("profile", { notActualUser: true })
-                )
-                // console.log("commm", item.commenter)
-              }
+              onPress={() => (
+                dispatch(getUser(item.replier)),
+                navigation.navigate("profile", { notActualUser: true })
+              )}
               style={{
                 flexDirection: "row",
                 justifyContent: "flex-start",

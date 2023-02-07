@@ -6,14 +6,24 @@ import JustNos from "./DrawerActions/JustNos";
 import Brokens from "./DrawerActions/Brokens";
 import Compassions from "./DrawerActions/Compassions";
 import Newest from "./DrawerActions/Newest";
-import Items from "./Items";
+import Items from "./DrawerActions/Items";
 import { getstoriesData, loadStories } from "./state/reducers/storiesSlice";
 import { useDispatch } from "react-redux";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
+import Title from "./Title";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Lll = () => {
   const dispatch = useAppDispatch();
   const { resultInitial } = useAppSelector(getstoriesData);
+  const [data, setData] = useState([]);
+  const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
+
+  useEffect(() => {
+    setTimeout(() => {
+      result().then((res) => setData(JSON.parse(res)));
+    }, 750);
+  }, []);
 
   useEffect(() => {
     let isSubscribed = resultInitial.length === 0 && dispatch(loadStories());
@@ -26,7 +36,9 @@ const Lll = () => {
   return (
     <Drawer.Navigator
       // defaultScreenOptions={{ unmountOnBlur: true }}
+      //   header: () => <Title />,
       screenOptions={{
+        header: () => <Title />,
         drawerStyle: { backgroundColor: "#041820" },
         drawerInactiveTintColor: "#9BA5A9",
         swipeEnabled: true,

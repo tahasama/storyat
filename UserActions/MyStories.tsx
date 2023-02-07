@@ -9,59 +9,44 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import {
-  getstoriesData,
-  getStory,
-  loadStories,
-  myStories,
-  ReactedToStories,
-  // updateResultState,
-} from "./state/reducers/storiesSlice";
-import { getAuthData } from "./state/reducers/authSlice";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import StoryModal from "./StoryModal";
-import {
-  AllComments,
-  getcommentsData,
-  loadAllComments,
-} from "./state/reducers/commentsSlice";
-import { menuState } from "./state/reducers/headerSlice";
+
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import Feather from "@expo/vector-icons/Feather";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import FooterOfStory from "./FooterOfStory";
-import BodyOfStory from "./BodyOfStory";
-import HeadOfStory from "./HeadOfStory";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import {
+  getstoriesData,
+  loadStories,
+  myStories,
+} from "../state/reducers/storiesSlice";
+import { getAuthData } from "../state/reducers/authSlice";
+import { menuState } from "../state/reducers/headerSlice";
+import HeadOfStory from "../HeadOfStory";
+import BodyOfStory from "../BodyOfStory";
+import FooterOfStory from "../FooterOfStory";
+import StoryModal from "../StoryModal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-function MyComments({ navigation }) {
-  const { resultComments } = useAppSelector(getcommentsData);
-  const { user } = useAppSelector(getAuthData);
-
-  // const { storys } = useAppSelector(getstoriesData);
+function MyStories({ navigation, route, theUser }: any) {
+  const { result } = useAppSelector(getstoriesData);
   const dispatch = useAppDispatch();
-  const [stories, setStories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAppSelector(getAuthData);
+  const [data, setData] = useState([]);
+
+  const storedResult = async () =>
+    await AsyncStorage.getItem("myStoredStories");
+
   useEffect(() => {
-    dispatch(loadAllComments({ userId: user.id }));
+    setTimeout(() => {
+      storedResult().then((res) => setData(JSON.parse(res)));
+    }, 750);
   }, []);
-  const outputArray = resultComments.reduce((acc, curr) => {
-    if (!acc.find((obj) => obj.id === curr.id)) {
-      acc.push(curr);
-    }
-    return acc;
-  }, []);
-
-  // let myComments = resultAll.filter((xxx) => xxx.commenter === user.id);
-  // myComments.map((vvv) => dispatch(getStory(vvv.storyId)));
-
-  const handleOnpress = (item) => {
-    navigation.navigate("item", { item: item });
-    //   setSelectedId(item.id);
-  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {outputArray.length === undefined ? (
+      {result.length === undefined ? (
         <View
           style={{
             alignItems: "center",
@@ -74,7 +59,7 @@ function MyComments({ navigation }) {
         </View>
       ) : (
         <FlatList
-          data={outputArray}
+          data={data}
           renderItem={({ item }) => (
             <View style={styles.item}>
               <HeadOfStory item={item} />
@@ -89,14 +74,20 @@ function MyComments({ navigation }) {
               />
             </View>
           )}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item) => {
+            return item.id;
+          }}
           // extraData={selectedId}
         />
       )}
+
+      <View style={{ flex: 1 }}>
+        <StoryModal />
+      </View>
     </SafeAreaView>
   );
 }
-export default MyComments;
+export default MyStories;
 
 const styles = StyleSheet.create({
   container: {
@@ -151,3 +142,15 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
 });
+function voteApplaud(arg0: {
+  voteData: { voter: any; storyId: any };
+  voteArray: any[];
+}): any {
+  throw new Error("Function not implemented.");
+}
+function voteCompassion(arg0: {
+  voteData: { voter: any; storyId: any };
+  voteArray: any[];
+}): any {
+  throw new Error("Function not implemented.");
+}

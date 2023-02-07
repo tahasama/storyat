@@ -27,9 +27,9 @@ interface storyProps {
 
 export const myStories = createAsyncThunk(
   "myStories",
-  async ({ pageName }: any) => {
+  async ({ userId }: any) => {
     const yo = collection(db, "stories");
-    const g = query(yo, where("writerId", "==", pageName));
+    const g = query(yo, where("writerId", "==", userId));
 
     const querySnapshot = await getDocs(g);
     const promises = querySnapshot.docs.map(async (docs: any) => {
@@ -47,6 +47,12 @@ export const myStories = createAsyncThunk(
       };
     });
     const result = await Promise.all(promises);
+
+    try {
+      await AsyncStorage.setItem("myStoredStories", JSON.stringify(result));
+    } catch (error) {
+      console.log("error", error);
+    }
 
     return result;
   }
@@ -123,7 +129,31 @@ export const ReactedToStories = createAsyncThunk(
         avatar: avatar,
       });
     });
-    const result = await Promise.all(results);
+
+    const arrRes = await Promise.all(results);
+
+    const setRes = new Set(arrRes);
+    const result = Array.from(setRes);
+
+    try {
+      await AsyncStorage.setItem(
+        "myStoredDataApplaudsReaction",
+        JSON.stringify(result.filter((x) => x.applauds.includes(userId)))
+      );
+
+      await AsyncStorage.setItem(
+        "myStoredDataCompassionsReaction",
+        JSON.stringify(result.filter((x) => x.compassions.includes(userId)))
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataBrokensReaction",
+        JSON.stringify(result.filter((x) => x.brokens.includes(userId)))
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataJustNosReaction",
+        JSON.stringify(result.filter((x) => x.justNos.includes(userId)))
+      );
+    } catch (error) {}
 
     return result;
   }

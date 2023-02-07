@@ -49,11 +49,9 @@ const Profile = ({ route }: any) => {
   // const [userId, setuserId] = useState<any>();
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
-  // console.log("userId", route.params.theUser, "user", user.id);
   // const userId =
   //   route.params.theUser === undefined ? user.id : route.params.theUser.id;
   const pickImageAsync = async () => {
-    console.log("start updating image");
     setLoading(true);
     let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
@@ -93,8 +91,6 @@ const Profile = ({ route }: any) => {
 
   // const joined1 = new DateFormat
 
-  // console.log("user infos", userId.id);
-
   const handleOnpress = () => {
     navigation.navigate("actions", { userId: userId });
   };
@@ -113,9 +109,6 @@ const Profile = ({ route }: any) => {
     // dispatch(ReactedToStories({ pageName: user.id })),
     // setLoading(false);
   }, [userId.id]);
-
-  console.log("username", username);
-  console.log("userId", userId.id, "user.id", user.id);
 
   return (
     <SafeAreaView style={styles.container}>

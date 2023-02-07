@@ -77,5 +77,6 @@ const styles = StyleSheet.create({
     color: "#bcbcbc",
     marginBottom: 25,
     marginHorizontal: 32,
+    minHeight: 80,
   },
 });

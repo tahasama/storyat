@@ -38,6 +38,8 @@ const StoryModal = (story) => {
   const { myupdateStoryState } = useAppSelector(getstoriesData);
   const pageName = useRoute().name;
 
+  console.log("woooow", pageName);
+
   // useEffect(() => {
   //   dispatch(updateStoriesState({ title: "", content: "", id: "" }));
   // }, []);
@@ -57,10 +59,10 @@ const StoryModal = (story) => {
             content,
           })
         )
-          .then(() => (setStatus("success"), setContent(""), setTitle("")))
           .then(() => {
             dispatch(updateStoriesState({ title: title, content: content }));
-          });
+          })
+          .then(() => (setStatus("success"), setContent(""), setTitle("")));
   };
 
   const handleStory = async () => {
@@ -179,7 +181,7 @@ const StoryModal = (story) => {
       <Pressable
         style={
           pageName === "item"
-            ? { opacity: modalVisible ? 0 : 1, bottom: 20 }
+            ? { opacity: modalVisible ? 0 : 1, bottom: 20, left: 20 }
             : [styles.buttonOpen, { opacity: modalVisible ? 0 : 1 }]
         }
         onPress={() => setModalVisible(true)}
@@ -188,7 +190,7 @@ const StoryModal = (story) => {
           <AntDesign
             style={styles.textStyle}
             name="plus"
-            size={30}
+            size={29}
             color="#646464"
           />
         ) : (

@@ -50,124 +50,127 @@ const Item = ({ navigation, route }) => {
   const [likeLoading, setLikeLoading] = useState(false);
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [itemData, setItemData] = useState(route.params.item);
 
-  useEffect(() => {
-    dispatch(updateStory(ccc.item));
-  }, []);
+  console.log("item in item", ccc);
+
+  // useEffect(() => {
+  //   dispatch(updateStory(ccc.item));
+  // }, []);
 
   useEffect(() => {
     isFocused && dispatch(loadcomments(ccc.item.id));
   }, [isFocused]);
 
-  const handleComment = async () => {
-    dispatch(
-      addcomments({
-        comment: comment,
-        userId: user.id,
-        storyId: ccc.item.id,
-        likes: [],
-        dislikes: [],
-        numOfReplies: 0,
-      })
-    )
-      .then(() =>
-        dispatch(
-          addCommentNumberToStory({
-            storyId: ccc.item.id,
-            numOfComments: result.length,
-          })
-        )
-      )
-      .then(() => setComment(""))
-      .then(() => Keyboard.dismiss());
-    setTimeout(() => {
-      dispatch(loadcomments(ccc.item.id));
-    }, 250);
-  };
+  // const handleComment = async () => {
+  //   dispatch(
+  //     addcomments({
+  //       comment: comment,
+  //       userId: user.id,
+  //       storyId: ccc.item.id,
+  //       likes: [],
+  //       dislikes: [],
+  //       numOfReplies: 0,
+  //     })
+  //   )
+  //     .then(() =>
+  //       dispatch(
+  //         addCommentNumberToStory({
+  //           storyId: ccc.item.id,
+  //           numOfComments: result.length,
+  //         })
+  //       )
+  //     )
+  //     .then(() => setComment(""))
+  //     .then(() => Keyboard.dismiss());
+  //   setTimeout(() => {
+  //     dispatch(loadcomments(ccc.item.id));
+  //   }, 250);
+  // };
 
-  const handleOnpress = (item) => {
-    navigation.navigate("reply", { item: item });
-    setSelectedId(item.id);
-  };
+  // const handleOnpress = (item) => {
+  //   navigation.navigate("reply", { item: item });
+  //   setSelectedId(item.id);
+  // };
 
-  const handleLike = (item) => {
-    setCommentIdLoading(item.id);
-    setLikeLoading(true);
-    const commentLikesData = {
-      commentId: item.id,
-      liker: user.id,
-      storyId: item.storyId,
-    };
-    const commentLikesArray = [...item.likes];
-    const commentDislikesData = { commentId: item.id, liker: user.id };
-    const commentDislikesArray = [...item.dislikes];
+  // const handleLike = (item) => {
+  //   setCommentIdLoading(item.id);
+  //   setLikeLoading(true);
+  //   const commentLikesData = {
+  //     commentId: item.id,
+  //     liker: user.id,
+  //     storyId: item.storyId,
+  //   };
+  //   const commentLikesArray = [...item.likes];
+  //   const commentDislikesData = { commentId: item.id, liker: user.id };
+  //   const commentDislikesArray = [...item.dislikes];
 
-    item.likes.filter((zzz) => zzz.liker === user.id).length === 0
-      ? commentLikesArray.push(commentLikesData)
-      : commentLikesArray.pop();
+  //   item.likes.filter((zzz) => zzz.liker === user.id).length === 0
+  //     ? commentLikesArray.push(commentLikesData)
+  //     : commentLikesArray.pop();
 
-    item.dislikes.filter((zzz) => zzz.liker === user.id).length !== 0 &&
-      commentDislikesArray.pop();
-    dispatch(
-      addCommentDislike({
-        commentDislikesData,
-        commentDislikesArray,
-      })
-    );
-    dispatch(
-      addCommentLike({
-        commentLikesData,
-        commentLikesArray,
-      })
-    );
-    dispatch(loadcomments(ccc.item.id));
-    setLikeLoading(false);
-  };
+  //   item.dislikes.filter((zzz) => zzz.liker === user.id).length !== 0 &&
+  //     commentDislikesArray.pop();
+  //   dispatch(
+  //     addCommentDislike({
+  //       commentDislikesData,
+  //       commentDislikesArray,
+  //     })
+  //   );
+  //   dispatch(
+  //     addCommentLike({
+  //       commentLikesData,
+  //       commentLikesArray,
+  //     })
+  //   );
+  //   dispatch(loadcomments(ccc.item.id));
+  //   setLikeLoading(false);
+  // };
 
-  const handleDislike = (item) => {
-    setDisLikeLoading(true);
-    setCommentIdLoading(item.id);
-    const commentDislikesData = { commentId: item.id, liker: user.id };
-    const commentDislikesArray = [...item.dislikes];
-    const commentLikesData = { commentId: item.id, liker: user.id };
-    const commentLikesArray = [...item.likes];
+  // const handleDislike = (item) => {
+  //   setDisLikeLoading(true);
+  //   setCommentIdLoading(item.id);
+  //   const commentDislikesData = { commentId: item.id, liker: user.id };
+  //   const commentDislikesArray = [...item.dislikes];
+  //   const commentLikesData = { commentId: item.id, liker: user.id };
+  //   const commentLikesArray = [...item.likes];
 
-    item.likes.filter((zzz) => zzz.liker === user.id).length !== 0 &&
-      commentLikesArray.pop();
+  //   item.likes.filter((zzz) => zzz.liker === user.id).length !== 0 &&
+  //     commentLikesArray.pop();
 
-    item.dislikes.filter((zzz) => zzz.liker === user.id).length === 0
-      ? commentDislikesArray.push(commentDislikesData)
-      : commentDislikesArray.pop();
-    dispatch(
-      addCommentLike({
-        commentLikesData,
-        commentLikesArray,
-      })
-    );
-    dispatch(
-      addCommentDislike({
-        commentDislikesData,
-        commentDislikesArray,
-      })
-    );
-    dispatch(loadcomments(ccc.item.id));
-    setDisLikeLoading(false);
-  };
+  //   item.dislikes.filter((zzz) => zzz.liker === user.id).length === 0
+  //     ? commentDislikesArray.push(commentDislikesData)
+  //     : commentDislikesArray.pop();
+  //   dispatch(
+  //     addCommentLike({
+  //       commentLikesData,
+  //       commentLikesArray,
+  //     })
+  //   );
+  //   dispatch(
+  //     addCommentDislike({
+  //       commentDislikesData,
+  //       commentDislikesArray,
+  //     })
+  //   );
+  //   dispatch(loadcomments(ccc.item.id));
+  //   setDisLikeLoading(false);
+  // };
 
-  const handleRemove = (item) => {
-    setCommentIdDelete(item.id);
-    shake();
-    setDeleteComment(true);
-    dispatch(removeComment(item.id)).then(() =>
-      dispatch(
-        substractCommentNumberToStory({
-          storyId: ccc.item.id,
-          numOfComments: result.length,
-        })
-      )
-    );
-    dispatch(loadcomments(ccc.item.id)).then(() => setDeleteComment(false));
-  };
+  // const handleRemove = (item) => {
+  //   setCommentIdDelete(item.id);
+  //   shake();
+  //   setDeleteComment(true);
+  //   dispatch(removeComment(item.id)).then(() =>
+  //     dispatch(
+  //       substractCommentNumberToStory({
+  //         storyId: ccc.item.id,
+  //         numOfComments: result.length,
+  //       })
+  //     )
+  //   );
+  //   dispatch(loadcomments(ccc.item.id)).then(() => setDeleteComment(false));
+  // };
 
   const anim = useRef(new Animated.Value(0));
 
@@ -264,7 +267,7 @@ const Item = ({ navigation, route }) => {
               </Text>
             </TouchableOpacity>
             <Text style={styles.comment}>{item.comment}</Text>
-            <View style={styles.commentActions}>
+            {/* <View style={styles.commentActions}>
               <TouchableOpacity
                 onPress={() => {
                   handleOnpress(item);
@@ -381,7 +384,7 @@ const Item = ({ navigation, route }) => {
                   />
                 )}
               </TouchableOpacity>
-            </View>
+            </View> */}
             <View
               style={{
                 borderBottomColor: "grey",
@@ -396,7 +399,7 @@ const Item = ({ navigation, route }) => {
         extraData={selectedId}
         ListHeaderComponent={getHeader}
       />
-      <View
+      {/* <View
         style={{
           // backgroundColor: "#002626",
           // borderRadius: 50,
@@ -425,7 +428,7 @@ const Item = ({ navigation, route }) => {
         >
           <Text style={styles.buttonText}>Post</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

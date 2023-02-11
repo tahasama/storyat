@@ -304,55 +304,40 @@ export const substractCommentNumberToStory = createAsyncThunk(
   }
 );
 
-export const vote = createAsyncThunk("vote", async (infos: any) => {
-  try {
-    const res =
-      infos.reaction === "applauds"
-        ? await updateDoc(doc(db, "stories", infos.voteData.storyId), {
-            applauds: infos.outputArray,
-          })
-        : infos.reaction === "compassions"
-        ? await updateDoc(doc(db, "stories", infos.voteData.storyId), {
-            compassions: infos.outputArray,
-          })
-        : infos.reaction === "brokens"
-        ? await updateDoc(doc(db, "stories", infos.voteData.storyId), {
-            brokens: infos.outputArray,
-          })
-        : infos.reaction === "justNos" &&
-          (await updateDoc(doc(db, "stories", infos.voteData.storyId), {
-            justNos: infos.outputArray,
-          }));
-    return res;
-  } catch (e) {
-    Alert.alert("action failed please try again");
-  }
-});
-
-export const voteBroken = createAsyncThunk(
-  "voteApplaud",
-  async (infos: any) => {
+export const vote = createAsyncThunk(
+  "vote",
+  async (infos: any, { rejectWithValue }) => {
+    console.log("infosyeah", infos.voteData.story.applauds);
     try {
-      const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
-        brokens: infos.voteArray,
+      const voterIndex = infos.voteData.story.applauds.indexOf(
+        infos.voteData.voter
+      );
+      console.log("infosyeah222", voterIndex);
+      // let applauseArray = [...infos.voteData.story.applauds];
+
+      try {
+        if (voterIndex !== -1) {
+          infos.voteData.story.applauds.splice(voterIndex, 1);
+        } else {
+          infos.voteData.story.applauds.push(infos.voteData.voter);
+        }
+      } catch (error) {
+        console.log("waaaaaaaaa error", error);
+      }
+      console.log("infosyeah333", infos.voteData.story.applauds);
+
+      const res = await updateDoc(doc(db, "stories", infos.voteData.story.id), {
+        applauds: infos.voteData.story.applauds,
       });
+
+      console.log("infosyeah4444", res);
+
       return res;
     } catch (e) {
-      Alert.alert("action failed please try again");
+      return rejectWithValue({ error: "action failed please try again" });
     }
   }
 );
-
-export const voteWow = createAsyncThunk("voteApplaud", async (infos: any) => {
-  try {
-    const res = await updateDoc(doc(db, "stories", infos.voteData.storyId), {
-      justNos: infos.voteArray,
-    });
-    return res;
-  } catch (e) {
-    Alert.alert("action failed please try again");
-  }
-});
 
 export interface storiesProps {
   storiesStates: {
@@ -477,6 +462,9 @@ export const storiesSlice = createSlice({
     builder.addCase(ReactedToStories.fulfilled, (state, action) => {
       state.resultReactions = action.payload;
     });
+    // builder.addCase(vote.fulfilled, (state, action) => {
+    //   state. = action.payload;
+    // });
   },
 });
 

@@ -24,76 +24,41 @@ import FooterOfStory from "../Story/FooterOfStory";
 const Items = () => {
   const dispatch = useAppDispatch();
   const { reloadState } = useAppSelector(getstoriesData);
-  const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+
   const [data, setData] = useState([]);
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
 
   useEffect(() => {
     reloadState &&
-      (setLoading(true),
       setTimeout(() => {
         result()
           .then((res) => setData(JSON.parse(res)))
-          .then(() => setLoading(false))
           .then(() => dispatch(reloadInitialData(false)));
-      }, 750));
+      }, 750);
   }, [reloadState]);
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    dispatch(loadStories());
-
-    setRefreshing(false);
-  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {loading ? (
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100%",
-            transform: [{ scale: 3 }],
-          }}
-        >
-          <ActivityIndicator size="large" />
-        </View>
-      ) : (
-        <FlatList
-          // onEndReached={handleLoadMore}
-          refreshControl={
-            <RefreshControl
-              colors={["#14764b", "#0F5838", "#093421"]}
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
+      <FlatList
+        data={data}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <HeadOfStory item={item} />
+            <BodyOfStory item={item} />
+            <FooterOfStory item={item} />
+            <View
+              style={{
+                borderBottomColor: "grey",
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                marginTop: 15,
+              }}
             />
-          }
-          data={data}
-          renderItem={({ item }) => (
-            <View style={styles.item}>
-              <HeadOfStory item={item} />
-              <BodyOfStory item={item} />
-              <FooterOfStory item={item} />
-              <View
-                style={{
-                  borderBottomColor: "grey",
-                  borderBottomWidth: StyleSheet.hairlineWidth,
-                  marginTop: 15,
-                }}
-              />
-            </View>
-          )}
-          keyExtractor={(item) => {
-            return item.id;
-          }}
-        />
-      )}
-
-      <View style={{ flex: 1 }}>
-        <StoryModal />
-      </View>
+          </View>
+        )}
+        keyExtractor={(item) => {
+          return item.id;
+        }}
+      />
     </SafeAreaView>
   );
 };

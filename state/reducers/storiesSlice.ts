@@ -161,7 +161,6 @@ export const ReactedToStories = createAsyncThunk(
 
 export const loadStories = createAsyncThunk("loadStories", async () => {
   const yo = collection(db, "stories");
-  console.log("loading from redux");
   const querySnapshot = await getDocs(yo);
   const promises = querySnapshot.docs.map(async (docs: any) => {
     const username = await (
@@ -178,10 +177,7 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
     };
   });
   const resultInitial = await Promise.all(promises);
-  console.log(
-    "first data",
-    resultInitial.map((x) => x.title)
-  );
+
   try {
     await AsyncStorage.setItem(
       "myStoredDataApplauds",
@@ -307,34 +303,59 @@ export const substractCommentNumberToStory = createAsyncThunk(
 export const vote = createAsyncThunk(
   "vote",
   async (infos: any, { rejectWithValue }) => {
-    console.log("infosyeah", infos.voteData.story.applauds);
-    try {
-      const voterIndex = infos.voteData.story.applauds.indexOf(
-        infos.voteData.voter
-      );
-      console.log("infosyeah222", voterIndex);
-      // let applauseArray = [...infos.voteData.story.applauds];
+    console.log("infos///redux", infos);
+    if (infos.reaction === "applauds") {
+      const voterIndexApplauds = infos.story.applauds.indexOf(infos.voter);
+
+      if (voterIndexApplauds !== -1) {
+        infos.story.applauds.splice(voterIndexApplauds, 1);
+      } else {
+        infos.story.applauds.push(infos.voter);
+      }
+      console.log("this is applauds2", infos);
 
       try {
-        if (voterIndex !== -1) {
-          infos.voteData.story.applauds.splice(voterIndex, 1);
-        } else {
-          infos.voteData.story.applauds.push(infos.voteData.voter);
-        }
+        await updateDoc(doc(db, "stories", infos.story.id), {
+          applauds: infos.story.applauds,
+        });
       } catch (error) {
-        console.log("waaaaaaaaa error", error);
+        console.log("this is applauds error", error);
       }
-      console.log("infosyeah333", infos.voteData.story.applauds);
-
-      const res = await updateDoc(doc(db, "stories", infos.voteData.story.id), {
-        applauds: infos.voteData.story.applauds,
+    }
+    if (infos.reaction === "compassions") {
+      const voterIndexCompassions = infos.story.compassions.indexOf(
+        infos.voter
+      );
+      if (voterIndexCompassions !== -1) {
+        infos.story.compassions.splice(voterIndexCompassions, 1);
+      } else {
+        infos.story.compassions.push(infos.voter);
+      }
+      await updateDoc(doc(db, "stories", infos.story.id), {
+        compassions: infos.story.compassions,
       });
-
-      console.log("infosyeah4444", res);
-
-      return res;
-    } catch (e) {
-      return rejectWithValue({ error: "action failed please try again" });
+    }
+    if (infos.reaction === "brokens") {
+      const voterIndexBrokens = infos.story.brokens.indexOf(infos.voter);
+      if (voterIndexBrokens !== -1) {
+        infos.story.brokens.splice(voterIndexBrokens, 1);
+      } else {
+        infos.story.brokens.push(infos.voter);
+      }
+      await updateDoc(doc(db, "stories", infos.story.id), {
+        brokens: infos.story.brokens,
+      });
+    }
+    if (infos.reaction === "justNos") {
+      const voterIndexJustNos = infos.story.justNos.indexOf(infos.voter);
+      if (voterIndexJustNos !== -1) {
+        infos.story.justNos.splice(voterIndexJustNos, 1);
+      } else {
+        infos.story.justNos.push(infos.voter);
+      }
+      await updateDoc(doc(db, "stories", infos.story.id), {
+        justNos: infos.story.justNos,
+      });
     }
   }
 );
@@ -370,6 +391,7 @@ export interface storiesProps {
     NumOfCommentState: number;
     // loadmore: number;
     reloadState: boolean;
+    IvotedData: any[];
   };
 }
 
@@ -403,6 +425,7 @@ export const storiesInitialState = {
   myupdateStoriesState: {},
   myupdateStoryState: [],
   reloadState: false,
+  IvotedData: [{ storyId: "", voter: "" }],
 };
 
 export const storiesSlice = createSlice({
@@ -427,9 +450,7 @@ export const storiesSlice = createSlice({
     updateNumOfCommentState: (state, action) => {
       state.NumOfCommentState = action.payload;
     },
-    // updateResultState: (state, action) => {
-    //   state.resultLoadMore = action.payload;
-    // },
+
     updateInitilalResultState: (state, action) => {
       state.resultInitial = action.payload;
     },
@@ -444,6 +465,9 @@ export const storiesSlice = createSlice({
     },
     reloadInitialData: (state, action) => {
       state.reloadState = action.payload;
+    },
+    Ivoted: (state, action) => {
+      state.IvotedData.push(action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -482,5 +506,6 @@ export const {
   updateStoriesState,
   updateStory,
   reloadInitialData,
+  Ivoted,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

@@ -54,6 +54,28 @@ const HeadOfStory = ({ item }: any) => {
       navigation.navigate("items")
     );
   };
+
+  const ccc = {
+    reaction: "applauds",
+    voteData: {
+      story: {
+        applauds: [Array],
+        avatar:
+          "https://firebasestorage.googleapis.com/v0/b/storyat-373416.appspot.com/o/psZHAC0bhIJg0ChfPe2I.jpg?alt=media&token=dbc4e4f7-61ad-45d8-ab59-356f74454958",
+        brokens: [Array],
+        compassions: [Array],
+        content: "4",
+        id: "79mjnwNUrPfx7NysQu9H",
+        justNos: [Array],
+        numOfComments: 0,
+        timestamp: 1675873697896,
+        title: "4",
+        username: "Taha Sama",
+        writerId: "psZHAC0bhIJg0ChfPe2I",
+      },
+      voter: "psZHAC0bhIJg0ChfPe2I",
+    },
+  };
   return (
     <TouchableOpacity
       onPress={handleNavigation}

@@ -52,8 +52,6 @@ const Item = ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [itemData, setItemData] = useState(route.params.item);
 
-  console.log("item in item", ccc);
-
   // useEffect(() => {
   //   dispatch(updateStory(ccc.item));
   // }, []);

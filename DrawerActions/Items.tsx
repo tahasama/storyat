@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "../state/hooks";
 import StoryModal from "../StoryModal";
 import {
   getstoriesData,
+  Ivoted,
   loadStories,
   reloadInitialData,
 } from "../state/reducers/storiesSlice";
@@ -20,10 +21,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import HeadOfStory from "../Story/HeadOfStory";
 import BodyOfStory from "../Story/BodyOfStory";
 import FooterOfStory from "../Story/FooterOfStory";
+import { getAuthData } from "../state/reducers/authSlice";
 
 const Items = () => {
   const dispatch = useAppDispatch();
   const { reloadState } = useAppSelector(getstoriesData);
+  const { user } = useAppSelector(getAuthData);
+  // const { IvotedData } = useAppSelector(getstoriesData);
+
+  // console.log("IvotedData in list ...", IvotedData);
 
   const [data, setData] = useState([]);
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
@@ -35,7 +41,16 @@ const Items = () => {
           .then((res) => setData(JSON.parse(res)))
           .then(() => dispatch(reloadInitialData(false)));
       }, 750);
+    console.log("inside useeffect data", data);
+    // voterIndex();
   }, [reloadState]);
+
+  // const voterIndex = () => {
+  //   data.map((item) => {
+  //     item.applauds.includes(user.id) &&
+  //       dispatch(Ivoted({ voter: user.id, storyId: item.id }));
+  //   });
+  // };
 
   return (
     <SafeAreaView style={styles.container}>

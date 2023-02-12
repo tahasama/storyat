@@ -34,7 +34,20 @@ const Items = () => {
   // console.log("IvotedData in list ...", IvotedData);
 
   const [data, setData] = useState([]);
+
+  console.log("Data in list ...", reloadState);
+
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
+
+  // useEffect(() => {
+  //   data.length === 0 && setLoading(true),
+  //     result()
+  //       .then((res) => setData(JSON.parse(res)))
+  //       .then(() => dispatch(reloadInitialData(false)))
+  //       .then(() => setLoading(false));
+
+  //   // voterIndex();
+  // }, []);
 
   useEffect(() => {
     reloadState &&

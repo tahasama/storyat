@@ -8,7 +8,12 @@ import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { getAuthData } from "../state/reducers/authSlice";
-import { getstoriesData, Ivoted, vote } from "../state/reducers/storiesSlice";
+import {
+  getstoriesData,
+  Ivoted,
+  ReactedToStories,
+  vote,
+} from "../state/reducers/storiesSlice";
 import FlashMessage, { showMessage } from "react-native-flash-message";
 import Reaction from "./Reaction";
 
@@ -37,6 +42,7 @@ const FooterOfStory = ({ item }: any) => {
     dispatch(vote(voteData)).then(() =>
       dispatch(Ivoted({ voter: user.id, storyId: item.id }))
     );
+    dispatch(ReactedToStories({ userId: user.id }));
     console.log("vote3");
 
     // : showMessage({

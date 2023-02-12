@@ -245,10 +245,23 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
   try {
+    console.log("id in redux story", storyId);
     const res = await getDoc(doc(db, "stories", storyId));
     // const res = {...xxx.data().id }
+    const username = await (
+      await getDoc(doc(db, "users", res.data().writerId))
+    ).data().username;
+    const avatar = await (
+      await getDoc(doc(db, "users", res.data().writerId))
+    ).data().avatar;
 
-    return res;
+    console.log("result of story in redux", res.data());
+    return {
+      ...res.data(),
+      id: storyId,
+      username: username,
+      avatar: avatar,
+    };
   } catch (e) {
     Alert.alert("action failed please try again");
   }

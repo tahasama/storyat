@@ -16,17 +16,6 @@ const FooterOfStory = React.memo(({ item }: any) => {
   const { user } = useAppSelector(getAuthData);
   const { IvotedData } = useAppSelector(getstoriesData);
 
-  // console.log(
-  //   "IvotedData in item detail",
-  //   // IvotedData.includes({ storyId: item.id, voter: user.id })
-  //   IvotedData.some(
-  //     (element) => element.storyId === item.id && element.voter === user.id
-  //   )
-  // );
-
-  // const ttt = IvotedData.some(
-  //   (element) => element.storyId === item.id && element.voter === user.id
-  // );
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
   };
@@ -121,6 +110,7 @@ const FooterOfStory = React.memo(({ item }: any) => {
         )}
       </TouchableOpacity>
     </View>
+    // <Text>TTTTTT</Text>
   );
 });
 

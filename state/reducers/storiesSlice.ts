@@ -270,6 +270,23 @@ export const updateStories = createAsyncThunk(
         title: title,
         content: content,
       });
+      try {
+        const result = await getDoc(doc(db, "stories", storyId));
+        const username = await (
+          await getDoc(doc(db, "users", result.data().writerId))
+        ).data().username;
+        const avatar = await (
+          await getDoc(doc(db, "users", result.data().writerId))
+        ).data().avatar;
+        return {
+          id: result.id,
+          ...result.data(),
+          username: username,
+          avatar: avatar,
+        };
+      } catch (error) {
+        console.log("result getDoc errorrrrr", error);
+      }
 
       return res;
     } catch (e) {
@@ -410,6 +427,7 @@ export interface storiesProps {
     reloadState: boolean;
     IvotedData: any[];
     resultAdd: any;
+    resultUpdate: any;
   };
 }
 
@@ -444,6 +462,7 @@ export const storiesInitialState = {
   myupdateStoryState: [],
   reloadState: false,
   resultAdd: {},
+  resultUpdate: {},
   IvotedData: [{ storyId: "", voter: "" }],
 };
 
@@ -496,6 +515,10 @@ export const storiesSlice = createSlice({
     builder.addCase(addStories.fulfilled, (state, action: any) => {
       console.log("action.payload", action.payload);
       state.resultAdd = action.payload;
+    });
+    builder.addCase(updateStories.fulfilled, (state, action: any) => {
+      console.log("action.payload", action.payload);
+      state.resultUpdate = action.payload;
     });
     builder.addCase(getStory.fulfilled, (state, action) => {
       state.story = action.payload;

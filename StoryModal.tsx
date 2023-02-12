@@ -36,56 +36,33 @@ const StoryModal = (item) => {
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
-  const { myupdateStoryState, resultAdd } = useAppSelector(getstoriesData);
+  const { myupdateStoryState, resultAdd, resultUpdate } =
+    useAppSelector(getstoriesData);
   const pageName = useRoute().name;
   const navigation = useNavigation<any>();
-
-  // console.log("uaaa", item.item.title, "pageName", pageName);
 
   const vvv = () => {
     pageName !== "item"
       ? dispatch(addStories({ title, userId: user.id, content }))
           .then(() => setStatus("success"))
           .then(() => (setContent(""), setTitle("")))
-      : // setTimeout(() => {
-        //   navigation.navigate("item", { item: resultAdd });
-        //   //   dispatch(loadStories())
-        //   //     .then(() => dispatch(reloadInitialData(true)))
-        // }, 5000)
-        // .then(() => navigation.navigate("actions"))
-        // setTimeout(() => {
-        //   dispatch(loadStories())
-        //     .then(() => dispatch(reloadInitialData(true)))
-
-        // }, 250)
-        dispatch(
+      : dispatch(
           updateStories({
             title,
-            storyId: myupdateStoryState.id,
+            storyId: item.item.id,
             content,
           })
-        )
-          .then(() => {
-            dispatch(updateStoriesState({ title: title, content: content }));
-          })
-          .then(() => (setStatus("success"), setContent(""), setTitle("")));
+        ).then(() => (setStatus("success"), setContent(""), setTitle("")));
   };
 
   const handleStory = async () => {
     content !== "" && title !== ""
       ? vvv()
-      : // setTimeout(() => {
-      //   console.log("opop222", resultAdd);
-      // }, 4000)
-      title === "" && content !== ""
+      : title === "" && content !== ""
       ? setTitleError(true)
       : title !== "" && content === ""
       ? setContentError(true)
       : (setTitleError(true), setContentError(true));
-
-    // navigation.navigate("item", { item: resultAdd });
-    //   dispatch(loadStories())
-    //     .then(() => dispatch(reloadInitialData(true)))
   };
 
   useEffect(() => {
@@ -101,7 +78,9 @@ const StoryModal = (item) => {
       setTimeout(() => {
         setModalVisible(!modalVisible);
         setStatus("ready");
-        navigation.navigate("item", { item: resultAdd });
+        pageName !== "item"
+          ? navigation.navigate("item", { item: resultAdd })
+          : navigation.navigate("item", { item: resultUpdate });
       }, 1300);
   }, [status]);
 

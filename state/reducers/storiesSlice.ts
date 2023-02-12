@@ -48,6 +48,8 @@ export const myStories = createAsyncThunk(
     });
     const result = await Promise.all(promises);
 
+    console.log("result my stoeies in redux", result);
+
     try {
       await AsyncStorage.setItem("myStoredStories", JSON.stringify(result));
     } catch (error) {
@@ -184,24 +186,52 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
   try {
     await AsyncStorage.setItem(
       "myStoredDataApplauds",
-      JSON.stringify(resultInitial.filter((x) => x.applauds.length !== 0))
+      JSON.stringify(
+        resultInitial
+          .filter((x) => x.applauds.length !== 0)
+          .sort(function (a, b) {
+            return b.applauds.length - a.applauds.length;
+          })
+      )
     );
 
     await AsyncStorage.setItem(
       "myStoredDataCompassions",
-      JSON.stringify(resultInitial.filter((x) => x.compassions.length !== 0))
+      JSON.stringify(
+        resultInitial
+          .filter((x) => x.compassions.length !== 0)
+          .sort(function (a, b) {
+            return b.compassions.length - a.compassions.length;
+          })
+      )
     );
     await AsyncStorage.setItem(
       "myStoredDataBrokens",
-      JSON.stringify(resultInitial.filter((x) => x.brokens.length !== 0))
+      JSON.stringify(
+        resultInitial
+          .filter((x) => x.brokens.length !== 0)
+          .sort(function (a, b) {
+            return b.brokens.length - a.brokens.length;
+          })
+      )
     );
     await AsyncStorage.setItem(
       "myStoredDataJustNos",
-      JSON.stringify(resultInitial.filter((x) => x.justNos.length !== 0))
+      JSON.stringify(
+        resultInitial
+          .filter((x) => x.justNos.length !== 0)
+          .sort(function (a, b) {
+            return b.justNos.length - a.justNos.length;
+          })
+      )
     );
     await AsyncStorage.setItem(
       "myStoredDataTimestamp",
-      JSON.stringify(resultInitial.filter((x) => x.timestamp.length !== 0))
+      JSON.stringify(
+        resultInitial.sort(function (a, b) {
+          return b.timestamp - a.timestamp;
+        })
+      )
     );
     await AsyncStorage.setItem(
       "myStoredDataRandom",

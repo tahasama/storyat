@@ -12,6 +12,7 @@ import { getAuthData } from "../state/reducers/authSlice";
 const Reaction = React.memo(
   ({ reaction, item, handleReactions, handleOnpress }: any) => {
     const { user } = useAppSelector(getAuthData);
+    console.log("comment length", item.numOfComments);
 
     let icon;
     let name;
@@ -58,11 +59,13 @@ const Reaction = React.memo(
         ) : (
           <MaterialCommunityIcons name={icon} color={color} size={28} />
         )}
-        {item[name].length !== 0 && (
-          <Text style={{ color: "#9db0c0", fontSize: 11 }}>
-            {item[name].length}
-          </Text>
-        )}
+        {reaction !== "comments"
+          ? item[name].length !== 0
+          : item[name] !== 0 && (
+              <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+                {reaction !== "comments" ? item[name].length : item[name]}
+              </Text>
+            )}
       </TouchableOpacity>
     );
   }

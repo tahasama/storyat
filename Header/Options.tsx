@@ -77,7 +77,10 @@ const Options = () => {
                   flexDirection: "row",
                 }}
                 onPress={() => (
-                  navigation.navigate("profile", { theUser: user.id }),
+                  navigation.navigate("profile", {
+                    notActualUser: false,
+                    userOfProfile: user,
+                  }),
                   setModalVisible(false)
                 )}
               >
@@ -95,7 +98,10 @@ const Options = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => (
-                  navigation.navigate("actions", { userId: user }),
+                  navigation.navigate("actions", {
+                    notActualUser: false,
+                    userOfProfile: user,
+                  }),
                   setModalVisible(false)
                 )}
                 style={{

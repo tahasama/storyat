@@ -29,7 +29,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./firebase";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import UsernameModal from "./UsernameModal";
 
@@ -40,21 +40,31 @@ const Profile = ({ route }: any) => {
   const { image, user, newuser, username } = useAppSelector(getAuthData);
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
+  const isFocused = useIsFocused();
+  const profileUser = route.params.notActualUser ? newuser : user;
 
-  console.log("resultComments", resultComments);
+  console.log(
+    "resultReactions",
+    resultReactions.length,
+    "result",
+    result.length,
+    "resultComments",
+    resultComments.length,
+    "profileUser",
+    profileUser.id
+  );
 
   useEffect(() => {
     let isSubscribed =
-      resultComments.length === 0 &&
-      dispatch(loadAllComments({ userId: user.id }));
-    result.length === 0 && dispatch(myStories({ userId: user.id })); // temporary solution
-    resultReactions.length === 0 &&
-      dispatch(ReactedToStories({ userId: user.id }));
+      isFocused &&
+      (dispatch(loadAllComments({ userId: profileUser.id })),
+      dispatch(myStories({ userId: profileUser.id })), // temporary solution
+      dispatch(ReactedToStories({ userId: profileUser.id })));
 
     return () => {
       isSubscribed;
     };
-  }, []);
+  }, [profileUser.id, isFocused]);
 
   const pickImageAsync = async () => {
     setLoading(true);
@@ -86,17 +96,15 @@ const Profile = ({ route }: any) => {
     }
   };
 
-  const userId = route.params.notActualUser !== true ? user : newuser;
-
   const handleOnpress = () => {
-    navigation.navigate("actions", { userId: userId });
+    navigation.navigate("actions", { userId: profileUser.id });
   };
 
-  useEffect(() => {
-    dispatch(myStories({ pageName: userId.id }));
-    dispatch(ReactedToStories({ userId: userId.id }));
-    dispatch(loadAllComments({ userId: userId.id }));
-  }, [userId.id]);
+  // useEffect(() => {
+  //   dispatch(myStories({ pageName: route.params }));
+  //   dispatch(ReactedToStories({ userId: route.params}));
+  //   dispatch(loadAllComments({ userId: route.params }));
+  // }, [userId.id]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -104,7 +112,7 @@ const Profile = ({ route }: any) => {
         <View>
           <Image
             source={{
-              uri: !image ? userId.avatar : image,
+              uri: !image ? profileUser.avatar : image,
             }}
             style={{
               width: 150,
@@ -116,10 +124,10 @@ const Profile = ({ route }: any) => {
         </View>
         <View style={{ justifyContent: "space-around" }}>
           <Text style={{ color: "white" }}>
-            Username : {username !== "" ? username : userId.username}
+            Username : {username !== "" ? username : profileUser.username}
           </Text>
           <Text style={{ color: "white" }}>
-            joined on : {new Date(userId.timestamp).toDateString()}
+            joined on : {new Date(profileUser.timestamp).toDateString()}
           </Text>
           <Text style={{ color: "white" }}>
             No of Stories : {result.length}
@@ -130,7 +138,7 @@ const Profile = ({ route }: any) => {
         </View>
       </View>
 
-      {userId.id === user.id && (
+      {profileUser.id === user.id && (
         <View
           style={{
             flexDirection: "row",
@@ -201,7 +209,7 @@ const Profile = ({ route }: any) => {
 
           <Text style={{ color: "white" }}>
             {
-              resultReactions.filter((x) => x.applauds.includes(userId.id))
+              resultReactions.filter((x) => x.applauds.includes(profileUser.id))
                 .length
             }
           </Text>
@@ -214,8 +222,9 @@ const Profile = ({ route }: any) => {
 
           <Text style={{ color: "white" }}>
             {
-              resultReactions.filter((x) => x.compassions.includes(userId.id))
-                .length
+              resultReactions.filter((x) =>
+                x.compassions.includes(profileUser.id)
+              ).length
             }
           </Text>
         </View>
@@ -230,7 +239,7 @@ const Profile = ({ route }: any) => {
           <Text style={styles.text}> Heart breaking Stories : </Text>
           <Text style={{ color: "white" }}>
             {
-              resultReactions.filter((x) => x.brokens.includes(userId.id))
+              resultReactions.filter((x) => x.brokens.includes(profileUser.id))
                 .length
             }
           </Text>
@@ -247,7 +256,7 @@ const Profile = ({ route }: any) => {
 
           <Text style={{ color: "white" }}>
             {
-              resultReactions.filter((x) => x.justNos.includes(userId.id))
+              resultReactions.filter((x) => x.justNos.includes(profileUser.id))
                 .length
             }
           </Text>

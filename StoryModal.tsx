@@ -78,6 +78,9 @@ const StoryModal = (item) => {
       setTimeout(() => {
         setModalVisible(!modalVisible);
         setStatus("ready");
+
+        dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
+
         pageName !== "item"
           ? navigation.navigate("item", { item: resultAdd })
           : navigation.navigate("item", { item: resultUpdate });

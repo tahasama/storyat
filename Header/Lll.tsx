@@ -23,9 +23,9 @@ const Lll = () => {
   const { resultInitial, reloadState } = useAppSelector(getstoriesData);
 
   useEffect(() => {
-    let isSubscribed =
-      resultInitial.length === 0 &&
-      dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
+    console.log("lets get that data", resultInitial.length);
+    let isSubscribed = resultInitial.length === 0 && dispatch(loadStories());
+    dispatch(reloadInitialData(true));
     return () => {
       isSubscribed;
     };
@@ -104,7 +104,7 @@ const Lll = () => {
         name="justNos"
         component={JustNos}
         options={{
-          title: "Trending",
+          title: "Wow! No",
           drawerIcon: () => (
             <Feather name="trending-down" color="#213e45" size={30} />
           ),

@@ -29,9 +29,13 @@ import MyComments from "./UserActions/MyComments";
 import MyVotedComments from "./UserActions/MyVotedComments";
 import MyReactions from "./UserActions/MyReactions";
 import MyStories from "./UserActions/MyStories";
+import { useNavigation } from "@react-navigation/native";
 
-const Actions = () => {
+const Actions = ({ route }) => {
   const { user } = useAppSelector(getAuthData);
+  const navigation = useNavigation<any>();
+  const userId = route.params.userId.id;
+  console.log("action from profile", userId);
 
   const dispatch = useAppDispatch();
   const { resultComments } = useAppSelector(getcommentsData);
@@ -40,12 +44,10 @@ const Actions = () => {
 
   useEffect(() => {
     let isSubscribed =
-      resultComments.length === 0 &&
-      dispatch(loadAllComments({ userId: user.id }));
-    result.length === 0 && dispatch(myStories({ userId: user.id })); // temporary solution
-    votedComments.length === 0 && dispatch(AllComments(user.id));
-    resultReactions.length === 0 &&
-      dispatch(ReactedToStories({ userId: user.id }));
+      (dispatch(loadAllComments({ userId: userId })),
+      dispatch(myStories({ userId: userId })), // temporary solution
+      dispatch(AllComments(userId)),
+      dispatch(ReactedToStories({ userId: userId })));
 
     return () => {
       isSubscribed;
@@ -72,17 +74,9 @@ const Actions = () => {
         },
       }}
     >
-      <Tab.Screen
-        name="My stories"
-        component={MyStories}
-        // children={() => <MyStories theUser={route.params.userId.id} />}
-      />
+      <Tab.Screen name="My stories" component={MyStories} />
       <Tab.Screen name="My comments" component={MyComments} />
-      <Tab.Screen
-        name="My reactions"
-        component={MyReactions}
-        // children={() => <MyReactions theUser={route.params.userId.id} />}
-      />
+      <Tab.Screen name="My reactions" component={MyReactions} />
       <Tab.Screen name="My voted comments" component={MyVotedComments} />
     </Tab.Navigator>
   );

@@ -35,8 +35,6 @@ const Items = () => {
 
   const [data, setData] = useState([]);
 
-  console.log("Data in list ...", reloadState);
-
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
 
   // useEffect(() => {

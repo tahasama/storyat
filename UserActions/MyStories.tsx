@@ -11,6 +11,7 @@ import BodyOfStory from "../Story/BodyOfStory";
 import FooterOfStory from "../Story/FooterOfStory";
 import StoryModal from "../StoryModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 function MyStories() {
   const [loading, setLoading] = useState(false);
@@ -27,6 +28,8 @@ function MyStories() {
         .then(() => setLoading(false));
     }, 350);
   }, []);
+
+  // console.log("mystories", data[0].title);
 
   return (
     <SafeAreaView style={styles.container}>

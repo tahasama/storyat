@@ -59,13 +59,13 @@ const Reaction = React.memo(
         ) : (
           <MaterialCommunityIcons name={icon} color={color} size={28} />
         )}
-        {reaction !== "comments"
+        {(reaction !== "comments"
           ? item[name].length !== 0
-          : item[name] !== 0 && (
-              <Text style={{ color: "#9db0c0", fontSize: 11 }}>
-                {reaction !== "comments" ? item[name].length : item[name]}
-              </Text>
-            )}
+          : item[name] !== 0) && (
+          <Text style={{ color: "#9db0c0", fontSize: 11 }}>
+            {reaction !== "comments" ? item[name].length : item[name]}
+          </Text>
+        )}
       </TouchableOpacity>
     );
   }

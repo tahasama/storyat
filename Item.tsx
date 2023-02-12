@@ -39,6 +39,8 @@ const Item = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const isFocused = useIsFocused();
   const ccc = route.params;
+  console.log("ccc", ccc);
+
   const { user } = useAppSelector(getAuthData);
   const { result } = useAppSelector(getcommentsData);
 
@@ -236,160 +238,161 @@ const Item = ({ navigation, route }) => {
         style={{ marginBottom: 90 }}
         data={result}
         renderItem={({ item }) => (
-          <View style={styles.commentContainer}>
-            <TouchableOpacity
-              onPress={() => (
-                dispatch(getUser(item.commenter)),
-                navigation.navigate("profile", { notActualUser: true })
-              )}
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                source={{
-                  uri: item.avatar,
-                }}
-                style={{
-                  width: 30,
-                  height: 30,
-                  borderRadius: 50,
-                  marginHorizontal: 0,
-                  marginVertical: 0,
-                }}
-              />
-              <Text style={{ fontSize: 16, color: "white", marginLeft: 8 }}>
-                {item.username}
-              </Text>
-            </TouchableOpacity>
-            <Text style={styles.comment}>{item.comment}</Text>
-            {/* <View style={styles.commentActions}>
-              <TouchableOpacity
-                onPress={() => {
-                  handleOnpress(item);
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 15,
-                    width: 110,
-                  }}
-                >
-                  <Text
-                    style={{
-                      // color: "#727577",
-                      // marginVertical: 5,
-                      fontSize: 15,
-                      color: "#9BA5A9",
-                      padding: 0,
-                      margin: 0,
-                    }}
-                  >
-                    Reply
-                  </Text>
-                  {item.numOfReplies !== 0 && (
-                    <Text
-                      style={{
-                        color: "#727577",
-                        fontSize: 15,
-                        padding: 0,
-                        margin: 0,
-                      }}
-                    >
-                      / view
-                    </Text>
-                  )}
-                  <Text style={{ color: "white", padding: 0, margin: 0 }}>
-                    {item.numOfReplies}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                // disabled={commentLiked && true}
-                onPress={() => {
-                  handleLike(item);
-                }}
-              >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  {likeLoading && item.id === commentIdLoading ? (
-                    <ActivityIndicator />
-                  ) : (
-                    <Entypo
-                      name="arrow-bold-up"
-                      color={
-                        item.likes.filter((zzz) => zzz.liker === user.id)
-                          .length !== 0
-                          ? "#6a4e7e"
-                          : "#3d4c57"
-                      }
-                      size={26}
-                      style={{ transform: [{ rotate: "40deg" }] }}
-                    />
-                  )}
-                  <Text style={{ color: "white" }}>{item.likes.length}</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  handleDislike(item);
-                }}
-              >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  {disLikeLoading && item.id === commentIdLoading ? (
-                    <ActivityIndicator />
-                  ) : (
-                    <Entypo
-                      name="arrow-bold-down"
-                      color={
-                        item.dislikes.filter((zzz) => zzz.liker === user.id)
-                          .length === 0
-                          ? "#3d4c57"
-                          : "#6a4e7e"
-                      }
-                      size={26}
-                      style={{ transform: [{ rotate: "40deg" }] }}
-                    />
-                  )}
-                  <Text style={{ color: "white" }}>{item.dislikes.length}</Text>
-                </View>
-              </TouchableOpacity>
+          // <View style={styles.commentContainer}>
+          //   <TouchableOpacity
+          //     onPress={() => (
+          //       dispatch(getUser(item.commenter)),
+          //       navigation.navigate("profile", { notActualUser: true })
+          //     )}
+          //     style={{
+          //       flexDirection: "row",
+          //       justifyContent: "flex-start",
+          //       alignItems: "center",
+          //     }}
+          //   >
+          //     <Image
+          //       source={{
+          //         uri: item.avatar,
+          //       }}
+          //       style={{
+          //         width: 30,
+          //         height: 30,
+          //         borderRadius: 50,
+          //         marginHorizontal: 0,
+          //         marginVertical: 0,
+          //       }}
+          //     />
+          //     <Text style={{ fontSize: 16, color: "white", marginLeft: 8 }}>
+          //       {item.username}
+          //     </Text>
+          //   </TouchableOpacity>
+          //   <Text style={styles.comment}>{item.comment}</Text>
+          //   <View style={styles.commentActions}>
+          //     <TouchableOpacity
+          //       onPress={() => {
+          //         handleOnpress(item);
+          //       }}
+          //     >
+          //       <View
+          //         style={{
+          //           flexDirection: "row",
+          //           alignItems: "center",
+          //           justifyContent: "space-between",
+          //           marginVertical: 15,
+          //           width: 110,
+          //         }}
+          //       >
+          //         <Text
+          //           style={{
+          //             // color: "#727577",
+          //             // marginVertical: 5,
+          //             fontSize: 15,
+          //             color: "#9BA5A9",
+          //             padding: 0,
+          //             margin: 0,
+          //           }}
+          //         >
+          //           Reply
+          //         </Text>
+          //         {item.numOfReplies !== 0 && (
+          //           <Text
+          //             style={{
+          //               color: "#727577",
+          //               fontSize: 15,
+          //               padding: 0,
+          //               margin: 0,
+          //             }}
+          //           >
+          //             / view
+          //           </Text>
+          //         )}
+          //         <Text style={{ color: "white", padding: 0, margin: 0 }}>
+          //           {item.numOfReplies}
+          //         </Text>
+          //       </View>
+          //     </TouchableOpacity>
+          //     <TouchableOpacity
+          //       // disabled={commentLiked && true}
+          //       onPress={() => {
+          //         handleLike(item);
+          //       }}
+          //     >
+          //       <View style={{ flexDirection: "row", alignItems: "center" }}>
+          //         {likeLoading && item.id === commentIdLoading ? (
+          //           <ActivityIndicator />
+          //         ) : (
+          //           <Entypo
+          //             name="arrow-bold-up"
+          //             color={
+          //               item.likes.filter((zzz) => zzz.liker === user.id)
+          //                 .length !== 0
+          //                 ? "#6a4e7e"
+          //                 : "#3d4c57"
+          //             }
+          //             size={26}
+          //             style={{ transform: [{ rotate: "40deg" }] }}
+          //           />
+          //         )}
+          //         <Text style={{ color: "white" }}>{item.likes.length}</Text>
+          //       </View>
+          //     </TouchableOpacity>
+          //     <TouchableOpacity
+          //       onPress={() => {
+          //         handleDislike(item);
+          //       }}
+          //     >
+          //       <View style={{ flexDirection: "row", alignItems: "center" }}>
+          //         {disLikeLoading && item.id === commentIdLoading ? (
+          //           <ActivityIndicator />
+          //         ) : (
+          //           <Entypo
+          //             name="arrow-bold-down"
+          //             color={
+          //               item.dislikes.filter((zzz) => zzz.liker === user.id)
+          //                 .length === 0
+          //                 ? "#3d4c57"
+          //                 : "#6a4e7e"
+          //             }
+          //             size={26}
+          //             style={{ transform: [{ rotate: "40deg" }] }}
+          //           />
+          //         )}
+          //         <Text style={{ color: "white" }}>{item.dislikes.length}</Text>
+          //       </View>
+          //     </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => handleRemove(item)}
-                style={{ opacity: user.id === item.commenter ? 1 : 0 }}
-                disabled={user.id !== item.commenter && true}
-              >
-                {deleteComment && item.id === commentIdDelete ? (
-                  <Animated.View
-                    style={{ transform: [{ translateX: anim.current }] }}
-                  >
-                    <MaterialCommunityIcons
-                      name="delete-empty"
-                      color={"#669393"}
-                      size={26}
-                    />
-                  </Animated.View>
-                ) : (
-                  <MaterialCommunityIcons
-                    name="delete"
-                    color={"#669393"}
-                    size={26}
-                  />
-                )}
-              </TouchableOpacity>
-            </View> */}
-            <View
-              style={{
-                borderBottomColor: "grey",
-                borderBottomWidth: StyleSheet.hairlineWidth,
-              }}
-            />
-          </View>
+          //     <TouchableOpacity
+          //       onPress={() => handleRemove(item)}
+          //       style={{ opacity: user.id === item.commenter ? 1 : 0 }}
+          //       disabled={user.id !== item.commenter && true}
+          //     >
+          //       {deleteComment && item.id === commentIdDelete ? (
+          //         <Animated.View
+          //           style={{ transform: [{ translateX: anim.current }] }}
+          //         >
+          //           <MaterialCommunityIcons
+          //             name="delete-empty"
+          //             color={"#669393"}
+          //             size={26}
+          //           />
+          //         </Animated.View>
+          //       ) : (
+          //         <MaterialCommunityIcons
+          //           name="delete"
+          //           color={"#669393"}
+          //           size={26}
+          //         />
+          //       )}
+          //     </TouchableOpacity>
+          //   </View>
+          //   <View
+          //     style={{
+          //       borderBottomColor: "grey",
+          //       borderBottomWidth: StyleSheet.hairlineWidth,
+          //     }}
+          //   />
+          // </View>
+          <Text>IOP</Text>
         )}
         keyExtractor={(item) => {
           return item.id;
@@ -397,7 +400,7 @@ const Item = ({ navigation, route }) => {
         extraData={selectedId}
         ListHeaderComponent={getHeader}
       />
-      {/* <View
+      <View
         style={{
           // backgroundColor: "#002626",
           // borderRadius: 50,
@@ -420,13 +423,13 @@ const Item = ({ navigation, route }) => {
           value={comment}
         />
         <TouchableOpacity
-          onPress={handleComment}
+          // onPress={handleComment}
           style={styles.button}
           disabled={comment === "" && true}
         >
           <Text style={styles.buttonText}>Post</Text>
         </TouchableOpacity>
-      </View> */}
+      </View>
     </View>
   );
 };

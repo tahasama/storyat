@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -27,6 +27,8 @@ const Items = () => {
   const dispatch = useAppDispatch();
   const { reloadState } = useAppSelector(getstoriesData);
   const { user } = useAppSelector(getAuthData);
+  const [loading, setLoading] = useState(false);
+
   // const { IvotedData } = useAppSelector(getstoriesData);
 
   // console.log("IvotedData in list ...", IvotedData);
@@ -36,12 +38,12 @@ const Items = () => {
 
   useEffect(() => {
     reloadState &&
-      setTimeout(() => {
-        result()
-          .then((res) => setData(JSON.parse(res)))
-          .then(() => dispatch(reloadInitialData(false)));
-      }, 750);
-    console.log("inside useeffect data", data);
+      (setLoading(true),
+      result()
+        .then((res) => setData(JSON.parse(res)))
+        .then(() => dispatch(reloadInitialData(false)))
+        .then(() => setLoading(false)));
+
     // voterIndex();
   }, [reloadState]);
 
@@ -54,26 +56,42 @@ const Items = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <HeadOfStory item={item} />
-            <BodyOfStory item={item} />
-            <FooterOfStory item={item} />
-            <View
-              style={{
-                borderBottomColor: "grey",
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                marginTop: 15,
-              }}
-            />
-          </View>
-        )}
-        keyExtractor={(item) => {
-          return item.id;
-        }}
-      />
+      {loading ? (
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+            transform: [{ scale: 3 }],
+          }}
+        >
+          <ActivityIndicator size="large" />
+        </View>
+      ) : (
+        <FlatList
+          data={data}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <HeadOfStory item={item} />
+              <BodyOfStory item={item} />
+              <FooterOfStory item={item} />
+              <View
+                style={{
+                  borderBottomColor: "grey",
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                  marginTop: 15,
+                }}
+              />
+            </View>
+          )}
+          keyExtractor={(item) => {
+            return item.id;
+          }}
+        />
+      )}
+      <View style={{ flex: 1 }}>
+        <StoryModal />
+      </View>
     </SafeAreaView>
   );
 };

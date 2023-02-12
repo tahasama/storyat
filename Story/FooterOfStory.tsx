@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { getAuthData } from "../state/reducers/authSlice";
 import { getstoriesData, Ivoted, vote } from "../state/reducers/storiesSlice";
 
-const FooterOfStory = ({ item }: any) => {
+const FooterOfStory = React.memo(({ item }: any) => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
   const { user } = useAppSelector(getAuthData);
@@ -51,11 +51,7 @@ const FooterOfStory = ({ item }: any) => {
       >
         <MaterialCommunityIcons
           name="hand-clap"
-          color={
-            item.applauds.filter((zzz) => zzz === user.id).length !== 0
-              ? "#73481c"
-              : "#707070"
-          }
+          color={item["applauds"].includes(user.id) ? "#73481c" : "#707070"}
           size={28}
         />
         {item.applauds.length !== 0 && (
@@ -70,11 +66,7 @@ const FooterOfStory = ({ item }: any) => {
       >
         <MaterialCommunityIcons
           name="heart"
-          color={
-            item.compassions.filter((zzz) => zzz === user.id).length === 0
-              ? "#707070"
-              : "#4c0000"
-          }
+          color={item["compassions"].includes(user.id) ? "#4c0000" : "#707070"}
           size={28}
         />
         {item.compassions.length !== 0 && (
@@ -89,11 +81,7 @@ const FooterOfStory = ({ item }: any) => {
       >
         <MaterialCommunityIcons
           name="heart-broken"
-          color={
-            item.brokens.filter((zzz) => zzz === user.id).length === 0
-              ? "#707070"
-              : "#5900b2"
-          }
+          color={item["brokens"].includes(user.id) ? "#5900b2" : "#707070"}
           size={28}
         />
         {item.brokens.length !== 0 && (
@@ -108,11 +96,7 @@ const FooterOfStory = ({ item }: any) => {
       >
         <Feather
           name="trending-down"
-          color={
-            item.justNos.filter((zzz) => zzz === user.id).length === 0
-              ? "#707070"
-              : "#305a63"
-          }
+          color={item["justNos"].includes(user.id) ? "#305a63" : "#707070"}
           size={28}
         />
         {item.justNos.length !== 0 && (
@@ -138,6 +122,6 @@ const FooterOfStory = ({ item }: any) => {
       </TouchableOpacity>
     </View>
   );
-};
+});
 
 export default FooterOfStory;

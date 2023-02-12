@@ -130,10 +130,13 @@ export const ReactedToStories = createAsyncThunk(
       });
     });
 
-    const arrRes = await Promise.all(results);
+    const arr = await Promise.all(results);
+    console.log("111", arr);
+    const result = arr.filter(
+      (obj, index, self) => self.findIndex((t) => t.id === obj.id) === index
+    );
 
-    const setRes = new Set(arrRes);
-    const result = Array.from(setRes);
+    console.log("222", arr);
 
     try {
       await AsyncStorage.setItem(
@@ -212,7 +215,8 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
   try {
-    const res = (await getDoc(doc(db, "stories", storyId))).data();
+    const res = await getDoc(doc(db, "stories", storyId));
+    // const res = {...xxx.data().id }
 
     return res;
   } catch (e) {
@@ -235,8 +239,23 @@ export const addStories = createAsyncThunk(
         brokens: [],
         justNos: [],
       });
-
-      return res;
+      try {
+        const result = await getDoc(doc(db, "stories", res.id));
+        const username = await (
+          await getDoc(doc(db, "users", result.data().writerId))
+        ).data().username;
+        const avatar = await (
+          await getDoc(doc(db, "users", result.data().writerId))
+        ).data().avatar;
+        return {
+          id: result.id,
+          ...result.data(),
+          username: username,
+          avatar: avatar,
+        };
+      } catch (error) {
+        console.log("result getDoc errorrrrr", error);
+      }
     } catch (e) {
       Alert.alert("action failed please try again");
     }
@@ -303,7 +322,6 @@ export const substractCommentNumberToStory = createAsyncThunk(
 export const vote = createAsyncThunk(
   "vote",
   async (infos: any, { rejectWithValue }) => {
-    console.log("infos///redux", infos);
     if (infos.reaction === "applauds") {
       const voterIndexApplauds = infos.story.applauds.indexOf(infos.voter);
 
@@ -312,7 +330,6 @@ export const vote = createAsyncThunk(
       } else {
         infos.story.applauds.push(infos.voter);
       }
-      console.log("this is applauds2", infos);
 
       try {
         await updateDoc(doc(db, "stories", infos.story.id), {
@@ -392,6 +409,7 @@ export interface storiesProps {
     // loadmore: number;
     reloadState: boolean;
     IvotedData: any[];
+    resultAdd: any;
   };
 }
 
@@ -425,6 +443,7 @@ export const storiesInitialState = {
   myupdateStoriesState: {},
   myupdateStoryState: [],
   reloadState: false,
+  resultAdd: {},
   IvotedData: [{ storyId: "", voter: "" }],
 };
 
@@ -474,9 +493,10 @@ export const storiesSlice = createSlice({
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
       state.resultInitial = action.payload;
     });
-    // builder.addCase(loadMoreStories.fulfilled, (state, action: any) => {
-    //   state.resultLoadMore = action.payload;
-    // });
+    builder.addCase(addStories.fulfilled, (state, action: any) => {
+      console.log("action.payload", action.payload);
+      state.resultAdd = action.payload;
+    });
     builder.addCase(getStory.fulfilled, (state, action) => {
       state.story = action.payload;
     });

@@ -21,13 +21,13 @@ import {
   updateStories,
   updateStoriesState,
 } from "./state/reducers/storiesSlice";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Feather from "@expo/vector-icons/Feather";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-const StoryModal = () => {
+const StoryModal = (item) => {
   const dispatch = useAppDispatch();
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("");
@@ -36,18 +36,29 @@ const StoryModal = () => {
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
-  const { myupdateStoryState } = useAppSelector(getstoriesData);
+  const { myupdateStoryState, resultAdd } = useAppSelector(getstoriesData);
   const pageName = useRoute().name;
+  const navigation = useNavigation<any>();
+
+  // console.log("uaaa", item.item.title, "pageName", pageName);
 
   const vvv = () => {
     pageName !== "item"
-      ? (dispatch(addStories({ title, userId: user.id, content }))
+      ? dispatch(addStories({ title, userId: user.id, content }))
           .then(() => setStatus("success"))
-          .then(() => (setContent(""), setTitle(""))),
-        setTimeout(() => {
-          dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
-        }, 250))
-      : dispatch(
+          .then(() => (setContent(""), setTitle("")))
+      : // setTimeout(() => {
+        //   navigation.navigate("item", { item: resultAdd });
+        //   //   dispatch(loadStories())
+        //   //     .then(() => dispatch(reloadInitialData(true)))
+        // }, 5000)
+        // .then(() => navigation.navigate("actions"))
+        // setTimeout(() => {
+        //   dispatch(loadStories())
+        //     .then(() => dispatch(reloadInitialData(true)))
+
+        // }, 250)
+        dispatch(
           updateStories({
             title,
             storyId: myupdateStoryState.id,
@@ -63,11 +74,18 @@ const StoryModal = () => {
   const handleStory = async () => {
     content !== "" && title !== ""
       ? vvv()
-      : title === "" && content !== ""
+      : // setTimeout(() => {
+      //   console.log("opop222", resultAdd);
+      // }, 4000)
+      title === "" && content !== ""
       ? setTitleError(true)
       : title !== "" && content === ""
       ? setContentError(true)
       : (setTitleError(true), setContentError(true));
+
+    // navigation.navigate("item", { item: resultAdd });
+    //   dispatch(loadStories())
+    //     .then(() => dispatch(reloadInitialData(true)))
   };
 
   useEffect(() => {
@@ -83,6 +101,7 @@ const StoryModal = () => {
       setTimeout(() => {
         setModalVisible(!modalVisible);
         setStatus("ready");
+        navigation.navigate("item", { item: resultAdd });
       }, 1300);
   }, [status]);
 
@@ -111,9 +130,7 @@ const StoryModal = () => {
                 onChangeText={(text) => setTitle(text)}
                 style={styles.input}
                 maxLength={70}
-                defaultValue={
-                  pageName !== "item" ? title : myupdateStoryState.title
-                }
+                defaultValue={pageName === "item" && item.item.title}
               />
               <TextInput
                 multiline
@@ -124,9 +141,7 @@ const StoryModal = () => {
                 placeholderTextColor={contentError ? "red" : "#8BBCCC"}
                 onChangeText={(text) => setContent(text)}
                 style={styles.input}
-                defaultValue={
-                  pageName !== "item" ? content : myupdateStoryState.content
-                }
+                defaultValue={pageName === "item" && item.item.content}
               />
               <TouchableOpacity
                 onPress={handleStory}

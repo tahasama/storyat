@@ -21,11 +21,9 @@ const Applauds = () => {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      result()
-        .then((res) => setData(JSON.parse(res)))
-        .then(() => setLoading(false));
-    }, 350);
+    result()
+      .then((res) => setData(JSON.parse(res)))
+      .then(() => setLoading(false));
   }, []);
 
   return (

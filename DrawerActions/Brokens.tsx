@@ -23,11 +23,9 @@ const Brokens = () => {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      result()
-        .then((res) => setData(JSON.parse(res)))
-        .then(() => setLoading(false));
-    }, 750);
+    result()
+      .then((res) => setData(JSON.parse(res)))
+      .then(() => setLoading(false));
   }, []);
 
   return (

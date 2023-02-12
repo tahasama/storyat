@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 
 const BodyOfStory = ({ item }: any) => {
   const navigation = useNavigation<any>();
+  const [isPending, setIsPending] = useState(false);
 
   const handleOnpress = (item) => {
+    if (isPending) return;
+    setIsPending(true);
     navigation.navigate("item", { item: item });
+    setIsPending(false);
   };
   return (
     <>

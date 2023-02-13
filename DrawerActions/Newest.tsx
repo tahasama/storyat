@@ -12,24 +12,33 @@ import StoryModal from "../StoryModal";
 import FooterOfStory from "../Story/FooterOfStory";
 import BodyOfStory from "../Story/BodyOfStory";
 import HeadOfStory from "../Story/HeadOfStory";
-import { useAppSelector } from "../state/hooks";
-import { getstoriesData } from "../state/reducers/storiesSlice";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
+import {
+  getstoriesData,
+  reloadInitialData,
+} from "../state/reducers/storiesSlice";
 
 const Newest = () => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState([]);
+  const dispatch = useAppDispatch();
+
   const { reloadState } = useAppSelector(getstoriesData);
 
   const result = async () =>
     await AsyncStorage.getItem("myStoredDataTimestamp");
 
   useEffect(() => {
-    setLoading(true),
+    reloadState &&
+      (setLoading(true),
       result()
         .then((res) => setData(JSON.parse(res)))
-        .then(() => setLoading(false));
-  }, []);
+        .then(() => dispatch(reloadInitialData(false)))
+        .then(() => setLoading(false)));
+
+    // voterIndex();
+  }, [reloadState]);
 
   return (
     <SafeAreaView style={styles.container}>

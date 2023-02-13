@@ -17,6 +17,7 @@ import {
   getstoriesData,
   reloadInitialData,
 } from "../state/reducers/storiesSlice";
+import { useIsFocused } from "@react-navigation/native";
 
 const Applauds = () => {
   const [loading, setLoading] = useState(false);
@@ -24,19 +25,20 @@ const Applauds = () => {
   const [data, setData] = useState([]);
   const dispatch = useAppDispatch();
   const { reloadState } = useAppSelector(getstoriesData);
+  const isFocused = useIsFocused();
 
   const result = async () => await AsyncStorage.getItem("myStoredDataApplauds");
 
   useEffect(() => {
-    reloadState &&
-      (setLoading(true),
+    // (isFocused || reloadState) &&
+    setLoading(true),
       result()
         .then((res) => setData(JSON.parse(res)))
         .then(() => dispatch(reloadInitialData(false)))
-        .then(() => setLoading(false)));
+        .then(() => setLoading(false));
 
     // voterIndex();
-  }, [reloadState]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

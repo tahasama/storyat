@@ -30,15 +30,15 @@ const Newest = () => {
     await AsyncStorage.getItem("myStoredDataTimestamp");
 
   useEffect(() => {
-    reloadState &&
-      (setLoading(true),
+    // reloadState &&
+    setLoading(true),
       result()
         .then((res) => setData(JSON.parse(res)))
         .then(() => dispatch(reloadInitialData(false)))
-        .then(() => setLoading(false)));
+        .then(() => setLoading(false));
 
     // voterIndex();
-  }, [reloadState]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

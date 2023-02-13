@@ -308,6 +308,7 @@ export const addStories = createAsyncThunk(
 export const updateStories = createAsyncThunk(
   "updateStories",
   async ({ title, content, storyId }: any) => {
+    console.log("dddd", title, content, storyId);
     try {
       const res = await updateDoc(doc(db, "stories", storyId), {
         title: title,
@@ -321,6 +322,7 @@ export const updateStories = createAsyncThunk(
         const avatar = await (
           await getDoc(doc(db, "users", result.data().writerId))
         ).data().avatar;
+        console.log("ffff", result.data());
         return {
           id: result.id,
           ...result.data(),

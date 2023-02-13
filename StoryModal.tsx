@@ -16,6 +16,7 @@ import { getAuthData } from "./state/reducers/authSlice";
 import {
   addStories,
   getstoriesData,
+  getStory,
   loadStories,
   reloadInitialData,
   updateStories,
@@ -30,39 +31,50 @@ const windowHeight = Dimensions.get("window").height;
 const StoryModal = (item) => {
   const dispatch = useAppDispatch();
   const [modalVisible, setModalVisible] = useState(false);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState(item && item.item ? item.item.title : "");
+  const [content, setContent] = useState(
+    item && item.content ? item.item.content : ""
+  );
   const [status, setStatus] = useState("");
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
-  const { myupdateStoryState, resultAdd, resultUpdate } =
-    useAppSelector(getstoriesData);
+  const { story } = useAppSelector(getstoriesData);
   const pageName = useRoute().name;
   const navigation = useNavigation<any>();
 
   const vvv = () => {
     pageName !== "item"
       ? dispatch(addStories({ title, userId: user.id, content }))
-          .then(() => setStatus("success"))
+          .then(({ payload }: any) => dispatch(getStory(payload.id)))
+          .then(() =>
+            setTimeout(() => {
+              setStatus("success");
+            }, 2000)
+          )
           .then(() => (setContent(""), setTitle("")))
       : dispatch(
           updateStories({
-            title,
+            title: title !== "" ? title : item && item.item && item.item.title,
             storyId: item.item.id,
-            content,
+            content:
+              content !== "" ? content : item && item.item && item.item.content,
           })
-        ).then(() => (setStatus("success"), setContent(""), setTitle("")));
+        )
+          .then(() => dispatch(getStory(item.item.id)))
+          .then(() => (setStatus("success"), setContent(""), setTitle("")));
   };
 
   const handleStory = async () => {
-    content !== "" && title !== ""
-      ? vvv()
-      : title === "" && content !== ""
-      ? setTitleError(true)
-      : title !== "" && content === ""
-      ? setContentError(true)
-      : (setTitleError(true), setContentError(true));
+    pageName !== "item"
+      ? content !== "" && title !== ""
+        ? vvv()
+        : title === "" && content !== ""
+        ? setTitleError(true)
+        : title !== "" && content === ""
+        ? setContentError(true)
+        : (setTitleError(true), setContentError(true))
+      : vvv();
   };
 
   useEffect(() => {
@@ -82,9 +94,9 @@ const StoryModal = (item) => {
         dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
 
         pageName !== "item"
-          ? navigation.navigate("item", { item: resultAdd })
-          : navigation.navigate("item", { item: resultUpdate });
-      }, 1300);
+          ? navigation.navigate("item", { item: story })
+          : navigation.navigate("item", { item: story });
+      }, 300);
   }, [status]);
 
   return (
@@ -112,7 +124,9 @@ const StoryModal = (item) => {
                 onChangeText={(text) => setTitle(text)}
                 style={styles.input}
                 maxLength={70}
-                defaultValue={pageName === "item" && item.item.title}
+                defaultValue={
+                  Object.entries(item).length !== 0 ? item.item.title : ""
+                }
               />
               <TextInput
                 multiline
@@ -123,7 +137,10 @@ const StoryModal = (item) => {
                 placeholderTextColor={contentError ? "red" : "#8BBCCC"}
                 onChangeText={(text) => setContent(text)}
                 style={styles.input}
-                defaultValue={pageName === "item" && item.item.content}
+                defaultValue={
+                  Object.entries(item).length !== 0 ? item.item.content : ""
+                }
+                // value={pageName === "item" ? item.item.content : content}
               />
               <TouchableOpacity
                 onPress={handleStory}

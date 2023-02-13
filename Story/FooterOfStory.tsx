@@ -38,7 +38,7 @@ const FooterOfStory = ({ item }: any) => {
     };
     // user.id !== item.writerId
     //   ?
-    console.log("vote2");
+    console.log("votex");
     dispatch(vote(voteData)).then(() =>
       dispatch(Ivoted({ voter: user.id, storyId: item.id }))
     );

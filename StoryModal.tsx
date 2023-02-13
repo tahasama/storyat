@@ -43,6 +43,12 @@ const StoryModal = (item) => {
   const pageName = useRoute().name;
   const navigation = useNavigation<any>();
 
+  let original = { story };
+
+  let { story: clonedItem } = original;
+  let cloned = { ...clonedItem };
+  console.log("1111111133", original);
+
   const vvv = () => {
     pageName !== "item"
       ? dispatch(addStories({ title, userId: user.id, content }))
@@ -94,8 +100,8 @@ const StoryModal = (item) => {
         dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
 
         pageName !== "item"
-          ? navigation.navigate("item", { item: story })
-          : navigation.navigate("item", { item: story });
+          ? navigation.navigate("item", { item: cloned })
+          : navigation.navigate("item", { item: cloned });
       }, 300);
   }, [status]);
 

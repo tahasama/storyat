@@ -256,6 +256,7 @@ export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
     ).data().avatar;
 
     console.log("result of story in redux", res.data());
+
     return {
       ...res.data(),
       id: storyId,
@@ -384,56 +385,80 @@ export const substractCommentNumberToStory = createAsyncThunk(
 export const vote = createAsyncThunk(
   "vote",
   async (infos: any, { rejectWithValue }) => {
+    console.log("vote300 reduxxx1112", infos);
+
     if (infos.reaction === "applauds") {
-      const voterIndexApplauds = infos.story.applauds.indexOf(infos.voter);
+      let arr = JSON.parse(JSON.stringify(infos.story.applauds));
+
+      const voterIndexApplauds = arr.indexOf(infos.voter);
+      console.log("vote300 redux1", voterIndexApplauds);
 
       if (voterIndexApplauds !== -1) {
-        infos.story.applauds.splice(voterIndexApplauds, 1);
+        arr.splice(voterIndexApplauds, 1);
       } else {
-        infos.story.applauds.push(infos.voter);
+        try {
+          arr.push(infos.voter);
+          console.log("vote300 reduxxxx", arr);
+        } catch (error) {
+          console.log("IIIIIII", error);
+        }
       }
+
+      infos.story.applauds = arr;
+
+      console.log("vote300 redux2", arr);
 
       try {
         await updateDoc(doc(db, "stories", infos.story.id), {
-          applauds: infos.story.applauds,
+          applauds: arr,
         });
       } catch (error) {
         console.log("this is applauds error", error);
       }
     }
     if (infos.reaction === "compassions") {
-      const voterIndexCompassions = infos.story.compassions.indexOf(
-        infos.voter
-      );
+      let arr = JSON.parse(JSON.stringify(infos.story.compassions));
+
+      const voterIndexCompassions = arr.indexOf(infos.voter);
       if (voterIndexCompassions !== -1) {
-        infos.story.compassions.splice(voterIndexCompassions, 1);
+        arr.splice(voterIndexCompassions, 1);
       } else {
-        infos.story.compassions.push(infos.voter);
+        arr.push(infos.voter);
       }
+      infos.story.compassions = arr;
+
       await updateDoc(doc(db, "stories", infos.story.id), {
-        compassions: infos.story.compassions,
+        compassions: arr,
       });
     }
     if (infos.reaction === "brokens") {
-      const voterIndexBrokens = infos.story.brokens.indexOf(infos.voter);
+      let arr = JSON.parse(JSON.stringify(infos.story.brokens));
+      const voterIndexBrokens = arr.indexOf(infos.voter);
       if (voterIndexBrokens !== -1) {
-        infos.story.brokens.splice(voterIndexBrokens, 1);
+        arr.splice(voterIndexBrokens, 1);
       } else {
-        infos.story.brokens.push(infos.voter);
+        arr.push(infos.voter);
       }
+
+      infos.story.brokens = arr;
+
       await updateDoc(doc(db, "stories", infos.story.id), {
-        brokens: infos.story.brokens,
+        brokens: arr,
       });
     }
     if (infos.reaction === "justNos") {
-      const voterIndexJustNos = infos.story.justNos.indexOf(infos.voter);
+      let arr = JSON.parse(JSON.stringify(infos.story.justNos));
+      const voterIndexJustNos = arr.indexOf(infos.voter);
       if (voterIndexJustNos !== -1) {
-        infos.story.justNos.splice(voterIndexJustNos, 1);
+        arr.splice(voterIndexJustNos, 1);
       } else {
-        infos.story.justNos.push(infos.voter);
+        arr.push(infos.voter);
       }
+
+      infos.story.justNos = arr;
+
       await updateDoc(doc(db, "stories", infos.story.id), {
-        justNos: infos.story.justNos,
+        justNos: arr,
       });
     }
   }

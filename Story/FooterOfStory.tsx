@@ -23,14 +23,13 @@ const FooterOfStory = ({ item }: any) => {
   const { IvotedData } = useAppSelector(getstoriesData);
   const [message, setMessage] = useState(false);
   const { user } = useAppSelector(getAuthData);
+  console.log("vote...................");
 
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
   };
 
   const handleReactions = ({ item, reaction }) => {
-    console.log("vote1");
-
     const voteData = {
       voter: user.id,
       story: item,
@@ -38,12 +37,14 @@ const FooterOfStory = ({ item }: any) => {
     };
     // user.id !== item.writerId
     //   ?
-    console.log("votex");
+    console.log("votex1i", item);
     dispatch(vote(voteData)).then(() =>
       dispatch(Ivoted({ voter: user.id, storyId: item.id }))
     );
+    console.log("vote300");
+
     dispatch(ReactedToStories({ userId: user.id }));
-    console.log("vote3");
+    console.log("vote399");
 
     // : showMessage({
     //     message: "You cant react to your own stories",

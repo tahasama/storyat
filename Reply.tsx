@@ -27,6 +27,7 @@ import {
   addReplyNumberToComment,
   substractReplyNumberToComment,
 } from "./state/reducers/commentsSlice";
+import moment from "moment";
 
 const Reply = ({ navigation, route }) => {
   const ccc = route.params;
@@ -208,6 +209,17 @@ const Reply = ({ navigation, route }) => {
           <Text style={{ fontSize: 16, color: "white" }}>
             {ccc.item.username}
           </Text>
+          <Text
+            style={{
+              color: "#476700",
+              marginHorizontal: 10,
+              // marginLeft: 70,
+              fontSize: 12,
+            }}
+          >
+            {/* {new Date(item.timestamp).toDateString()} */}
+            {moment(new Date(ccc.item.timestamp)).fromNow()}
+          </Text>
         </TouchableOpacity>
         <Text style={styles.content}>
           {"\t"}
@@ -268,6 +280,17 @@ const Reply = ({ navigation, route }) => {
                 {item.username}
               </Text>
             </TouchableOpacity>
+            <Text
+              style={{
+                color: "#476700",
+                marginHorizontal: 10,
+                // marginLeft: 70,
+                fontSize: 12,
+              }}
+            >
+              {/* {new Date(item.timestamp).toDateString()} */}
+              {moment(new Date(item.timestamp)).fromNow()}
+            </Text>
             <Text style={styles.reply}>{item.reply}</Text>
             <View style={styles.replyActions}>
               <TouchableOpacity

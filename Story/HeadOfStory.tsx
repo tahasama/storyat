@@ -9,6 +9,7 @@ import { useRoute } from "@react-navigation/native";
 
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import StoryModal from "../StoryModal";
+import moment from "moment";
 
 const HeadOfStory = ({ item }: any) => {
   // console.log("uaaa2", item);
@@ -87,8 +88,10 @@ const HeadOfStory = ({ item }: any) => {
           fontSize: 12,
         }}
       >
-        {new Date(item.timestamp).toDateString()}
+        {/* {new Date(item.timestamp).toDateString()} */}
+        {moment(new Date(item.timestamp)).fromNow()}
       </Text>
+
       {route.name === "item" && item.writerId === user.id && (
         <View
           style={{

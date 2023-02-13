@@ -35,6 +35,7 @@ import FooterOfStory from "./Story/FooterOfStory";
 import HeadOfStory from "./Story/HeadOfStory";
 import BodyOfStory from "./Story/BodyOfStory";
 import FlashMessage, { showMessage } from "react-native-flash-message";
+import moment from "moment";
 
 const Item = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
@@ -273,6 +274,17 @@ const Item = ({ navigation, route }) => {
               />
               <Text style={{ fontSize: 16, color: "white", marginLeft: 8 }}>
                 {item.username}
+              </Text>
+              <Text
+                style={{
+                  color: "#476700",
+                  marginHorizontal: 10,
+                  // marginLeft: 70,
+                  fontSize: 12,
+                }}
+              >
+                {/* {new Date(item.timestamp).toDateString()} */}
+                {moment(new Date(item.timestamp)).fromNow()}
               </Text>
             </TouchableOpacity>
             <Text style={styles.comment}>{item.comment}</Text>

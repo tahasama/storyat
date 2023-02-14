@@ -43,12 +43,14 @@ const Reply = ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState(null);
   const dispatch = useAppDispatch();
   const { result } = useAppSelector(getrepliesData);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     dispatch(loadreplies(ccc.item.id));
   }, []);
 
   const handlereply = async () => {
+    setLoading(true);
     dispatch(
       addreplies({
         reply: reply,
@@ -70,7 +72,7 @@ const Reply = ({ navigation, route }) => {
       .then(() => Keyboard.dismiss());
 
     setTimeout(() => {
-      dispatch(loadreplies(ccc.item.id));
+      dispatch(loadreplies(ccc.item.id)).then(() => setLoading(false));
     }, 250);
   };
 
@@ -404,7 +406,21 @@ const Reply = ({ navigation, route }) => {
           style={styles.button}
           disabled={reply === "" && true}
         >
-          <Text style={styles.buttonText}>Post</Text>
+          {loading ? (
+            <View
+              style={[
+                {
+                  elevation: 4,
+                  padding: 3,
+                },
+              ]}
+            >
+              <ActivityIndicator size="large" color={"#c5765c"} />
+              {/* <Text>Processing story...</Text> */}
+            </View>
+          ) : (
+            <Text style={styles.buttonText}>Post</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

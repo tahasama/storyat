@@ -67,7 +67,7 @@ export const ReactedToStories = createAsyncThunk(
     const g = query(yo, where("brokens", "array-contains", userId));
     const h = query(yo, where("compassions", "array-contains", userId));
     const e = query(yo, where("applauds", "array-contains", userId));
-    const f = query(yo, where("jusNos", "array-contains", userId));
+    const f = query(yo, where("justNos", "array-contains", userId));
 
     const querySnapshotg = await getDocs(g);
     querySnapshotg.docs.map(async (docs: any) => {
@@ -240,17 +240,13 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
   try {
-    console.log("id in redux story", storyId);
     const res = await getDoc(doc(db, "stories", storyId));
-    // const res = {...xxx.data().id }
     const username = await (
       await getDoc(doc(db, "users", res.data().writerId))
     ).data().username;
     const avatar = await (
       await getDoc(doc(db, "users", res.data().writerId))
     ).data().avatar;
-
-    console.log("result of story in redux", res.data());
 
     return {
       ...res.data(),
@@ -304,7 +300,6 @@ export const addStories = createAsyncThunk(
 export const updateStories = createAsyncThunk(
   "updateStories",
   async ({ title, content, storyId }: any) => {
-    console.log("dddd", title, content, storyId);
     try {
       const res = await updateDoc(doc(db, "stories", storyId), {
         title: title,
@@ -318,7 +313,6 @@ export const updateStories = createAsyncThunk(
         const avatar = await (
           await getDoc(doc(db, "users", result.data().writerId))
         ).data().avatar;
-        console.log("ffff", result.data());
         return {
           id: result.id,
           ...result.data(),
@@ -392,7 +386,6 @@ export const vote = createAsyncThunk(
       }
 
       infos.story.applauds = arr;
-
       try {
         await updateDoc(doc(db, "stories", infos.story.id), {
           applauds: arr,

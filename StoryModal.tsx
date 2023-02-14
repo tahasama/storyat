@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
@@ -36,6 +37,7 @@ const StoryModal = (item) => {
     item && item.content ? item.item.content : ""
   );
   const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
@@ -48,16 +50,23 @@ const StoryModal = (item) => {
   let { story: clonedItem } = original;
   let cloned = { ...clonedItem };
 
-  const vvv = () => {
+  const handleStory = async () => {
+    setLoading(true);
     pageName !== "item"
-      ? dispatch(addStories({ title, userId: user.id, content }))
-          .then(({ payload }: any) => dispatch(getStory(payload.id)))
-          .then(() =>
-            setTimeout(() => {
-              setStatus("success");
-            }, 2000)
-          )
-          .then(() => (setContent(""), setTitle("")))
+      ? content !== "" && title !== ""
+        ? dispatch(addStories({ title, userId: user.id, content }))
+            .then(({ payload }: any) => dispatch(getStory(payload.id)))
+            .then(() =>
+              setTimeout(() => {
+                setStatus("success");
+              }, 50)
+            )
+            .then(() => (setContent(""), setTitle("")))
+        : title === "" && content !== ""
+        ? setTitleError(true)
+        : title !== "" && content === ""
+        ? setContentError(true)
+        : (setTitleError(true), setContentError(true))
       : dispatch(
           updateStories({
             title: title !== "" ? title : item && item.item && item.item.title,
@@ -68,18 +77,6 @@ const StoryModal = (item) => {
         )
           .then(() => dispatch(getStory(item.item.id)))
           .then(() => (setStatus("success"), setContent(""), setTitle("")));
-  };
-
-  const handleStory = async () => {
-    pageName !== "item"
-      ? content !== "" && title !== ""
-        ? vvv()
-        : title === "" && content !== ""
-        ? setTitleError(true)
-        : title !== "" && content === ""
-        ? setContentError(true)
-        : (setTitleError(true), setContentError(true))
-      : vvv();
   };
 
   useEffect(() => {
@@ -93,6 +90,7 @@ const StoryModal = (item) => {
   useEffect(() => {
     status === "success" &&
       setTimeout(() => {
+        setLoading(false);
         setModalVisible(!modalVisible);
         setStatus("ready");
 
@@ -101,7 +99,7 @@ const StoryModal = (item) => {
         pageName !== "item"
           ? navigation.navigate("item", { item: cloned })
           : navigation.navigate("item", { item: cloned });
-      }, 300);
+      }, 50);
   }, [status]);
 
   return (
@@ -151,7 +149,7 @@ const StoryModal = (item) => {
                 onPress={handleStory}
                 style={styles.buttonSendContainer}
               >
-                {status !== "success" ? (
+                {!loading ? (
                   <Text
                     style={[
                       styles.buttonSend,
@@ -163,16 +161,23 @@ const StoryModal = (item) => {
                     Send
                   </Text>
                 ) : (
-                  <Text
+                  <View
                     style={[
-                      styles.buttonSend,
+                      // styles.buttonSend,
                       {
-                        backgroundColor: "#68A7AD",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexDirection: "row",
+                        borderRadius: 50,
+                        elevation: 4,
+                        marginTop: 16,
+                        padding: 6,
                       },
                     ]}
                   >
-                    Succes !
-                  </Text>
+                    <ActivityIndicator size="large" />
+                    <Text>Processing story...</Text>
+                  </View>
                 )}
               </TouchableOpacity>
             </View>
@@ -226,7 +231,7 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: "#5b6c8f",
     borderRadius: 20,
-    marginTop: 100,
+    // marginTop: 0,
     width: windowWidth * 0.98,
     paddingVertical: 50,
     paddingHorizontal: 17,

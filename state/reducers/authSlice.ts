@@ -41,8 +41,6 @@ export const getUser = createAsyncThunk("getUser", async (userId: any) => {
   try {
     const res = await getDoc(doc(db, "users", userId));
     return { ...res.data(), id: res.id };
-
-    return res;
   } catch (e) {
     console.error("Error adding document: ", e);
     Alert.alert("action failed please try again");

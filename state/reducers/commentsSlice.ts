@@ -110,7 +110,6 @@ export const loadAllComments = createAsyncThunk(
         avatar: avatar,
         username: username,
       };
-
       xxx.push(...xxx, res2);
     });
     const results = await Promise.all(promisess);
@@ -133,8 +132,9 @@ export const loadAllComments = createAsyncThunk(
     } catch (error) {
       console.log("error", error);
     }
+    console.log("comments of user in redux", outputArray.length);
 
-    return xxx;
+    return outputArray;
   }
 );
 

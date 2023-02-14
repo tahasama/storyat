@@ -32,6 +32,7 @@ import { storage } from "./firebase";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import UsernameModal from "./UsernameModal";
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 const Profile = ({ route }: any) => {
   const [loading, setLoading] = useState(false);
@@ -47,7 +48,7 @@ const Profile = ({ route }: any) => {
     let isSubscribed =
       isFocused &&
       (dispatch(loadAllComments({ userId: profileUser.id })),
-      dispatch(myStories({ userId: profileUser.id })), // temporary solution
+      dispatch(myStories({ userId: profileUser.id })),
       dispatch(ReactedToStories({ userId: profileUser.id })));
 
     return () => {
@@ -76,6 +77,13 @@ const Profile = ({ route }: any) => {
           }, 2000),
             setLoading(false);
         })
+        .then(() =>
+          showMessage({
+            message: "Success",
+            description: "This edit will be shown in your future visit",
+            type: "info",
+          })
+        )
 
         .catch((error) => {
           setLoading(false);
@@ -271,6 +279,7 @@ const Profile = ({ route }: any) => {
         </Text>
         <AntDesign name="arrowright" color="grey" size={20} />
       </Pressable>
+      <FlashMessage position="top" />
     </SafeAreaView>
   );
 };

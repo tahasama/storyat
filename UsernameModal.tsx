@@ -16,10 +16,12 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import {
   getAuthData,
+  getUser,
   updateUsername,
   updateUsernameState,
 } from "./state/reducers/authSlice";
 import { useRoute } from "@react-navigation/native";
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -38,7 +40,15 @@ const UsernameModal = () => {
       ? dispatch(updateUsername({ username, userId: user.id }))
           .then(() => setStatus("success"))
           .then(() => dispatch(updateUsernameState(username)))
-      : setUsernameError(true);
+          .then(() =>
+            showMessage({
+              message: "Success",
+              description: "This edit will be shown in your future visit",
+              type: "info",
+            })
+          )
+      : // .then(() => dispatch(getUser(user.id)))
+        setUsernameError(true);
   };
 
   useEffect(() => {
@@ -50,7 +60,7 @@ const UsernameModal = () => {
       setTimeout(() => {
         setModalVisible(!modalVisible);
         setStatus("ready");
-      }, 1300);
+      }, 2000);
   }, [status]);
   return (
     <View style={styles.centeredView}>
@@ -124,6 +134,7 @@ const UsernameModal = () => {
             </Pressable>
           </View>
         </View>
+        <FlashMessage position="top" />
       </Modal>
       {/* <Pressable
         style={[styles.buttonOpen, { opacity: modalVisible ? 0 : 1 }]}

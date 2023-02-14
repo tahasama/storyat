@@ -54,6 +54,7 @@ const Item = ({ navigation, route }) => {
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [itemData, setItemData] = useState(route.params.item);
+  const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
   //   dispatch(updateStory(ccc.item));
@@ -71,6 +72,7 @@ const Item = ({ navigation, route }) => {
   }, [isFocused]);
 
   const handleComment = async () => {
+    setLoading(true);
     dispatch(
       addcomments({
         comment: comment,
@@ -92,7 +94,7 @@ const Item = ({ navigation, route }) => {
       .then(() => setComment(""))
       .then(() => Keyboard.dismiss());
     setTimeout(() => {
-      dispatch(loadcomments(ccc.item.id));
+      dispatch(loadcomments(ccc.item.id)).then(() => setLoading(false));
     }, 250);
   };
 
@@ -237,7 +239,6 @@ const Item = ({ navigation, route }) => {
           Comments :
         </Text>
       </View>
-      <FlashMessage position="top" />
     </View>
   );
 
@@ -444,7 +445,21 @@ const Item = ({ navigation, route }) => {
           style={styles.button}
           disabled={comment === "" && true}
         >
-          <Text style={styles.buttonText}>Post</Text>
+          {loading ? (
+            <View
+              style={[
+                {
+                  elevation: 4,
+                  padding: 3,
+                },
+              ]}
+            >
+              <ActivityIndicator size="large" color={"#c5765c"} />
+              {/* <Text>Processing story...</Text> */}
+            </View>
+          ) : (
+            <Text style={styles.buttonText}>Post</Text>
+          )}
         </TouchableOpacity>
       </View>
     </View>

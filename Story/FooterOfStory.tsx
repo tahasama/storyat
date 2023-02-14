@@ -35,11 +35,13 @@ const FooterOfStory = ({ item }: any) => {
       reaction,
     };
 
-    dispatch(vote(voteData)).then(() =>
-      dispatch(Ivoted({ voter: user.id, storyId: item.id }))
-    );
-
-    dispatch(ReactedToStories({ userId: user.id }));
+    dispatch(vote(voteData))
+      .then(() => dispatch(Ivoted({ voter: user.id, storyId: item.id })))
+      .then(() =>
+        setTimeout(() => {
+          dispatch(ReactedToStories({ userId: user.id }));
+        }, 250)
+      );
 
     // : showMessage({
     //     message: "You cant react to your own stories",

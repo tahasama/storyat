@@ -53,6 +53,8 @@ const Items = () => {
   // };
 
   const onRefresh = async () => {
+    dispatch(loadStories());
+    dispatch(reloadInitialData(true));
     setIsRefreshing(true);
     result()
       .then((res) => setData(JSON.parse(res)))

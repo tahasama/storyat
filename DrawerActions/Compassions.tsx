@@ -27,6 +27,7 @@ const Compassions = () => {
   const [data, setData] = useState([]);
   const dispatch = useAppDispatch();
   const { reloadState } = useAppSelector(getstoriesData);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const result = async () =>
     await AsyncStorage.getItem("myStoredDataCompassions");
@@ -42,10 +43,14 @@ const Compassions = () => {
     // voterIndex();
   }, []);
 
-  const handleRefresh = () => {
+  const onRefresh = async () => {
+    // dispatch(loadStories());
+    // dispatch(reloadInitialData(true));
+    setIsRefreshing(true);
     result()
       .then((res) => setData(JSON.parse(res)))
       .then(() => dispatch(reloadInitialData(false)));
+    setIsRefreshing(false);
   };
 
   return (
@@ -65,11 +70,7 @@ const Compassions = () => {
         <FlatList
           // onEndReached={handleLoadMore}
           refreshControl={
-            <RefreshControl
-              colors={["#14764b", "#0F5838", "#093421"]}
-              refreshing={refreshing}
-              // onRefresh={handleRefresh}
-            />
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
           }
           data={data}
           renderItem={({ item }) => (

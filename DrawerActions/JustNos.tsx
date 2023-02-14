@@ -24,6 +24,7 @@ const JustNos = () => {
   const [data, setData] = useState([]);
   const dispatch = useAppDispatch();
   const { reloadState } = useAppSelector(getstoriesData);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const result = async () => await AsyncStorage.getItem("myStoredDataJustNos");
 
@@ -37,6 +38,16 @@ const JustNos = () => {
 
     // voterIndex();
   }, []);
+
+  const onRefresh = async () => {
+    // dispatch(loadStories());
+    // dispatch(reloadInitialData(true));
+    setIsRefreshing(true);
+    result()
+      .then((res) => setData(JSON.parse(res)))
+      .then(() => dispatch(reloadInitialData(false)));
+    setIsRefreshing(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,14 +65,11 @@ const JustNos = () => {
       ) : (
         <FlatList
           // onEndReached={handleLoadMore}
-          refreshControl={
-            <RefreshControl
-              colors={["#14764b", "#0F5838", "#093421"]}
-              refreshing={refreshing}
-              // onRefresh={handleRefresh}
-            />
-          }
+
           data={data}
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
               <HeadOfStory item={item} />

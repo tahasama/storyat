@@ -29,7 +29,7 @@ import MyComments from "./UserActions/MyComments";
 import MyVotedComments from "./UserActions/MyVotedComments";
 import MyReactions from "./UserActions/MyReactions";
 import MyStories from "./UserActions/MyStories";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const Actions = ({ route }) => {
   const { user } = useAppSelector(getAuthData);
@@ -40,6 +40,7 @@ const Actions = ({ route }) => {
   const { resultComments } = useAppSelector(getcommentsData);
   const { result, resultReactions } = useAppSelector(getstoriesData);
   const { votedComments } = useAppSelector(getcommentsData);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     let isSubscribed =

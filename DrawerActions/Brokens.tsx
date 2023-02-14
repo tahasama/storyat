@@ -28,6 +28,7 @@ const Brokens = () => {
   const dispatch = useAppDispatch();
   const { reloadState } = useAppSelector(getstoriesData);
   const isFocused = useIsFocused();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const result = async () => await AsyncStorage.getItem("myStoredDataBrokens");
 
@@ -41,6 +42,16 @@ const Brokens = () => {
 
     // voterIndex();
   }, []);
+
+  const onRefresh = async () => {
+    // dispatch(loadStories());
+    // dispatch(reloadInitialData(true));
+    setIsRefreshing(true);
+    result()
+      .then((res) => setData(JSON.parse(res)))
+      .then(() => dispatch(reloadInitialData(false)));
+    setIsRefreshing(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -59,11 +70,7 @@ const Brokens = () => {
         <FlatList
           // onEndReached={handleLoadMore}
           refreshControl={
-            <RefreshControl
-              colors={["#14764b", "#0F5838", "#093421"]}
-              refreshing={refreshing}
-              //   onRefresh={handleRefresh}
-            />
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
           }
           data={data}
           renderItem={({ item }) => (

@@ -11,11 +11,16 @@ import FooterOfStory from "../Story/FooterOfStory";
 import BodyOfStory from "../Story/BodyOfStory";
 import HeadOfStory from "../Story/HeadOfStory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAppSelector } from "../state/hooks";
+import { getcommentsData } from "../state/reducers/commentsSlice";
 
 function MyComments() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const { resultComments } = useAppSelector(getcommentsData);
+
+  console.log("comment,,,,,,,", resultComments);
 
   const storedResult = async () =>
     await AsyncStorage.getItem("myStoredComments");

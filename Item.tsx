@@ -21,6 +21,7 @@ import {
   removeComment,
   addCommentLike,
   addCommentDislike,
+  loadAllComments,
 } from "./state/reducers/commentsSlice";
 import Entypo from "@expo/vector-icons/Entypo";
 import {} from "./state/reducers/repliesSlice";
@@ -94,7 +95,9 @@ const Item = ({ navigation, route }) => {
       .then(() => setComment(""))
       .then(() => Keyboard.dismiss());
     setTimeout(() => {
-      dispatch(loadcomments(ccc.item.id)).then(() => setLoading(false));
+      dispatch(loadcomments(ccc.item.id))
+        .then(() => dispatch(loadAllComments(ccc.item.id)))
+        .then(() => setLoading(false));
     }, 250);
   };
 

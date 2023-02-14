@@ -35,7 +35,6 @@ const Actions = ({ route }) => {
   const { user } = useAppSelector(getAuthData);
   const navigation = useNavigation<any>();
   const userId = route.params.userId;
-  console.log("action from profile", userId);
 
   const dispatch = useAppDispatch();
   const { resultComments } = useAppSelector(getcommentsData);

@@ -12,7 +12,6 @@ import { getAuthData } from "../state/reducers/authSlice";
 const Reaction = React.memo(
   ({ reaction, item, handleReactions, handleOnpress }: any) => {
     const { user } = useAppSelector(getAuthData);
-    console.log("comment length", item.numOfComments);
 
     let icon;
     let name;

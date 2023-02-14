@@ -15,8 +15,6 @@ function MyComments() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
 
-  console.log("my comment", data);
-
   const storedResult = async () =>
     await AsyncStorage.getItem("myStoredComments");
 

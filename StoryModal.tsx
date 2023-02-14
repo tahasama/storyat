@@ -47,7 +47,6 @@ const StoryModal = (item) => {
 
   let { story: clonedItem } = original;
   let cloned = { ...clonedItem };
-  console.log("1111111133", original);
 
   const vvv = () => {
     pageName !== "item"

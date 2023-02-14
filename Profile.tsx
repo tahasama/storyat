@@ -43,17 +43,6 @@ const Profile = ({ route }: any) => {
   const isFocused = useIsFocused();
   const profileUser = route.params.notActualUser ? newuser : user;
 
-  console.log(
-    "resultReactions",
-    resultReactions.length,
-    "result",
-    result.length,
-    "resultComments",
-    resultComments.length,
-    "profileUser",
-    profileUser.id
-  );
-
   useEffect(() => {
     let isSubscribed =
       isFocused &&

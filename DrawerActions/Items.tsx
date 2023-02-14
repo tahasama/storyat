@@ -29,23 +29,9 @@ const Items = () => {
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(false);
 
-  // const { IvotedData } = useAppSelector(getstoriesData);
-
-  // console.log("IvotedData in list ...", IvotedData);
-
   const [data, setData] = useState([]);
 
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
-
-  // useEffect(() => {
-  //   data.length === 0 && setLoading(true),
-  //     result()
-  //       .then((res) => setData(JSON.parse(res)))
-  //       .then(() => dispatch(reloadInitialData(false)))
-  //       .then(() => setLoading(false));
-
-  //   // voterIndex();
-  // }, []);
 
   useEffect(() => {
     reloadState &&

@@ -40,7 +40,6 @@ export const AllComments = createAsyncThunk(
       .map((x) => x.likes.filter((y) => y.liker === data))
       .flat()
       .map((y) => y.storyId);
-    console.log("votedComments", votedComments);
 
     const promisess = votedComments.map(async (ccc) => {
       const res = await getDoc(doc(db, "stories", ccc));
@@ -60,7 +59,6 @@ export const AllComments = createAsyncThunk(
       xxx.push(...xxx, res2);
     });
     const results = await Promise.all(promisess);
-    console.log("xxx", xxx);
 
     const outputArray = xxx.reduce((acc: any, curr: any) => {
       if (!acc.find((obj: any) => obj.id === curr.id)) {
@@ -68,7 +66,6 @@ export const AllComments = createAsyncThunk(
       }
       return acc;
     }, []);
-    console.log("outputArray", outputArray);
 
     try {
       await AsyncStorage.setItem(
@@ -95,7 +92,6 @@ export const loadAllComments = createAsyncThunk(
       return docs.data();
     });
     const resultComments = await Promise.all(promises);
-    console.log("resultComments", resultComments);
 
     let xxx = [];
     const promisess = resultComments.map(async (ccc) => {
@@ -128,8 +124,6 @@ export const loadAllComments = createAsyncThunk(
       }
       return acc;
     }, []);
-
-    console.log("asft", outputArray.length);
 
     try {
       await AsyncStorage.setItem(

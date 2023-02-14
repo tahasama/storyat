@@ -23,7 +23,6 @@ const Lll = () => {
   const { resultInitial, reloadState } = useAppSelector(getstoriesData);
 
   useEffect(() => {
-    console.log("lets get that data", resultInitial.length);
     let isSubscribed = resultInitial.length === 0 && dispatch(loadStories());
     dispatch(reloadInitialData(true));
     return () => {

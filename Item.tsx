@@ -41,7 +41,6 @@ const Item = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const isFocused = useIsFocused();
   const ccc = route.params;
-  console.log("ccccccccccc", ccc);
 
   const { user } = useAppSelector(getAuthData);
   const { result } = useAppSelector(getcommentsData);
@@ -279,11 +278,9 @@ const Item = ({ navigation, route }) => {
                 style={{
                   color: "#476700",
                   marginHorizontal: 10,
-                  // marginLeft: 70,
                   fontSize: 12,
                 }}
               >
-                {/* {new Date(item.timestamp).toDateString()} */}
                 {moment(new Date(item.timestamp)).fromNow()}
               </Text>
             </TouchableOpacity>

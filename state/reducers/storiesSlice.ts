@@ -48,8 +48,6 @@ export const myStories = createAsyncThunk(
     });
     const result = await Promise.all(promises);
 
-    console.log("result my stoeies in redux", result);
-
     try {
       await AsyncStorage.setItem("myStoredStories", JSON.stringify(result));
     } catch (error) {
@@ -133,12 +131,9 @@ export const ReactedToStories = createAsyncThunk(
     });
 
     const arr = await Promise.all(results);
-    console.log("111", arr);
     const result = arr.filter(
       (obj, index, self) => self.findIndex((t) => t.id === obj.id) === index
     );
-
-    console.log("222", arr);
 
     try {
       await AsyncStorage.setItem(
@@ -385,28 +380,18 @@ export const substractCommentNumberToStory = createAsyncThunk(
 export const vote = createAsyncThunk(
   "vote",
   async (infos: any, { rejectWithValue }) => {
-    console.log("vote300 reduxxx1112", infos);
-
     if (infos.reaction === "applauds") {
       let arr = JSON.parse(JSON.stringify(infos.story.applauds));
 
       const voterIndexApplauds = arr.indexOf(infos.voter);
-      console.log("vote300 redux1", voterIndexApplauds);
 
       if (voterIndexApplauds !== -1) {
         arr.splice(voterIndexApplauds, 1);
       } else {
-        try {
-          arr.push(infos.voter);
-          console.log("vote300 reduxxxx", arr);
-        } catch (error) {
-          console.log("IIIIIII", error);
-        }
+        arr.push(infos.voter);
       }
 
       infos.story.applauds = arr;
-
-      console.log("vote300 redux2", arr);
 
       try {
         await updateDoc(doc(db, "stories", infos.story.id), {
@@ -583,11 +568,9 @@ export const storiesSlice = createSlice({
       state.resultInitial = action.payload;
     });
     builder.addCase(addStories.fulfilled, (state, action: any) => {
-      console.log("action.payload", action.payload);
       state.resultAdd = action.payload;
     });
     builder.addCase(updateStories.fulfilled, (state, action: any) => {
-      console.log("action.payload", action.payload);
       state.resultUpdate = action.payload;
     });
     builder.addCase(getStory.fulfilled, (state, action) => {

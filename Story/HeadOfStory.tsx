@@ -12,8 +12,6 @@ import StoryModal from "../StoryModal";
 import moment from "moment";
 
 const HeadOfStory = ({ item }: any) => {
-  // console.log("uaaa2", item);
-
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
   const { user } = useAppSelector(getAuthData);

@@ -29,8 +29,6 @@ function MyStories() {
     }, 350);
   }, []);
 
-  // console.log("mystories", data[0].title);
-
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (

@@ -46,7 +46,11 @@ const Index = () => {
     });
 
   useEffect(() => {
-    unsubscribe();
+    try {
+      unsubscribe();
+    } catch (error) {
+      console.log("rrrrrrrrrrrrrrrrrrr", error);
+    }
   }, [user]);
 
   useEffect(() => {

@@ -160,82 +160,87 @@ export const ReactedToStories = createAsyncThunk(
 );
 
 export const loadStories = createAsyncThunk("loadStories", async () => {
-  const yo = collection(db, "stories");
-  const querySnapshot = await getDocs(yo);
-  const promises = querySnapshot.docs.map(async (docs: any) => {
-    const username = await (
-      await getDoc(doc(db, "users", docs.data().writerId))
-    ).data().username;
-    const avatar = await (
-      await getDoc(doc(db, "users", docs.data().writerId))
-    ).data().avatar;
-    return {
-      ...docs.data(),
-      id: docs.id,
-      username: username,
-      avatar: avatar,
-    };
-  });
-  const resultInitial = await Promise.all(promises);
-
   try {
-    await AsyncStorage.setItem(
-      "myStoredDataApplauds",
-      JSON.stringify(
-        resultInitial
-          .filter((x) => x.applauds.length !== 0)
-          .sort(function (a, b) {
-            return b.applauds.length - a.applauds.length;
-          })
-      )
-    );
+    const yo = collection(db, "stories");
+    const querySnapshot = await getDocs(yo);
+    const promises = querySnapshot.docs.map(async (docs: any) => {
+      const username = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().username;
+      const avatar = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().avatar;
+      return {
+        ...docs.data(),
+        id: docs.id,
+        username: username,
+        avatar: avatar,
+      };
+    });
 
-    await AsyncStorage.setItem(
-      "myStoredDataCompassions",
-      JSON.stringify(
-        resultInitial
-          .filter((x) => x.compassions.length !== 0)
-          .sort(function (a, b) {
-            return b.compassions.length - a.compassions.length;
+    const resultInitial = await Promise.all(promises);
+
+    try {
+      await AsyncStorage.setItem(
+        "myStoredDataApplauds",
+        JSON.stringify(
+          resultInitial
+            .filter((x) => x.applauds.length !== 0)
+            .sort(function (a, b) {
+              return b.applauds.length - a.applauds.length;
+            })
+        )
+      );
+
+      await AsyncStorage.setItem(
+        "myStoredDataCompassions",
+        JSON.stringify(
+          resultInitial
+            .filter((x) => x.compassions.length !== 0)
+            .sort(function (a, b) {
+              return b.compassions.length - a.compassions.length;
+            })
+        )
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataBrokens",
+        JSON.stringify(
+          resultInitial
+            .filter((x) => x.brokens.length !== 0)
+            .sort(function (a, b) {
+              return b.brokens.length - a.brokens.length;
+            })
+        )
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataJustNos",
+        JSON.stringify(
+          resultInitial
+            .filter((x) => x.justNos.length !== 0)
+            .sort(function (a, b) {
+              return b.justNos.length - a.justNos.length;
+            })
+        )
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataTimestamp",
+        JSON.stringify(
+          resultInitial.sort(function (a, b) {
+            return b.timestamp - a.timestamp;
           })
-      )
-    );
-    await AsyncStorage.setItem(
-      "myStoredDataBrokens",
-      JSON.stringify(
-        resultInitial
-          .filter((x) => x.brokens.length !== 0)
-          .sort(function (a, b) {
-            return b.brokens.length - a.brokens.length;
-          })
-      )
-    );
-    await AsyncStorage.setItem(
-      "myStoredDataJustNos",
-      JSON.stringify(
-        resultInitial
-          .filter((x) => x.justNos.length !== 0)
-          .sort(function (a, b) {
-            return b.justNos.length - a.justNos.length;
-          })
-      )
-    );
-    await AsyncStorage.setItem(
-      "myStoredDataTimestamp",
-      JSON.stringify(
-        resultInitial.sort(function (a, b) {
-          return b.timestamp - a.timestamp;
-        })
-      )
-    );
-    await AsyncStorage.setItem(
-      "myStoredDataRandom",
-      JSON.stringify(resultInitial.sort(() => Math.random() - 0.3))
-    );
+        )
+      );
+      await AsyncStorage.setItem(
+        "myStoredDataRandom",
+        JSON.stringify(resultInitial.sort(() => Math.random() - 0.3))
+      );
+    } catch (error) {
+      console.error(error);
+    }
+    return resultInitial;
   } catch (error) {
-    console.error(error);
+    console.log("eeeeeeeeee", error);
   }
-  return resultInitial;
 });
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
@@ -476,6 +481,7 @@ export interface storiesProps {
     IvotedData: any[];
     resultAdd: any;
     resultUpdate: any;
+    error: string;
   };
 }
 
@@ -512,6 +518,7 @@ export const storiesInitialState = {
   resultAdd: {},
   resultUpdate: {},
   IvotedData: [{ storyId: "", voter: "" }],
+  error: null,
 };
 
 export const storiesSlice = createSlice({
@@ -559,6 +566,7 @@ export const storiesSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
       state.resultInitial = action.payload;
+      state.error = action.error;
     });
     builder.addCase(addStories.fulfilled, (state, action: any) => {
       state.resultAdd = action.payload;

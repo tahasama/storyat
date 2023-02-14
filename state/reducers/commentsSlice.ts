@@ -124,15 +124,15 @@ export const loadAllComments = createAsyncThunk(
       return acc;
     }, []);
 
-    try {
-      await AsyncStorage.setItem(
-        "myStoredComments",
-        JSON.stringify(outputArray)
-      );
-    } catch (error) {
-      console.log("error", error);
-    }
-    console.log("comments of user in redux", outputArray.length);
+    // try {
+    //   await AsyncStorage.setItem(
+    //     "myStoredComments",
+    //     JSON.stringify(outputArray)
+    //   );
+    // } catch (error) {
+    //   console.log("error", error);
+    // }
+    // console.log("comments of user in redux", outputArray.length);
 
     return outputArray;
   }

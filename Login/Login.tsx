@@ -22,12 +22,15 @@ import FaceBookLogin from "./FaceBookLogin";
 import { getAuthData } from "../state/reducers/authSlice";
 import { useAppSelector } from "../state/hooks";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { getstoriesData } from "../state/reducers/storiesSlice";
+import FlashMessage, { showMessage } from "react-native-flash-message";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = ({ navigation, route }) => {
   const para = route.params;
   const { user } = useAppSelector(getAuthData);
+  const { error } = useAppSelector(getstoriesData);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
@@ -41,6 +44,15 @@ const Login = ({ navigation, route }) => {
       setLoading(!loading);
     }, 5000);
   }, []);
+
+  useEffect(() => {
+    error &&
+      showMessage({
+        message: "Error",
+        description: "Please verify Your Internet Connection and try again",
+        type: "danger",
+      });
+  }, [error]);
 
   const PicId = () => {
     return Math.floor(Math.random() * 1084);
@@ -154,6 +166,7 @@ const Login = ({ navigation, route }) => {
           </View>
         )
       )}
+      <FlashMessage position="top" />
     </View>
   );
 };

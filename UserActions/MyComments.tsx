@@ -20,8 +20,8 @@ function MyComments() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { resultComments } = useAppSelector(getcommentsData);
 
-  // const storedResult = async () =>
-  //   await AsyncStorage.getItem("myStoredComments");
+  const storedResult = async () =>
+    await AsyncStorage.getItem("myStoredComments");
 
   useEffect(() => {
     setLoading(true);
@@ -31,12 +31,12 @@ function MyComments() {
     }, 350);
   }, []);
 
-  // const onRefresh = async () => {
-  //   setIsRefreshing(true);
-  //   storedResult().then((res) => setData(JSON.parse(res)));
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    storedResult().then((res) => setData(JSON.parse(res)));
 
-  //   setIsRefreshing(false);
-  // };
+    setIsRefreshing(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,9 +54,9 @@ function MyComments() {
       ) : (
         <FlatList
           data={resultComments}
-          // refreshControl={
-          //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-          // }
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
               <HeadOfStory item={item} />

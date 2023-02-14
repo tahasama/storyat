@@ -18,6 +18,7 @@ import FooterOfStory from "../Story/FooterOfStory";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import {
   getstoriesData,
+  loadStories,
   reloadInitialData,
 } from "../state/reducers/storiesSlice";
 
@@ -44,15 +45,14 @@ const Compassions = () => {
   }, []);
 
   const onRefresh = async () => {
-    // dispatch(loadStories());
-    // dispatch(reloadInitialData(true));
+    dispatch(loadStories());
+    dispatch(reloadInitialData(true));
     setIsRefreshing(true);
     result()
       .then((res) => setData(JSON.parse(res)))
       .then(() => dispatch(reloadInitialData(false)));
     setIsRefreshing(false);
   };
-
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (

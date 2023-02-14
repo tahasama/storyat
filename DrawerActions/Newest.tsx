@@ -15,6 +15,7 @@ import HeadOfStory from "../Story/HeadOfStory";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import {
   getstoriesData,
+  loadStories,
   reloadInitialData,
 } from "../state/reducers/storiesSlice";
 
@@ -23,7 +24,7 @@ const Newest = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState([]);
   const dispatch = useAppDispatch();
-
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const { reloadState } = useAppSelector(getstoriesData);
 
   const result = async () =>
@@ -39,6 +40,15 @@ const Newest = () => {
 
     // voterIndex();
   }, []);
+  const onRefresh = async () => {
+    dispatch(loadStories());
+    dispatch(reloadInitialData(true));
+    setIsRefreshing(true);
+    result()
+      .then((res) => setData(JSON.parse(res)))
+      .then(() => dispatch(reloadInitialData(false)));
+    setIsRefreshing(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -57,11 +67,7 @@ const Newest = () => {
         <FlatList
           // onEndReached={handleLoadMore}
           refreshControl={
-            <RefreshControl
-              colors={["#14764b", "#0F5838", "#093421"]}
-              refreshing={refreshing}
-              // onRefresh={handleRefresh}
-            />
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
           }
           data={data}
           renderItem={({ item }) => (

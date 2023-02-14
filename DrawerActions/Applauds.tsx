@@ -15,6 +15,7 @@ import HeadOfStory from "../Story/HeadOfStory";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import {
   getstoriesData,
+  loadStories,
   reloadInitialData,
 } from "../state/reducers/storiesSlice";
 import { useIsFocused } from "@react-navigation/native";
@@ -42,8 +43,8 @@ const Applauds = () => {
   }, []);
 
   const onRefresh = async () => {
-    // dispatch(loadStories());
-    // dispatch(reloadInitialData(true));
+    dispatch(loadStories());
+    dispatch(reloadInitialData(true));
     setIsRefreshing(true);
     result()
       .then((res) => setData(JSON.parse(res)))

@@ -45,9 +45,10 @@ const Actions = ({ route }) => {
   useEffect(() => {
     let isSubscribed =
       (dispatch(loadAllComments({ userId: userId })),
-      dispatch(myStories({ userId: userId })), // temporary solution
+      dispatch(myStories({ userId: userId })),
       dispatch(AllComments(userId)),
       dispatch(ReactedToStories({ userId: userId })));
+    console.log("here in actions");
 
     return () => {
       isSubscribed;

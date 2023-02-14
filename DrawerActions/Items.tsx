@@ -35,12 +35,11 @@ const Items = () => {
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
 
   useEffect(() => {
-    reloadState &&
-      (setLoading(true),
+    setLoading(true),
       result()
         .then((res) => setData(JSON.parse(res)))
         .then(() => dispatch(reloadInitialData(false)))
-        .then(() => setLoading(false)));
+        .then(() => setLoading(false));
 
     // voterIndex();
   }, [reloadState]);

@@ -4,6 +4,7 @@ import {
   FlatList,
   SafeAreaView,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
@@ -14,8 +15,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function MyVotedComments() {
   const [loading, setLoading] = useState(false);
-
   const [data, setData] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const storedResult = async () =>
     await AsyncStorage.getItem("myStoredVotedComments");
@@ -28,6 +29,13 @@ function MyVotedComments() {
         .then(() => setLoading(false));
     }, 350);
   }, []);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    storedResult().then((res) => setData(JSON.parse(res)));
+
+    setIsRefreshing(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -45,6 +53,9 @@ function MyVotedComments() {
       ) : (
         <FlatList
           data={data}
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
               <HeadOfStory item={item} />

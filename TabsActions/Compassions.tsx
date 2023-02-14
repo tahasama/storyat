@@ -21,6 +21,8 @@ import HeadOfStory from "../Story/HeadOfStory";
 const Compassions = () => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const [data, setData] = useState([]);
   const result = async () =>
     await AsyncStorage.getItem("myStoredDataCompassionsReaction");
@@ -33,6 +35,13 @@ const Compassions = () => {
         .then(() => setLoading(false));
     }, 350);
   }, []);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    result().then((res) => setData(JSON.parse(res)));
+
+    setIsRefreshing(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,15 +58,10 @@ const Compassions = () => {
         </View>
       ) : (
         <FlatList
-          // onEndReached={handleLoadMore}
-          refreshControl={
-            <RefreshControl
-              colors={["#14764b", "#0F5838", "#093421"]}
-              refreshing={refreshing}
-              // onRefresh={handleRefresh}
-            />
-          }
           data={data}
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
               <HeadOfStory item={item} />

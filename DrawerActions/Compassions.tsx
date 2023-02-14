@@ -42,6 +42,12 @@ const Compassions = () => {
     // voterIndex();
   }, []);
 
+  const handleRefresh = () => {
+    result()
+      .then((res) => setData(JSON.parse(res)))
+      .then(() => dispatch(reloadInitialData(false)));
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (

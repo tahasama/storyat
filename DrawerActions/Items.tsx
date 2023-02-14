@@ -28,6 +28,7 @@ const Items = () => {
   const { reloadState } = useAppSelector(getstoriesData);
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [data, setData] = useState([]);
 
@@ -51,6 +52,13 @@ const Items = () => {
   //   });
   // };
 
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    result()
+      .then((res) => setData(JSON.parse(res)))
+      .then(() => dispatch(reloadInitialData(false)));
+    setIsRefreshing(false);
+  };
   return (
     <SafeAreaView style={styles.container}>
       {loading ? (
@@ -67,6 +75,9 @@ const Items = () => {
       ) : (
         <FlatList
           data={data}
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
               <HeadOfStory item={item} />

@@ -4,6 +4,7 @@ import {
   FlatList,
   SafeAreaView,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import FooterOfStory from "../Story/FooterOfStory";
@@ -14,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 function MyComments() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const storedResult = async () =>
     await AsyncStorage.getItem("myStoredComments");
@@ -26,6 +28,13 @@ function MyComments() {
         .then(() => setLoading(false));
     }, 350);
   }, []);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    storedResult().then((res) => setData(JSON.parse(res)));
+
+    setIsRefreshing(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,6 +52,9 @@ function MyComments() {
       ) : (
         <FlatList
           data={data}
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
               <HeadOfStory item={item} />

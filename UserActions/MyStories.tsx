@@ -4,6 +4,7 @@ import {
   FlatList,
   SafeAreaView,
   ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import HeadOfStory from "../Story/HeadOfStory";
@@ -16,6 +17,7 @@ import { useIsFocused } from "@react-navigation/native";
 function MyStories() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const storedResult = async () =>
     await AsyncStorage.getItem("myStoredStories");
@@ -28,6 +30,13 @@ function MyStories() {
         .then(() => setLoading(false));
     }, 350);
   }, []);
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    storedResult().then((res) => setData(JSON.parse(res)));
+
+    setIsRefreshing(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -45,6 +54,9 @@ function MyStories() {
       ) : (
         <FlatList
           data={data}
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          }
           renderItem={({ item }) => (
             <View style={styles.item}>
               <HeadOfStory item={item} />

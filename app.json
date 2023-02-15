@@ -6,21 +6,21 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-
     "updates": {
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
     ],
-  
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier":"com.storyat"
+      "bundleIdentifier": "com.storyat"
     },
     "android": {
-      "package":"com.storyat",
+      "package": "com.storyat",
+      "versionCode": 1,
       "adaptiveicon": {
+        "icon": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF",
         "resizeMode": "cover"
       }
@@ -30,10 +30,10 @@
     },
     "extra": {
       "eas": {
-        "projectId": "fa46581a-98d0-486d-9914-59ff9da718f4"
+        "projectId": "33465b6f-8b32-4560-97c7-a276ef1d19a3"
       }
     },
     "owner": "tahasama",
-    "scheme":"com.storyat"
+    "scheme": "com.storyat"
   }
 }

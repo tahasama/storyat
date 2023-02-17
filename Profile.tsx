@@ -97,12 +97,6 @@ const Profile = ({ route }: any) => {
     navigation.navigate("actions", { userId: profileUser.id });
   };
 
-  // useEffect(() => {
-  //   dispatch(myStories({ pageName: route.params }));
-  //   dispatch(ReactedToStories({ userId: route.params}));
-  //   dispatch(loadAllComments({ userId: route.params }));
-  // }, [userId.id]);
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flexDirection: "row" }}>

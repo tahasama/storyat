@@ -7,20 +7,13 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-
-import { useIsFocused, useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useAppDispatch, useAppSelector } from "../state/hooks";
-import { getAuthData } from "../state/reducers/authSlice";
-import { getstoriesData } from "../state/reducers/storiesSlice";
-import StoryModal from "../StoryModal";
 import FooterOfStory from "../Story/FooterOfStory";
 import BodyOfStory from "../Story/BodyOfStory";
 import HeadOfStory from "../Story/HeadOfStory";
 
 const Compassions = () => {
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [data, setData] = useState([]);

@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { compose, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   addDoc,
   collection,
@@ -114,25 +114,12 @@ export const loadAllComments = createAsyncThunk(
     });
     const results = await Promise.all(promisess);
 
-    // const setRes = new Set(xxx);
-
-    // const arrRes = Array.from(setRes);
     const outputArray = xxx.reduce((acc: any, curr: any) => {
       if (!acc.find((obj: any) => obj.id === curr.id)) {
         acc.push(curr);
       }
       return acc;
     }, []);
-
-    // try {
-    //   await AsyncStorage.setItem(
-    //     "myStoredComments",
-    //     JSON.stringify(outputArray)
-    //   );
-    // } catch (error) {
-    //   console.log("error", error);
-    // }
-    // console.log("comments of user in redux", outputArray.length);
 
     return outputArray;
   }

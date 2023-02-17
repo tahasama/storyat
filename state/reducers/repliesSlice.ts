@@ -13,8 +13,6 @@ import {
 import { Alert } from "react-native";
 import { db } from "../../firebase";
 
-// const USER_URL: any = process.env.REACT_APP_USER_URL;
-
 interface replyProps {
   userId: string;
   commentId: string;

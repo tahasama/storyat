@@ -143,7 +143,6 @@ const StoryModal = (item) => {
                 defaultValue={
                   Object.entries(item).length !== 0 ? item.item.content : ""
                 }
-                // value={pageName === "item" ? item.item.content : content}
               />
               <TouchableOpacity
                 onPress={handleStory}
@@ -163,7 +162,6 @@ const StoryModal = (item) => {
                 ) : (
                   <View
                     style={[
-                      // styles.buttonSend,
                       {
                         alignItems: "center",
                         justifyContent: "center",
@@ -231,7 +229,6 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: "#5b6c8f",
     borderRadius: 20,
-    // marginTop: 0,
     width: windowWidth * 0.98,
     paddingVertical: 50,
     paddingHorizontal: 17,
@@ -289,6 +286,3 @@ const styles = StyleSheet.create({
 });
 
 export default StoryModal;
-function reloadData(arg0: boolean): any {
-  throw new Error("Function not implemented.");
-}

@@ -15,7 +15,6 @@ const Title = () => {
         style={{
           borderBottomColor: "grey",
           borderBottomWidth: StyleSheet.hairlineWidth,
-          // marginTop: 15,
         }}
       />
     </View>

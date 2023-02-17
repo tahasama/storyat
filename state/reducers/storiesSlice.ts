@@ -5,14 +5,9 @@ import {
   collection,
   deleteDoc,
   doc,
-  DocumentData,
   getDoc,
   getDocs,
-  limit,
-  orderBy,
   query,
-  QuerySnapshot,
-  startAfter,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -454,7 +449,6 @@ export interface storiesProps {
     resultReactions: any[];
     myReactedToStories: any[];
 
-    // resultLoadMore: any[];
     title: string;
     content: string;
     writerId: string;
@@ -476,7 +470,6 @@ export interface storiesProps {
     wowArray: any[];
 
     NumOfCommentState: number;
-    // loadmore: number;
     reloadState: boolean;
     IvotedData: any[];
     resultAdd: any;
@@ -490,7 +483,6 @@ export const storiesInitialState = {
   resultInitial: [],
   resultReactions: [],
   myReactedToStories: [],
-  // resultLoadMore: [],
   title: "",
   content: "",
   writerId: "",
@@ -511,7 +503,6 @@ export const storiesInitialState = {
   wowArray: [],
 
   NumOfCommentState: 0,
-  // loadmore: 0,
   myupdateStoriesState: {},
   myupdateStoryState: [],
   reloadState: false,
@@ -583,9 +574,6 @@ export const storiesSlice = createSlice({
     builder.addCase(ReactedToStories.fulfilled, (state, action) => {
       state.resultReactions = action.payload;
     });
-    // builder.addCase(vote.fulfilled, (state, action) => {
-    //   state. = action.payload;
-    // });
   },
 });
 
@@ -597,7 +585,6 @@ export const {
   updateBrokenState,
   updateWowState,
   updateNumOfCommentState,
-  // updateResultState,
   updateInitilalResultState,
   reactedToStoriesState,
   updateStoriesState,

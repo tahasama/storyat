@@ -6,9 +6,7 @@ import {
 import { Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import React from "react";
 import { useEffect } from "react";
-
 import * as AuthSession from "expo-auth-session";
-
 import { useAuthRequest } from "expo-auth-session/build/providers/Facebook";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";

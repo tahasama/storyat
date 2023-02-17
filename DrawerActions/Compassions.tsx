@@ -24,24 +24,18 @@ import {
 
 const Compassions = () => {
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState([]);
   const dispatch = useAppDispatch();
-  const { reloadState } = useAppSelector(getstoriesData);
   const [isRefreshing, setIsRefreshing] = useState(false);
-
   const result = async () =>
     await AsyncStorage.getItem("myStoredDataCompassions");
 
   useEffect(() => {
-    // reloadState &&
     setLoading(true),
       result()
         .then((res) => setData(JSON.parse(res)))
         .then(() => dispatch(reloadInitialData(false)))
         .then(() => setLoading(false));
-
-    // voterIndex();
   }, []);
 
   const onRefresh = async () => {

@@ -1,46 +1,18 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  SafeAreaView,
-  ActivityIndicator,
-} from "react-native";
-import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "./state/hooks";
-import {
-  getstoriesData,
-  getStory,
-  loadStories,
-  myStories,
-  ReactedToStories,
-  // updateResultState,
-} from "./state/reducers/storiesSlice";
-import { getAuthData } from "./state/reducers/authSlice";
+import { StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { useAppDispatch } from "./state/hooks";
+import { myStories, ReactedToStories } from "./state/reducers/storiesSlice";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import {
-  AllComments,
-  getcommentsData,
-  loadAllComments,
-} from "./state/reducers/commentsSlice";
+import { AllComments, loadAllComments } from "./state/reducers/commentsSlice";
 import MyComments from "./UserActions/MyComments";
 import MyVotedComments from "./UserActions/MyVotedComments";
 import MyReactions from "./UserActions/MyReactions";
 import MyStories from "./UserActions/MyStories";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const Actions = ({ route }) => {
-  const { user } = useAppSelector(getAuthData);
-  const navigation = useNavigation<any>();
   const userId = route.params.userId;
 
   const dispatch = useAppDispatch();
-  const { resultComments } = useAppSelector(getcommentsData);
-  const { result, resultReactions } = useAppSelector(getstoriesData);
-  const { votedComments } = useAppSelector(getcommentsData);
-  const isFocused = useIsFocused();
 
   useEffect(() => {
     let isSubscribed =
@@ -48,7 +20,6 @@ const Actions = ({ route }) => {
       dispatch(myStories({ userId: userId })),
       dispatch(AllComments(userId)),
       dispatch(ReactedToStories({ userId: userId })));
-    console.log("here in actions");
 
     return () => {
       isSubscribed;
@@ -68,7 +39,6 @@ const Actions = ({ route }) => {
         tabBarItemStyle: { padding: 9 },
         tabBarStyle: {
           backgroundColor: "#051e2d",
-          // borderBottomWidth: 4,
           borderBottomColor: "#9ba5a9",
           borderStyle: "solid",
           elevation: 10,
@@ -88,15 +58,12 @@ export default Actions;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#333333",
     backgroundColor: "#051e28",
   },
 
   item: {
     padding: 8,
     marginVertical: 8,
-    // marginHorizontal: 16,
-    // backgroundColor: "red",
     flex: 1,
   },
   title: {
@@ -116,17 +83,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     padding: 20,
-    // backgroundColor: "transparent",
     backgroundColor: "#051E28",
   },
   buttonContainer1: {
     flexDirection: "row",
     justifyContent: "center",
-    // backgroundColor: "#051E28",
-    // backgroundColor: "#002244",
     backgroundColor: "#332FD0",
-    // zIndex: 99,
-
     alignItems: "center",
     height: 80,
     width: 80,

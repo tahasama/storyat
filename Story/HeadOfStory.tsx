@@ -1,12 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useCallback, useRef } from "react";
 import { Text, TouchableOpacity, Image, Animated, View } from "react-native";
-
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { getAuthData, getUser } from "../state/reducers/authSlice";
 import { removeStory } from "../state/reducers/storiesSlice";
 import { useRoute } from "@react-navigation/native";
-
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import StoryModal from "../StoryModal";
 import moment from "moment";
@@ -82,11 +80,9 @@ const HeadOfStory = ({ item }: any) => {
         style={{
           color: "#476700",
           marginHorizontal: 10,
-          // marginLeft: 70,
           fontSize: 12,
         }}
       >
-        {/* {new Date(item.timestamp).toDateString()} */}
         {moment(new Date(item.timestamp)).fromNow()}
       </Text>
 
@@ -99,12 +95,10 @@ const HeadOfStory = ({ item }: any) => {
             width: "100%",
             flex: 1,
             marginHorizontal: 12,
-            // backgroundColor: "red",
           }}
         >
           <View style={{ flex: 1 }}>
             <StoryModal item={item} />
-            {/* <StoryModal /> */}
           </View>
 
           <Animated.View style={{ transform: [{ translateX: anim.current }] }}>

@@ -215,11 +215,9 @@ const Reply = ({ navigation, route }) => {
             style={{
               color: "#476700",
               marginHorizontal: 10,
-              // marginLeft: 70,
               fontSize: 12,
             }}
           >
-            {/* {new Date(item.timestamp).toDateString()} */}
             {moment(new Date(ccc.item.timestamp)).fromNow()}
           </Text>
         </TouchableOpacity>
@@ -290,7 +288,6 @@ const Reply = ({ navigation, route }) => {
                 fontSize: 12,
               }}
             >
-              {/* {new Date(item.timestamp).toDateString()} */}
               {moment(new Date(item.timestamp)).fromNow()}
             </Text>
             <Text style={styles.reply}>{item.reply}</Text>
@@ -416,7 +413,6 @@ const Reply = ({ navigation, route }) => {
               ]}
             >
               <ActivityIndicator size="large" color={"#c5765c"} />
-              {/* <Text>Processing story...</Text> */}
             </View>
           ) : (
             <Text style={styles.buttonText}>Post</Text>

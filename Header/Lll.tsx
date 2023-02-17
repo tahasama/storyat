@@ -20,7 +20,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 const Lll = () => {
   const dispatch = useAppDispatch();
-  const { resultInitial, reloadState } = useAppSelector(getstoriesData);
+  const { resultInitial } = useAppSelector(getstoriesData);
 
   useEffect(() => {
     let isSubscribed = resultInitial.length === 0 && dispatch(loadStories());

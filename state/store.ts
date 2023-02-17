@@ -7,7 +7,6 @@ import repliesSlice from "./reducers/repliesSlice";
 
 export const store = configureStore({
   reducer: {
-    // itnz: itnReducer
     authUser: authSlice,
     storiesStates: storiesSlice,
     commentsStates: commentsSlice,

@@ -28,45 +28,28 @@ import {} from "./state/reducers/repliesSlice";
 import {
   addCommentNumberToStory,
   substractCommentNumberToStory,
-  updateStory,
 } from "./state/reducers/storiesSlice";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useIsFocused } from "@react-navigation/native";
 import FooterOfStory from "./Story/FooterOfStory";
 import HeadOfStory from "./Story/HeadOfStory";
 import BodyOfStory from "./Story/BodyOfStory";
-import FlashMessage, { showMessage } from "react-native-flash-message";
 import moment from "moment";
 
 const Item = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const isFocused = useIsFocused();
   const ccc = route.params;
-
   const { user } = useAppSelector(getAuthData);
   const { result } = useAppSelector(getcommentsData);
-
   const [commentIdLoading, setCommentIdLoading] = useState("");
   const [comment, setComment] = useState("");
-
   const [commentIdDelete, setCommentIdDelete] = useState(false);
   const [deleteComment, setDeleteComment] = useState(false);
   const [likeLoading, setLikeLoading] = useState(false);
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [itemData, setItemData] = useState(route.params.item);
   const [loading, setLoading] = useState(false);
-
-  // useEffect(() => {
-  //   dispatch(updateStory(ccc.item));
-  // }, []);
-  // useEffect(() => {
-  //   first
-
-  //   return () => {
-  //     second
-  //   }
-  // }, [third])
 
   useEffect(() => {
     isFocused && dispatch(loadcomments(ccc.item.id));
@@ -306,8 +289,6 @@ const Item = ({ navigation, route }) => {
                 >
                   <Text
                     style={{
-                      // color: "#727577",
-                      // marginVertical: 5,
                       fontSize: 15,
                       color: "#9BA5A9",
                       padding: 0,
@@ -334,7 +315,6 @@ const Item = ({ navigation, route }) => {
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
-                // disabled={commentLiked && true}
                 onPress={() => {
                   handleLike(item);
                 }}
@@ -423,8 +403,6 @@ const Item = ({ navigation, route }) => {
       />
       <View
         style={{
-          // backgroundColor: "#002626",
-          // borderRadius: 50,
           padding: 6,
           elevation: 4,
           position: "absolute",
@@ -458,7 +436,6 @@ const Item = ({ navigation, route }) => {
               ]}
             >
               <ActivityIndicator size="large" color={"#c5765c"} />
-              {/* <Text>Processing story...</Text> */}
             </View>
           ) : (
             <Text style={styles.buttonText}>Post</Text>
@@ -472,10 +449,7 @@ const Item = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: "#051e28",
-    // color: "yellow",
   },
   subContainer: { marginBottom: 10 },
   title: {

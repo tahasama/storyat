@@ -7,17 +7,13 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-import StoryModal from "../StoryModal";
 import FooterOfStory from "../Story/FooterOfStory";
 import BodyOfStory from "../Story/BodyOfStory";
 import HeadOfStory from "../Story/HeadOfStory";
 
 const Brokens = () => {
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -55,8 +51,6 @@ const Brokens = () => {
         </View>
       ) : (
         <FlatList
-          // onEndReached={handleLoadMore}
-
           data={data}
           refreshControl={
             <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />

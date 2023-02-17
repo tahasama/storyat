@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -7,16 +7,13 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import StoryModal from "../StoryModal";
 import {
   getstoriesData,
-  Ivoted,
   loadStories,
   reloadInitialData,
 } from "../state/reducers/storiesSlice";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import HeadOfStory from "../Story/HeadOfStory";
 import BodyOfStory from "../Story/BodyOfStory";
@@ -26,12 +23,9 @@ import { getAuthData } from "../state/reducers/authSlice";
 const Items = () => {
   const dispatch = useAppDispatch();
   const { reloadState } = useAppSelector(getstoriesData);
-  const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-
   const [data, setData] = useState([]);
-
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
 
   useEffect(() => {
@@ -40,16 +34,7 @@ const Items = () => {
         .then((res) => setData(JSON.parse(res)))
         .then(() => dispatch(reloadInitialData(false)))
         .then(() => setLoading(false));
-
-    // voterIndex();
   }, [reloadState]);
-
-  // const voterIndex = () => {
-  //   data.map((item) => {
-  //     item.applauds.includes(user.id) &&
-  //       dispatch(Ivoted({ voter: user.id, storyId: item.id }));
-  //   });
-  // };
 
   const onRefresh = async () => {
     dispatch(loadStories());

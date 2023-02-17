@@ -8,14 +8,12 @@ import {
   RefreshControl,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import StoryModal from "../StoryModal";
 import FooterOfStory from "../Story/FooterOfStory";
 import HeadOfStory from "../Story/HeadOfStory";
 import BodyOfStory from "../Story/BodyOfStory";
 
 const Applauds = () => {
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [data, setData] = useState([]);
@@ -53,7 +51,6 @@ const Applauds = () => {
         </View>
       ) : (
         <FlatList
-          // onEndReached={handleLoadMore}
           data={data}
           refreshControl={
             <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />

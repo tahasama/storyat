@@ -6,7 +6,6 @@ import {
 import { Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import React from "react";
 import { useEffect } from "react";
-
 import { useIdTokenAuthRequest } from "expo-auth-session/build/providers/Google";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";

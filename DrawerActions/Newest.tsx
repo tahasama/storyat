@@ -31,14 +31,11 @@ const Newest = () => {
     await AsyncStorage.getItem("myStoredDataTimestamp");
 
   useEffect(() => {
-    // reloadState &&
     setLoading(true),
       result()
         .then((res) => setData(JSON.parse(res)))
         .then(() => dispatch(reloadInitialData(false)))
         .then(() => setLoading(false));
-
-    // voterIndex();
   }, []);
   const onRefresh = async () => {
     dispatch(loadStories());
@@ -65,7 +62,6 @@ const Newest = () => {
         </View>
       ) : (
         <FlatList
-          // onEndReached={handleLoadMore}
           refreshControl={
             <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
           }

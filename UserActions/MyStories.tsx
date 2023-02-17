@@ -12,7 +12,6 @@ import BodyOfStory from "../Story/BodyOfStory";
 import FooterOfStory from "../Story/FooterOfStory";
 import StoryModal from "../StoryModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useIsFocused } from "@react-navigation/native";
 
 function MyStories() {
   const [loading, setLoading] = useState(false);
@@ -74,7 +73,6 @@ function MyStories() {
           keyExtractor={(item) => {
             return item.id;
           }}
-          // extraData={selectedId}
         />
       )}
 
@@ -89,15 +87,12 @@ export default MyStories;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#333333",
     backgroundColor: "#051e28",
   },
 
   item: {
     padding: 8,
     marginVertical: 8,
-    // marginHorizontal: 16,
-    // backgroundColor: "red",
     flex: 1,
   },
   title: {
@@ -117,17 +112,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     padding: 20,
-    // backgroundColor: "transparent",
     backgroundColor: "#051E28",
   },
   buttonContainer1: {
     flexDirection: "row",
     justifyContent: "center",
-    // backgroundColor: "#051E28",
-    // backgroundColor: "#002244",
     backgroundColor: "#332FD0",
-    // zIndex: 99,
-
     alignItems: "center",
     height: 80,
     width: 80,
@@ -139,15 +129,3 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
 });
-function voteApplaud(arg0: {
-  voteData: { voter: any; storyId: any };
-  voteArray: any[];
-}): any {
-  throw new Error("Function not implemented.");
-}
-function voteCompassion(arg0: {
-  voteData: { voter: any; storyId: any };
-  voteArray: any[];
-}): any {
-  throw new Error("Function not implemented.");
-}

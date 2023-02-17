@@ -7,41 +7,27 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
 import StoryModal from "../StoryModal";
 import FooterOfStory from "../Story/FooterOfStory";
 import BodyOfStory from "../Story/BodyOfStory";
 import HeadOfStory from "../Story/HeadOfStory";
-import { useAppDispatch, useAppSelector } from "../state/hooks";
-import {
-  getstoriesData,
-  loadStories,
-  reloadInitialData,
-} from "../state/reducers/storiesSlice";
-import { useIsFocused } from "@react-navigation/native";
+import { useAppDispatch } from "../state/hooks";
+import { loadStories, reloadInitialData } from "../state/reducers/storiesSlice";
 
 const Brokens = () => {
   const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
   const [data, setData] = useState([]);
   const dispatch = useAppDispatch();
-  const { reloadState } = useAppSelector(getstoriesData);
-  const isFocused = useIsFocused();
   const [isRefreshing, setIsRefreshing] = useState(false);
-
   const result = async () => await AsyncStorage.getItem("myStoredDataBrokens");
 
   useEffect(() => {
-    // (isFocused || reloadState) &&
     setLoading(true),
       result()
         .then((res) => setData(JSON.parse(res)))
         .then(() => dispatch(reloadInitialData(false)))
         .then(() => setLoading(false));
-
-    // voterIndex();
   }, []);
 
   const onRefresh = async () => {

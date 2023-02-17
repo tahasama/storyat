@@ -1,10 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
-
-import { useNavigation } from "@react-navigation/native";
-
+import React from "react";
+import { Text, TouchableOpacity } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useAppSelector } from "../state/hooks";
 import { getAuthData } from "../state/reducers/authSlice";

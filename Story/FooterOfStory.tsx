@@ -1,27 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
-
+import React from "react";
+import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Feather from "@expo/vector-icons/Feather";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { getAuthData } from "../state/reducers/authSlice";
-import {
-  getstoriesData,
-  Ivoted,
-  ReactedToStories,
-  vote,
-} from "../state/reducers/storiesSlice";
-import FlashMessage, { showMessage } from "react-native-flash-message";
+import { Ivoted, ReactedToStories, vote } from "../state/reducers/storiesSlice";
 import Reaction from "./Reaction";
 
 const FooterOfStory = ({ item }: any) => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<any>();
-  const { IvotedData } = useAppSelector(getstoriesData);
-  const [message, setMessage] = useState(false);
+
   const { user } = useAppSelector(getAuthData);
 
   const handleOnpress = (item) => {
@@ -42,11 +30,6 @@ const FooterOfStory = ({ item }: any) => {
           dispatch(ReactedToStories({ userId: user.id }));
         }, 250)
       );
-
-    // : showMessage({
-    //     message: "You cant react to your own stories",
-    //     type: "info",
-    //   });
   };
 
   return (
@@ -84,8 +67,5 @@ const FooterOfStory = ({ item }: any) => {
     </View>
   );
 };
-// (prevProps, nextProps) => {
-//   return prevProps.item === nextProps.item;
-// }
 
 export default React.memo(FooterOfStory);

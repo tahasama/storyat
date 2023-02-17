@@ -1,5 +1,5 @@
 import { StatusBar, StyleSheet, View } from "react-native";
-import { NavigationContainer, useRoute } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Item from "./Item";
 import Login from "./Login/Login";

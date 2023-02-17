@@ -469,15 +469,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#1E343E",
   },
-
   commentContainer: {
     flexDirection: "column",
-    // paddingHorizontal: 20,
-    // paddingBottom: 20,
-    // marginTop: 20,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // backgroundColor: "red",
     paddingHorizontal: 20,
     marginTop: 20,
   },

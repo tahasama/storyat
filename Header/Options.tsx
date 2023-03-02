@@ -8,27 +8,50 @@ import {
   TouchableOpacity,
   Switch,
   StatusBar,
+  Linking,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Entypo from "@expo/vector-icons/Entypo";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../state/hooks";
 import { auth } from "../firebase";
 import { getAuthData, resetUser } from "../state/reducers/authSlice";
+import {
+  ActivateNotifications,
+  ActivateNotificationsSound,
+  getstoriesData,
+} from "../state/reducers/storiesSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Options = () => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const [modalVisible, setModalVisible] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
   const { user } = useAppSelector(getAuthData);
+  const { notifs, notifsSound } = useAppSelector(getstoriesData);
+  const [notif, setNotif] = useState();
+
+  const [notifSound, setNotifSound] = useState();
+
+  const notifsSoundResult = async () =>
+    await AsyncStorage.getItem("notifsSound");
+  const notifsResult = async () => await AsyncStorage.getItem("notifs");
+
+  useEffect(() => {
+    notifsSoundResult().then((res) => setNotifSound(JSON.parse(res)));
+  }, [notifsSound]);
+
+  useEffect(() => {
+    notifsResult().then((res) => setNotif(JSON.parse(res)));
+  }, [notifs]);
 
   return (
     <View style={styles.centeredView}>
@@ -58,7 +81,7 @@ const Options = () => {
             style={[
               styles.modalView,
               {
-                height: windowHeight / 3,
+                height: windowHeight / 2.3,
                 width: windowWidth,
               },
             ]}
@@ -72,14 +95,16 @@ const Options = () => {
             <View style={styles.subMenu}>
               <TouchableOpacity
                 style={{
-                  marginBottom: 20,
+                  // marginBottom: 20,
+
                   width: windowWidth / 2.55,
                   flexDirection: "row",
+                  paddingVertical: 5,
                 }}
                 onPress={() => (
                   navigation.navigate("profile", {
                     notActualUser: false,
-                    userOfProfile: user,
+                    userOfProfile: user.id,
                   }),
                   setModalVisible(false)
                 )}
@@ -100,14 +125,17 @@ const Options = () => {
                 onPress={() => (
                   navigation.navigate("actions", {
                     notActualUser: false,
-                    userOfProfile: user,
+                    userId: user.id,
+                    flag: "hohoho",
+                    // userId: user, //this is a verification
                   }),
                   setModalVisible(false)
                 )}
                 style={{
                   width: windowWidth / 2.5,
                   flexDirection: "row",
-                  marginBottom: 12,
+                  // marginBottom: 20,
+                  paddingVertical: 5,
                 }}
               >
                 <MaterialCommunityIcons
@@ -127,35 +155,128 @@ const Options = () => {
                   <Text style={styles.menuText}> My Actions</Text>
                 </View>
               </TouchableOpacity>
-              <View
+              <TouchableOpacity
+                onPress={async () => {
+                  {
+                    dispatch(ActivateNotificationsSound(!notifsSound)),
+                      await AsyncStorage.setItem(
+                        "notifsSound",
+                        JSON.stringify(!notifsSound)
+                      );
+                  }
+                }}
                 style={{
                   flexDirection: "row",
+                  // justifyContent: "flex-start",
                   height: windowHeight / 18,
-                  width: windowWidth / 2.6,
-                  marginBottom: 12,
+                  // width: windowWidth / 2.6,
+                  // marginBottom: 12,
+                  // backgroundColor: "red",
+                  paddingVertical: 5,
                 }}
               >
-                <Switch
-                  style={{
-                    transform: [{ scale: 1.2 }],
-                  }}
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={toggleSwitch}
-                  value={isEnabled}
+                <Ionicons
+                  name={
+                    notifSound ? "volume-medium-sharp" : "volume-mute-sharp"
+                  }
+                  size={40}
+                  color="#646464"
                 />
+
                 <View
                   style={{
                     alignItems: "center",
                     justifyContent: "center",
-                    flex: 1,
+                    marginLeft: 20,
                     height: "100%",
                   }}
                 >
-                  <Text style={styles.menuText}>Dark/Light</Text>
+                  <Text style={styles.menuText}>
+                    {notifSound
+                      ? "Deactivate Notifications Sound"
+                      : "Activate Notifications Sound"}
+                  </Text>
                 </View>
-              </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={async () => {
+                  dispatch(ActivateNotifications(!notifs)),
+                    await AsyncStorage.setItem(
+                      "notifs",
+                      JSON.stringify(!notifs)
+                    );
+                }}
+                style={{
+                  flexDirection: "row",
+                  // justifyContent: "flex-start",
+                  height: windowHeight / 18,
+                  // width: windowWidth / 2.6,
+                  // marginBottom: 12,
+                  // backgroundColor: "red",
+                  paddingVertical: 5,
+                }}
+              >
+                <Ionicons
+                  name={notif ? "notifications" : "notifications-off"}
+                  size={33}
+                  color="#646464"
+                />
+
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+
+                    marginLeft: 26,
+                  }}
+                >
+                  <Text style={styles.menuText}>
+                    {notif
+                      ? "Deactivate Notifications"
+                      : "Activate Notifications"}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={async () => {
+                  dispatch(ActivateNotifications(!notifs)),
+                    await AsyncStorage.setItem(
+                      "notifs",
+                      JSON.stringify(!notifs)
+                    );
+                }}
+                style={{
+                  flexDirection: "row",
+                  // justifyContent: "flex-start",
+                  height: windowHeight / 18,
+                  // width: windowWidth / 2.6,
+                  // marginBottom: 12,
+                  // backgroundColor: "red",
+                  paddingVertical: 5,
+                }}
+              >
+                <Entypo name={"info"} size={33} color="#646464" />
+
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+
+                    marginLeft: 26,
+                  }}
+                >
+                  <Text
+                    style={styles.menuText}
+                    onPress={() =>
+                      Linking.openURL(
+                        "https://www.privacypolicies.com/live/1fd4e6d1-ec5c-4a4f-b1dc-cca55f96360f"
+                      )
+                    }
+                  >
+                    Read Privacy policy
+                  </Text>
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
                   signOut(auth)
@@ -170,7 +291,9 @@ const Options = () => {
                 style={{
                   width: windowWidth / 2.5,
                   flexDirection: "row",
-                  marginBottom: 12,
+
+                  justifyContent: "flex-start",
+                  paddingVertical: 5,
                 }}
               >
                 <AntDesign
@@ -209,8 +332,9 @@ const styles = StyleSheet.create({
   subMenu: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
     width: "100%",
+    // gap: 40,
   },
   buttonContainer: {
     justifyContent: "center",

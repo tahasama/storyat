@@ -1,4 +1,4 @@
-import { StyleSheet, Animated } from "react-native";
+import { StyleSheet, Animated, StatusBar, View } from "react-native";
 import React, { useEffect, useRef } from "react";
 import { useFonts } from "expo-font";
 import { LinearGradient } from "expo-linear-gradient";
@@ -55,8 +55,10 @@ const Splash = () => {
 
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnimOut }]}>
+      <StatusBar hidden backgroundColor={"#051E28"} />
+
       <LinearGradient
-        colors={["#4c669f", "#3b5998", "#192f6a"]}
+        colors={["black", "#051E28", "#051E28", "#051E28"]}
         style={[styles.container]}
       >
         <Animated.Text
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#435898",
+    // backgroundColor: "#435898",
     width: "100%",
   },
   title: {

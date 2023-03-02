@@ -27,6 +27,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import {} from "./state/reducers/repliesSlice";
 import {
   addCommentNumberToStory,
+  getstoriesData,
   substractCommentNumberToStory,
 } from "./state/reducers/storiesSlice";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -35,6 +36,9 @@ import FooterOfStory from "./Story/FooterOfStory";
 import HeadOfStory from "./Story/HeadOfStory";
 import BodyOfStory from "./Story/BodyOfStory";
 import moment from "moment";
+import * as Notifications from "expo-notifications";
+import { Expo } from "expo-server-sdk";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Item = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
@@ -50,6 +54,22 @@ const Item = ({ navigation, route }) => {
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  function schedulePushNotification() {
+    let response = fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: route.params.item.pushToken,
+        title: "New Comment",
+        body: ` Someone commented on your story (${ccc.item.title} ), check it out !`,
+        // channelId: "vvv",
+      }),
+    });
+  }
 
   useEffect(() => {
     isFocused && dispatch(loadcomments(ccc.item.id));
@@ -80,7 +100,8 @@ const Item = ({ navigation, route }) => {
     setTimeout(() => {
       dispatch(loadcomments(ccc.item.id))
         .then(() => dispatch(loadAllComments(ccc.item.id)))
-        .then(() => setLoading(false));
+        .then(() => setLoading(false))
+        .then(() => schedulePushNotification());
     }, 250);
   };
 

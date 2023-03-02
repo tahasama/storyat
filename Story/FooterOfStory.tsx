@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { getAuthData } from "../state/reducers/authSlice";
-import { Ivoted, ReactedToStories, vote } from "../state/reducers/storiesSlice";
+import {
+  getstoriesData,
+  Ivoted,
+  ReactedToStories,
+  vote,
+} from "../state/reducers/storiesSlice";
 import Reaction from "./Reaction";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FooterOfStory = ({ item }: any) => {
   const dispatch = useAppDispatch();
@@ -15,6 +21,23 @@ const FooterOfStory = ({ item }: any) => {
   const handleOnpress = (item) => {
     navigation.navigate("item", { item: item });
   };
+  function schedulePushNotification() {
+    let response = fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: item.pushToken,
+        title: "New Reaction",
+        body: ` Someone reacted on your story (${item.title} ), check it out !`,
+
+        data: { storyId: item.storyId },
+        channelId: "vvv",
+      }),
+    });
+  }
 
   const handleReactions = ({ item, reaction }) => {
     const voteData = {
@@ -27,7 +50,9 @@ const FooterOfStory = ({ item }: any) => {
       .then(() => dispatch(Ivoted({ voter: user.id, storyId: item.id })))
       .then(() =>
         setTimeout(() => {
-          dispatch(ReactedToStories({ userId: user.id }));
+          dispatch(ReactedToStories({ userId: user.id })).then(() =>
+            schedulePushNotification()
+          );
         }, 250)
       );
   };

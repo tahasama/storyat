@@ -10,8 +10,10 @@ import { useIdTokenAuthRequest } from "expo-auth-session/build/providers/Google"
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
-const GoogleLogin = () => {
+const GoogleLogin = ({ token }) => {
+  console.log("poppopo", token);
   const [request, response, promptAsync] = useIdTokenAuthRequest({
+    androidClientId: process.env.REACT_APP_CLIENT_ID_ANDROID,
     clientId: process.env.REACT_APP_CLIENT_ID_WEB,
   });
 
@@ -38,6 +40,7 @@ const GoogleLogin = () => {
               writer: cred.user.email,
               timestamp: Date.now(),
               avatar: `https://picsum.photos/id/${PicId()}/200/300`,
+              pushToken: token,
             }));
         } catch (e) {
           console.error("Error adding document: ", e);

@@ -10,20 +10,23 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  Platform,
+  Linking,
 } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import { useEffect, useState } from "react";
 
 import Splash from "../Splash";
 
 import * as WebBrowser from "expo-web-browser";
 import GoogleLogin from "./GoogleLogin";
-import FaceBookLogin from "./FaceBookLogin";
 import { getAuthData } from "../state/reducers/authSlice";
 import { useAppSelector } from "../state/hooks";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { getstoriesData } from "../state/reducers/storiesSlice";
 import FlashMessage, { showMessage } from "react-native-flash-message";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -34,6 +37,65 @@ const Login = ({ navigation, route }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState<any>(false);
+  const notificationListener = useRef<any>();
+  const responseListener = useRef<any>();
+
+  async function registerForPushNotificationsAsync() {
+    let token: string;
+    if (Platform.OS === "android") {
+      await Notifications.setNotificationChannelAsync("vvv", {
+        name: "vvv",
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [],
+        // lightColor: "red",
+      });
+    }
+    if (Device.isDevice) {
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      console.log(token);
+    } else {
+      alert("Must use physical device for Push Notifications");
+    }
+
+    return token;
+  }
+
+  useEffect(() => {
+    expoPushToken === "" &&
+      registerForPushNotificationsAsync().then((token) =>
+        setExpoPushToken(token)
+      );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, [expoPushToken]);
 
   useEffect(() => {
     user && !loading && navigation.replace("lll");
@@ -75,6 +137,7 @@ const Login = ({ navigation, route }) => {
               writer: cred.user.email,
               timestamp: Date.now(),
               avatar: `https://picsum.photos/id/${PicId()}/200/300`,
+              pushToken: expoPushToken,
             }));
         } catch (e) {
           Alert.alert("action failed please try again");
@@ -116,6 +179,7 @@ const Login = ({ navigation, route }) => {
               writer: cred.user.email,
               timestamp: Date.now(),
               avatar: `https://picsum.photos/id/${PicId()}/200/300`,
+              pushToken: expoPushToken,
             }));
         } catch (e) {
           console.error("Error adding document: ", e);
@@ -137,6 +201,28 @@ const Login = ({ navigation, route }) => {
         !user && (
           <View style={styles.container1}>
             <View style={styles.inputContainer}>
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginBottom: 20,
+                }}
+              >
+                <Text style={{ textAlign: "center", color: "#999999" }}>
+                  By continuing, you agree on, and aknowledge that you've read
+                  Storyat's{" "}
+                </Text>
+                <Text
+                  style={{ color: "#fccccc", textDecorationLine: "underline" }}
+                  onPress={() =>
+                    Linking.openURL(
+                      "https://www.privacypolicies.com/live/1fd4e6d1-ec5c-4a4f-b1dc-cca55f96360f"
+                    )
+                  }
+                >
+                  Privacy policy
+                </Text>
+              </View>
               <TextInput
                 placeholder="Email"
                 placeholderTextColor={"#8BBCCC"}
@@ -160,12 +246,12 @@ const Login = ({ navigation, route }) => {
               <TouchableOpacity onPress={handleSignUp} style={styles.button2}>
                 <Text style={styles.buttonText}>Register</Text>
               </TouchableOpacity>
-              <GoogleLogin />
-              <FaceBookLogin />
+              <GoogleLogin token={expoPushToken} />
             </View>
           </View>
         )
       )}
+
       <FlashMessage position="top" />
     </View>
   );

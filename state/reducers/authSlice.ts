@@ -11,8 +11,6 @@ import { Alert } from "react-native";
 
 import { auth, db } from "../../firebase";
 
-const USER_URL: any = process.env.REACT_APP_USER_URL;
-
 interface valueProps {
   email: string;
   password: string;

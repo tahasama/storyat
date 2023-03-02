@@ -2,12 +2,26 @@
   "expo": {
     "name": "storyat",
     "slug": "storyat",
-    "version": "1.0.0",
+    "version": "1.1.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "updates": {
       "fallbackToCacheTimeout": 0
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon":"./assets/iconPushNotification.png",
+          "color": "#ffffff"
+        }
+      ]
+    ],
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#25292e"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -18,12 +32,8 @@
     },
     "android": {
       "package": "com.storyat",
-      "versionCode": 1,
-      "adaptiveicon": {
-        "icon": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF",
-        "resizeMode": "cover"
-      }
+      "versionCode": 19,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "resizeMode": "cover"
@@ -35,5 +45,6 @@
     },
     "owner": "tahasama",
     "scheme": "com.storyat"
+      
   }
 }

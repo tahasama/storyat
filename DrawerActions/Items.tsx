@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -6,6 +6,8 @@ import {
   View,
   ActivityIndicator,
   RefreshControl,
+  Text,
+  Button,
 } from "react-native";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import StoryModal from "../StoryModal";
@@ -19,6 +21,8 @@ import HeadOfStory from "../Story/HeadOfStory";
 import BodyOfStory from "../Story/BodyOfStory";
 import FooterOfStory from "../Story/FooterOfStory";
 import { getAuthData } from "../state/reducers/authSlice";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 const Items = () => {
   const dispatch = useAppDispatch();
@@ -27,6 +31,8 @@ const Items = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [data, setData] = useState([]);
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
+
+  // notification stuff
 
   useEffect(() => {
     setLoading(true),

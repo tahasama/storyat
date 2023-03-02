@@ -1,4 +1,4 @@
-import { StatusBar, StyleSheet, View } from "react-native";
+import { StatusBar, StyleSheet, Vibration, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Item from "./Item";
@@ -17,12 +17,44 @@ import Reply from "./Reply";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import Profile from "./Profile";
 import Actions from "./Actions";
+import { getstoriesData } from "./state/reducers/storiesSlice";
+import * as Notifications from "expo-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Index = () => {
   const Stack = createNativeStackNavigator();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector(getAuthData);
   const [loading, setLoading] = useState(true);
+
+  const { notifs, notifsSound } = useAppSelector(getstoriesData);
+
+  const [notifSound, setNotifSound] = useState(true);
+
+  const [notif, setNotif] = useState(true);
+
+  // const notifsSoundResult = async () =>
+  //   await AsyncStorage.getItem("notifsSound");
+  const notifsResult = async () => await AsyncStorage.getItem("notifs");
+
+  useEffect(() => {
+    notifsResult().then((res) => setNotif(JSON.parse(res)));
+  }, [notifs]);
+
+  const notifsSoundResult = async () =>
+    await AsyncStorage.getItem("notifsSound");
+
+  useEffect(() => {
+    notifsSoundResult().then((res) => setNotifSound(JSON.parse(res)));
+  }, [notifsSound]);
+
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: notif,
+      shouldPlaySound: notif && notifSound,
+      shouldSetBadge: true,
+    }),
+  });
 
   const unsubscribe = () =>
     !user &&
@@ -54,6 +86,7 @@ const Index = () => {
   }, [user]);
 
   useEffect(() => {
+    Vibration.cancel();
     loading &&
       setTimeout(() => {
         setLoading(!loading);

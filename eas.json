@@ -23,6 +23,10 @@
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android":{
+        "serviceKeyPath":"../../folder/pc-api-5226088315822707179-538-ab37c0336a1f.aab"
+      }
+    }
   }
 }

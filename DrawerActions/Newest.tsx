@@ -6,6 +6,7 @@ import {
   View,
   ActivityIndicator,
   RefreshControl,
+  Button,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StoryModal from "../StoryModal";
@@ -18,6 +19,7 @@ import {
   loadStories,
   reloadInitialData,
 } from "../state/reducers/storiesSlice";
+import * as Notifications from "expo-notifications";
 
 const Newest = () => {
   const [loading, setLoading] = useState(false);

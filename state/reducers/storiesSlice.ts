@@ -34,6 +34,7 @@ export const myStories = createAsyncThunk(
       const avatar = await (
         await getDoc(doc(db, "users", docs.data().writerId))
       ).data().avatar;
+
       return {
         ...docs.data(),
         id: docs.id,
@@ -165,11 +166,15 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
       const avatar = await (
         await getDoc(doc(db, "users", docs.data().writerId))
       ).data().avatar;
+      const pushToken = await (
+        await getDoc(doc(db, "users", docs.data().writerId))
+      ).data().pushToken;
       return {
         ...docs.data(),
         id: docs.id,
         username: username,
         avatar: avatar,
+        pushToken: pushToken,
       };
     });
 
@@ -475,6 +480,8 @@ export interface storiesProps {
     resultAdd: any;
     resultUpdate: any;
     error: string;
+    notifs: boolean;
+    notifsSound: boolean;
   };
 }
 
@@ -510,6 +517,8 @@ export const storiesInitialState = {
   resultUpdate: {},
   IvotedData: [{ storyId: "", voter: "" }],
   error: null,
+  notifs: false,
+  notifsSound: false,
 };
 
 export const storiesSlice = createSlice({
@@ -551,7 +560,16 @@ export const storiesSlice = createSlice({
       state.reloadState = action.payload;
     },
     Ivoted: (state, action) => {
-      state.IvotedData.push(action.payload);
+      state.IvotedData.includes(action.payload)
+        ? state.IvotedData.pop()
+        : state.IvotedData.push(action.payload);
+    },
+
+    ActivateNotifications: (state, action) => {
+      state.notifs = action.payload;
+    },
+    ActivateNotificationsSound: (state, action) => {
+      state.notifsSound = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -591,5 +609,7 @@ export const {
   updateStory,
   reloadInitialData,
   Ivoted,
+  ActivateNotificationsSound,
+  ActivateNotifications,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

@@ -37,7 +37,7 @@ export const AllComments = createAsyncThunk(
     let xxx = [];
 
     const votedComments = resultAllComment
-      .map((x) => x.likes.filter((y) => y.liker === data))
+      .map((x) => x.likes.filter((y) => y.liker === data.userId))
       .flat()
       .map((y) => y.storyId);
 

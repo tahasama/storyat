@@ -16,9 +16,9 @@ const Actions = ({ route }) => {
 
   useEffect(() => {
     let isSubscribed =
-      (dispatch(loadAllComments({ userId: userId })),
+      (dispatch(loadAllComments({ userId })),
       dispatch(myStories({ userId: userId })),
-      dispatch(AllComments(userId)),
+      dispatch(AllComments({ userId })),
       dispatch(ReactedToStories({ userId: userId })));
 
     return () => {

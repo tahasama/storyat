@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const BodyOfStory = ({ item }: any) => {
   const navigation = useNavigation<any>();
+  const route = useRoute();
   const [isPending, setIsPending] = useState(false);
 
   const handleOnpress = (item) => {
@@ -24,11 +25,8 @@ const BodyOfStory = ({ item }: any) => {
           {item.title}
         </Text>
         <Text
-          style={[
-            styles.title,
-            { marginHorizontal: 10, color: "#9fa3a7", fontSize: 20 },
-          ]}
-          numberOfLines={2}
+          style={[styles.content, {}]}
+          numberOfLines={route.name !== "item" ? 2 : 250}
         >
           {"\t"} {item.content}
         </Text>
@@ -43,9 +41,17 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     color: "#bcbcbc",
-    marginTop: 5,
-    marginBottom: 25,
+    marginTop: 22,
+    marginBottom: 0,
     marginHorizontal: 32,
+    minHeight: 70,
+  },
+  content: {
+    marginTop: 0,
+    marginBottom: 25,
     minHeight: 80,
+    marginHorizontal: 10,
+    color: "#9fa3a7",
+    fontSize: 19,
   },
 });

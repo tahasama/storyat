@@ -54,6 +54,7 @@ const Item = ({ navigation, route }) => {
   const [disLikeLoading, setDisLikeLoading] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [bodyVisibilty, setBodyVisibilty] = useState(true);
 
   function schedulePushNotification() {
     let response = fetch("https://exp.host/--/api/v2/push/send", {
@@ -65,7 +66,7 @@ const Item = ({ navigation, route }) => {
       body: JSON.stringify({
         to: route.params.item.pushToken,
         title: "New Comment",
-        body: ` Someone commented on your story (${ccc.item.title} ), check it out !`,
+        body: ` ${user.username}  commented on your story (${ccc.item.title} ), check it out !`,
         // channelId: "vvv",
       }),
     });
@@ -77,6 +78,7 @@ const Item = ({ navigation, route }) => {
 
   const handleComment = async () => {
     setLoading(true);
+    setBodyVisibilty(true);
     dispatch(
       addcomments({
         comment: comment,
@@ -217,7 +219,7 @@ const Item = ({ navigation, route }) => {
   const getHeader = (storyId) => (
     <View>
       <HeadOfStory item={ccc.item} />
-      <BodyOfStory item={ccc.item} />
+      {bodyVisibilty && <BodyOfStory item={ccc.item} />}
       <FooterOfStory item={ccc.item} />
       <View
         style={{
@@ -437,10 +439,11 @@ const Item = ({ navigation, route }) => {
         <TextInput
           style={styles.input}
           multiline
-          onChangeText={(text) => setComment(text)}
+          onChangeText={(text) => (setComment(text), setBodyVisibilty(false))}
           placeholder="  Add a comment ..."
           placeholderTextColor={"#8BBCCC"}
           value={comment}
+          onBlur={() => setBodyVisibilty(true)}
         />
         <TouchableOpacity
           onPress={handleComment}

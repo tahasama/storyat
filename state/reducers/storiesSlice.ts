@@ -18,6 +18,7 @@ interface storyProps {
   userId: string;
   title: string;
   content: string;
+  storyImage: string;
 }
 
 export const myStories = createAsyncThunk(
@@ -266,7 +267,7 @@ export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
 
 export const addStories = createAsyncThunk(
   "addStories",
-  async ({ title, content, userId }: storyProps) => {
+  async ({ title, content, userId, storyImage }: storyProps) => {
     try {
       const res = await addDoc(collection(db, "stories"), {
         title: title,
@@ -278,6 +279,7 @@ export const addStories = createAsyncThunk(
         compassions: [],
         brokens: [],
         justNos: [],
+        storyImage,
       });
       try {
         const result = await getDoc(doc(db, "stories", res.id));
@@ -304,11 +306,12 @@ export const addStories = createAsyncThunk(
 
 export const updateStories = createAsyncThunk(
   "updateStories",
-  async ({ title, content, storyId }: any) => {
+  async ({ title, content, storyId, storyImage }: any) => {
     try {
       const res = await updateDoc(doc(db, "stories", storyId), {
         title: title,
         content: content,
+        storyImage: storyImage,
       });
       try {
         const result = await getDoc(doc(db, "stories", storyId));

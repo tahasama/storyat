@@ -18,22 +18,38 @@ const Reaction = ({ reaction, item, handleReactions, handleOnpress }: any) => {
     case "applauds":
       icon = "hand-clap";
       name = "applauds";
-      color = item["applauds"].includes(user.id) ? "#73481c" : "#707070";
+      color = item["applauds"].includes(user.id)
+        ? "#a16527"
+        : item[name].length
+        ? "#73481c"
+        : "#707070";
       break;
     case "compassions":
       icon = "heart";
       name = "compassions";
-      color = item["compassions"].includes(user.id) ? "#4c0000" : "#707070";
+      color = item["compassions"].includes(user.id)
+        ? "#a1216e"
+        : item[name].length
+        ? "#671836"
+        : "#707070";
       break;
     case "brokens":
       icon = "heart-broken";
       name = "brokens";
-      color = item["brokens"].includes(user.id) ? "#5900b2" : "#707070";
+      color = item["brokens"].includes(user.id)
+        ? "#8746c7"
+        : item[name].length
+        ? "#5900b2"
+        : "#707070";
       break;
     case "justNos":
       icon = "trending-down";
       name = "justNos";
-      color = item["justNos"].includes(user.id) ? "#305a63" : "#707070";
+      color = item["justNos"].includes(user.id)
+        ? "#4e818d"
+        : item[name].length
+        ? "#305a63"
+        : "#707070";
       break;
     default:
       icon = "comments";

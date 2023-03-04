@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   StatusBar,
   ActivityIndicator,
+  Image,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
@@ -25,6 +26,14 @@ import {
 } from "./state/reducers/storiesSlice";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Feather from "@expo/vector-icons/Feather";
+import * as ImagePicker from "expo-image-picker";
+import {
+  getDownloadURL,
+  getMetadata,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { storage } from "./firebase";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -38,12 +47,16 @@ const StoryModal = (item) => {
   );
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
   const { story } = useAppSelector(getstoriesData);
   const pageName = useRoute().name;
   const navigation = useNavigation<any>();
+  const [storyImage, setStoryImage] = useState("");
+
+  console.log("777777", storyImage);
 
   let original = { story };
 
@@ -53,30 +66,41 @@ const StoryModal = (item) => {
   const handleStory = async () => {
     setLoading(true);
     pageName !== "item"
-      ? content !== "" && title !== ""
-        ? dispatch(addStories({ title, userId: user.id, content }))
+      ? (content !== "" || storyImage !== "") && title !== ""
+        ? dispatch(addStories({ title, userId: user.id, content, storyImage }))
             .then(({ payload }: any) => dispatch(getStory(payload.id)))
             .then(() =>
               setTimeout(() => {
                 setStatus("success");
               }, 50)
             )
-            .then(() => (setContent(""), setTitle("")))
+            .then(() => (setContent(""), setTitle(""), setStoryImage("")))
         : title === "" && content !== ""
-        ? setTitleError(true)
-        : title !== "" && content === ""
-        ? setContentError(true)
-        : (setTitleError(true), setContentError(true))
+        ? (setTitleError(true), setLoading(false))
+        : storyImage === "" && content === ""
+        ? (setContentError(true), setLoading(false))
+        : setLoading(false)
       : dispatch(
           updateStories({
             title: title !== "" ? title : item && item.item && item.item.title,
             storyId: item.item.id,
             content:
               content !== "" ? content : item && item.item && item.item.content,
+            storyImage:
+              storyImage !== ""
+                ? storyImage
+                : item && item.item && item.storyImage,
           })
         )
           .then(() => dispatch(getStory(item.item.id)))
-          .then(() => (setStatus("success"), setContent(""), setTitle("")));
+          .then(
+            () => (
+              setStatus("success"),
+              setContent(""),
+              setTitle(""),
+              setStoryImage("")
+            )
+          );
   };
 
   useEffect(() => {
@@ -102,9 +126,55 @@ const StoryModal = (item) => {
       }, 50);
   }, [status]);
 
+  const getNumber = () => {
+    let numbersString = "";
+
+    for (let i = 0; i < 6; i++) {
+      numbersString += Math.floor(Math.random() * 10);
+    }
+    return numbersString;
+  };
+
+  const pickImageAsync = async () => {
+    setImageLoading(true);
+    let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: 1,
+    });
+    console.log("storyImage", storyImage);
+    if (!result.canceled) {
+      // dispatch(updateUserImageState(result.assets[0].uri));  :+ ".jpg"
+      const response = await fetch(result.assets[0].uri);
+      const blob = await response.blob();
+      const storageRef =
+        storyImage !== ""
+          ? ref(
+              storage,
+              "Stories/" + item.item.storyImage.substring(83, 89) + ".jpg"
+            )
+          : ref(storage, "Stories/" + getNumber() + ".jpg");
+
+      uploadBytesResumable(storageRef, blob)
+        .then(async () => {
+          const res = await getDownloadURL(storageRef);
+
+          setStoryImage(res);
+          setImageLoading(false);
+        })
+
+        .catch((error) => {
+          setImageLoading(false);
+          console.log("error", error);
+        });
+    } else {
+      setImageLoading(false);
+    }
+  };
+
   return (
-    <View style={styles.centeredView}>
+    <View style={[styles.centeredView]}>
       {modalVisible && <StatusBar hidden />}
+
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <TouchableOpacity
           style={{
@@ -118,12 +188,24 @@ const StoryModal = (item) => {
           }}
           onPress={() => setModalVisible(false)}
         />
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+        <View
+          style={[styles.centeredView, { position: "absolute", bottom: 0 }]}
+        >
+          <View
+            style={[
+              styles.modalView,
+              {
+                height: windowHeight * 0.6,
+                width: windowWidth,
+              },
+            ]}
+          >
             <View style={styles.inputContainer}>
               <TextInput
-                placeholder={titleError ? "required title" : "Give it a title"}
-                placeholderTextColor={titleError ? "red" : "#8BBCCC"}
+                placeholder={
+                  titleError ? "ow!..you forgot title" : "Give it a title"
+                }
+                placeholderTextColor={titleError ? "#8c0052" : "#8BBCCC"}
                 onChangeText={(text) => setTitle(text)}
                 style={styles.input}
                 maxLength={70}
@@ -135,18 +217,54 @@ const StoryModal = (item) => {
                 multiline
                 numberOfLines={8}
                 placeholder={
-                  contentError ? "required content" : "Write your story here..."
+                  contentError
+                    ? "..you can write your story , or add an image.. or both :)"
+                    : "Write your story here..."
                 }
-                placeholderTextColor={contentError ? "red" : "#8BBCCC"}
+                placeholderTextColor={contentError ? "#C73E1D" : "#8BBCCC"}
                 onChangeText={(text) => setContent(text)}
                 style={styles.input}
                 defaultValue={
                   Object.entries(item).length !== 0 ? item.item.content : ""
                 }
               />
+              <Pressable
+                onPress={() => pickImageAsync()}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "#7f724c",
+                  paddingRight: 22,
+                  paddingLeft: 0,
+                  paddingVertical: 10,
+                  borderRadius: 5,
+                  marginVertical: 10,
+                }}
+                disabled={imageLoading && true}
+              >
+                {!imageLoading ? (
+                  <Feather
+                    name={"camera"}
+                    size={20}
+                    color={"white"}
+                    style={{ marginHorizontal: 10 }}
+                  />
+                ) : (
+                  <ActivityIndicator size="small" />
+                )}
+                <Text style={{ color: "white" }}>
+                  {!imageLoading ? "Upload image" : "Uploading ..."}
+                </Text>
+              </Pressable>
+              <Text style={{ fontSize: 13 }}>
+                * Upload Images may take some time depending on the image,
+                please be patient
+              </Text>
               <TouchableOpacity
                 onPress={handleStory}
                 style={styles.buttonSendContainer}
+                disabled={imageLoading && true}
               >
                 {!loading ? (
                   <Text
@@ -198,7 +316,7 @@ const StoryModal = (item) => {
       <Pressable
         style={
           pageName === "item"
-            ? { opacity: modalVisible ? 0 : 1, bottom: 20, left: 20 }
+            ? { opacity: modalVisible ? 0 : 1, bottom: 20, right: 100 }
             : [styles.buttonOpen, { opacity: modalVisible ? 0 : 1 }]
         }
         onPress={() => setModalVisible(true)}
@@ -224,12 +342,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 40,
+    width: windowWidth,
   },
   modalView: {
     margin: 20,
     backgroundColor: "#5b6c8f",
     borderRadius: 20,
-    width: windowWidth * 0.98,
+    // width: windowWidth,
     paddingVertical: 50,
     paddingHorizontal: 17,
   },

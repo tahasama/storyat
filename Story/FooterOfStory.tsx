@@ -31,7 +31,7 @@ const FooterOfStory = ({ item }: any) => {
       body: JSON.stringify({
         to: item.pushToken,
         title: "New Reaction",
-        body: ` Someone reacted on your story (${item.title} ), check it out !`,
+        body: ` ${user.username} reacted on your story (${item.title} ), check it out !`,
 
         data: { storyId: item.storyId },
         channelId: "vvv",
@@ -93,4 +93,4 @@ const FooterOfStory = ({ item }: any) => {
   );
 };
 
-export default React.memo(FooterOfStory);
+export default FooterOfStory;

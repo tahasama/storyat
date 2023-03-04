@@ -3,7 +3,7 @@ import React, { useCallback, useRef } from "react";
 import { Text, TouchableOpacity, Image, Animated, View } from "react-native";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { getAuthData, getUser } from "../state/reducers/authSlice";
-import { removeStory } from "../state/reducers/storiesSlice";
+import { reloadInitialData, removeStory } from "../state/reducers/storiesSlice";
 import { useRoute } from "@react-navigation/native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import StoryModal from "../StoryModal";
@@ -49,8 +49,9 @@ const HeadOfStory = ({ item }: any) => {
 
   const handleRemoveStory = (item) => {
     shake();
+    dispatch(reloadInitialData(true));
     dispatch(removeStory({ storyId: item.id })).then(() =>
-      navigation.navigate("items")
+      navigation.navigate("items", { storyId: item.id })
     );
   };
 

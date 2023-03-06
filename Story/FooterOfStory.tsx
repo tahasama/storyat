@@ -31,9 +31,14 @@ const FooterOfStory = ({ item }: any) => {
       body: JSON.stringify({
         to: item.pushToken,
         title: "New Reaction",
-        body: ` ${user.username} reacted on your story (${item.title} ), check it out !`,
+        body: ` ${
+          user.username ? user.username : "Someone"
+        } reacted on your story (${item.title} ), check it out !`,
 
-        data: { storyId: item.storyId },
+        data: {
+          storyId: item.id,
+          recipient: item.pushToken,
+        },
         channelId: "vvv",
       }),
     });

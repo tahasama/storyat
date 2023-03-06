@@ -13,7 +13,6 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const BodyOfStory = ({ item }: any) => {
-  console.log("ddddddddd", item);
   const navigation = useNavigation<any>();
   const route = useRoute();
   const [isPending, setIsPending] = useState(false);

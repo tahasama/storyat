@@ -11,10 +11,12 @@ import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 
 const GoogleLogin = ({ token }) => {
-  console.log("poppopo", token);
   const [request, response, promptAsync] = useIdTokenAuthRequest({
-    androidClientId: process.env.REACT_APP_CLIENT_ID_ANDROID,
-    clientId: process.env.REACT_APP_CLIENT_ID_WEB,
+    // androidClientId: process.env.REACT_APP_CLIENT_ID_ANDROID,
+    clientId:
+     'XXXXXXX'
+    androidClientId:
+      "YYYYYYY",
   });
 
   const PicId = () => {
@@ -44,7 +46,9 @@ const GoogleLogin = ({ token }) => {
             }));
         } catch (e) {
           console.error("Error adding document: ", e);
-          Alert.alert("action failed please try again");
+          Alert.alert(
+            "(Bad connection... ) Please close and repoen app, if you have trouble logging in "
+          );
         }
       });
     }

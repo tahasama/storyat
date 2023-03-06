@@ -21,19 +21,20 @@ import Splash from "../Splash";
 import * as WebBrowser from "expo-web-browser";
 import GoogleLogin from "./GoogleLogin";
 import { getAuthData } from "../state/reducers/authSlice";
-import { useAppSelector } from "../state/hooks";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
-import { getstoriesData } from "../state/reducers/storiesSlice";
+import { getstoriesData, getStory } from "../state/reducers/storiesSlice";
 import FlashMessage, { showMessage } from "react-native-flash-message";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import { useNavigation } from "@react-navigation/native";
 
 WebBrowser.maybeCompleteAuthSession();
 
 const Login = ({ navigation, route }) => {
   const para = route.params;
   const { user } = useAppSelector(getAuthData);
-  const { error } = useAppSelector(getstoriesData);
+  const { error, story } = useAppSelector(getstoriesData);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
@@ -41,6 +42,8 @@ const Login = ({ navigation, route }) => {
   const [notification, setNotification] = useState<any>(false);
   const notificationListener = useRef<any>();
   const responseListener = useRef<any>();
+  // const navigation = useNavigation<any>();
+  const dispatch = useAppDispatch();
 
   async function registerForPushNotificationsAsync() {
     let token: string;
@@ -61,7 +64,9 @@ const Login = ({ navigation, route }) => {
         finalStatus = status;
       }
       if (finalStatus !== "granted") {
-        alert("Failed to get push token for push notification!");
+        alert(
+          "(Bad connection... ) Please close and repoen app, if you have trouble logging in "
+        );
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
@@ -78,23 +83,6 @@ const Login = ({ navigation, route }) => {
       registerForPushNotificationsAsync().then((token) =>
         setExpoPushToken(token)
       );
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
   }, [expoPushToken]);
 
   useEffect(() => {
@@ -111,7 +99,7 @@ const Login = ({ navigation, route }) => {
     error &&
       showMessage({
         message: "Error",
-        description: "Please verify Your Internet Connection and try again",
+        description: "Please  hit authorise to be able to get notifications",
         type: "danger",
       });
   }, [error]);

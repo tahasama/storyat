@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase";
 import { resetUser } from "../state/reducers/authSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Logout = () => {
   const navigation = useNavigation<any>();
@@ -17,8 +18,9 @@ const Logout = () => {
       onPress={() => {
         signOut(auth)
           .then(() => {
-            setTimeout(() => {
+            setTimeout(async () => {
               dispatch(resetUser({}));
+              await AsyncStorage.clear();
               navigation.replace("login", "noSplash");
             }, 1000);
           })

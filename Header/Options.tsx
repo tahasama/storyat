@@ -40,6 +40,8 @@ const Options = () => {
   const [notif, setNotif] = useState();
 
   const [notifSound, setNotifSound] = useState();
+  console.log("notifs", notifs, "notifsSound", notifsSound);
+  console.log("notif", notif, "notifSound", notifSound);
 
   const notifsSoundResult = async () =>
     await AsyncStorage.getItem("notifsSound");
@@ -177,7 +179,13 @@ const Options = () => {
               >
                 <Ionicons
                   name={
-                    notifSound ? "volume-medium-sharp" : "volume-mute-sharp"
+                    notifSound !== null
+                      ? notifSound
+                        ? "volume-medium-sharp"
+                        : "volume-mute-sharp"
+                      : notifsSound
+                      ? "volume-medium-sharp"
+                      : "volume-mute-sharp"
                   }
                   size={40}
                   color="#646464"
@@ -192,8 +200,12 @@ const Options = () => {
                   }}
                 >
                   <Text style={styles.menuText}>
-                    {notifSound
-                      ? "Deactivate Notifications Sound"
+                    {notifSound !== null
+                      ? notifSound
+                        ? "Deactivate Notifications Sound"
+                        : "Activate Notifications Sound"
+                      : notifsSound
+                      ? "Deactivate Notification Sounds"
                       : "Activate Notifications Sound"}
                   </Text>
                 </View>
@@ -217,7 +229,15 @@ const Options = () => {
                 }}
               >
                 <Ionicons
-                  name={notif ? "notifications" : "notifications-off"}
+                  name={
+                    notif !== null
+                      ? notif
+                        ? "notifications"
+                        : "notifications-off"
+                      : notifs
+                      ? "notifications"
+                      : "notifications-off"
+                  }
                   size={33}
                   color="#646464"
                 />
@@ -231,7 +251,11 @@ const Options = () => {
                   }}
                 >
                   <Text style={styles.menuText}>
-                    {notif
+                    {notif !== null
+                      ? notif
+                        ? "Deactivate Notifications"
+                        : "Activate Notifications"
+                      : notifs
                       ? "Deactivate Notifications"
                       : "Activate Notifications"}
                   </Text>
@@ -339,7 +363,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     justifyContent: "center",
     alignItems: "center",
-    right: 20,
+    left: 14,
   },
   button: {
     width: "100%",

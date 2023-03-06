@@ -33,6 +33,7 @@ const Lll = () => {
   const Drawer = createDrawerNavigator();
   return (
     <Drawer.Navigator
+      initialRouteName="items"
       screenOptions={{
         header: () => <Title />,
         drawerStyle: { backgroundColor: "#041820" },

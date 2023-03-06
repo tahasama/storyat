@@ -91,18 +91,24 @@ const HeadOfStory = ({ item }: any) => {
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "space-around",
+            justifyContent: "center",
             alignItems: "center",
             width: "100%",
-            flex: 1,
+            // flex: 1,
             marginHorizontal: 12,
+            // backgroundColor: "red",
           }}
         >
-          <View style={{ flex: 1 }}>
+          <View style={{ position: "absolute", left: -64, bottom: 3 }}>
             <StoryModal item={item} />
           </View>
 
-          <Animated.View style={{ transform: [{ translateX: anim.current }] }}>
+          <Animated.View
+            style={{
+              transform: [{ translateX: anim.current }],
+              marginRight: 40,
+            }}
+          >
             <MaterialCommunityIcons
               onPress={() => handleRemoveStory(item)}
               name="delete-empty"

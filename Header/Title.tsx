@@ -2,14 +2,27 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 import MenuButton from "./MenuButton";
 import Options from "./Options";
+import Notifications from "./Notifications";
 
 const Title = () => {
   return (
     <View>
       <View style={styles.buttonContainer}>
         <MenuButton />
+
         <Text style={styles.button}>Storyat</Text>
-        <Options />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            // marginRight: 5,
+            right: 30,
+          }}
+        >
+          <Notifications />
+          <Options />
+        </View>
       </View>
       <View
         style={{

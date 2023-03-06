@@ -56,8 +56,6 @@ const StoryModal = (item) => {
   const navigation = useNavigation<any>();
   const [storyImage, setStoryImage] = useState("");
 
-  console.log("777777", storyImage);
-
   let original = { story };
 
   let { story: clonedItem } = original;
@@ -316,7 +314,7 @@ const StoryModal = (item) => {
       <Pressable
         style={
           pageName === "item"
-            ? { opacity: modalVisible ? 0 : 1, bottom: 20, right: 100 }
+            ? { opacity: modalVisible ? 0 : 1 }
             : [styles.buttonOpen, { opacity: modalVisible ? 0 : 1 }]
         }
         onPress={() => setModalVisible(true)}

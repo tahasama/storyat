@@ -28,6 +28,7 @@ import {} from "./state/reducers/repliesSlice";
 import {
   addCommentNumberToStory,
   getstoriesData,
+  getStory,
   substractCommentNumberToStory,
 } from "./state/reducers/storiesSlice";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -55,6 +56,45 @@ const Item = ({ navigation, route }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [bodyVisibilty, setBodyVisibilty] = useState(true);
+  const { story, closedAppValue } = useAppSelector(getstoriesData);
+
+  const xxx = {
+    item: {
+      applauds: ["izECchZtdI4U7f3fGudN"],
+      avatar: "https://picsum.photos/id/765/200/300",
+      brokens: ["izECchZtdI4U7f3fGudN"],
+      compassions: [],
+      content: "Hu",
+      id: "VE1uttoyEetTMczHhbdT",
+      justNos: [],
+      numOfComments: 1,
+      pushToken: "ExponentPushToken[gIyviaOontOAP_MHFxRGT8]",
+      storyImage: "",
+      timestamp: 1678033454500,
+      title: "Tj",
+      username: null,
+      writerId: "izECchZtdI4U7f3fGudN",
+    },
+  };
+  const yyy = {
+    applauds: ["izECchZtdI4U7f3fGudN"],
+    avatar: "https://picsum.photos/id/765/200/300",
+    brokens: [],
+    compassions: [],
+    content: "Hu",
+    id: "VE1uttoyEetTMczHhbdT",
+    justNos: [],
+    numOfComments: 1,
+    storyImage: "",
+    timestamp: 1678033454500,
+    title: "Tj",
+    username: null,
+    writerId: "izECchZtdI4U7f3fGudN",
+  };
+
+  // useEffect(() => {
+  //   dispatch(getStory(ccc.item.id)).then(() => console.log(";;;;;;;", story));
+  // }, []);
 
   function schedulePushNotification() {
     let response = fetch("https://exp.host/--/api/v2/push/send", {
@@ -66,7 +106,9 @@ const Item = ({ navigation, route }) => {
       body: JSON.stringify({
         to: route.params.item.pushToken,
         title: "New Comment",
-        body: ` ${user.username}  commented on your story (${ccc.item.title} ), check it out !`,
+        body: ` ${
+          user.username ? user.username : "Someone"
+        }  commented on your story (${ccc.item.title} ), check it out !`,
         // channelId: "vvv",
       }),
     });
@@ -245,7 +287,7 @@ const Item = ({ navigation, route }) => {
             borderRadius: 8,
           }}
         >
-          Comments :
+          Comments :{closedAppValue}
         </Text>
       </View>
     </View>

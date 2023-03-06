@@ -1,10 +1,10 @@
 import { StatusBar, StyleSheet, Vibration, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Item from "./Item";
 import Login from "./Login/Login";
 import Logout from "./Header/Logout";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "./firebase";
 import { getAuthData, saveUser } from "./state/reducers/authSlice";
@@ -17,7 +17,11 @@ import Reply from "./Reply";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import Profile from "./Profile";
 import Actions from "./Actions";
-import { getstoriesData } from "./state/reducers/storiesSlice";
+import {
+  closedApp,
+  getstoriesData,
+  getStory,
+} from "./state/reducers/storiesSlice";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -33,6 +37,45 @@ const Index = () => {
 
   const [notif, setNotif] = useState(true);
 
+  // const [notification, setNotification] = useState(false);
+  const notificationListener = useRef(null);
+  const responseListener = useRef(null);
+
+  const addItemToAsyncStorageArray = async (notificationState) => {
+    try {
+      const existingArray = await AsyncStorage.getItem("myArray");
+
+      const parsedArray = existingArray ? JSON.parse(existingArray) : [];
+      parsedArray.length >= 6 && parsedArray.shift;
+
+      parsedArray.push(notificationState);
+      await AsyncStorage.setItem("myArray", JSON.stringify(parsedArray));
+      console.log("Item added to array in AsyncStorage:", notificationState);
+      await AsyncStorage.getItem("myArray").then((res) =>
+        console.log("dddddddd", JSON.parse(res).length)
+      );
+    } catch (error) {
+      console.log("Error adding item to array in AsyncStorage:", error);
+    }
+  };
+
+  const lastNotificationResponse: any =
+    Notifications.useLastNotificationResponse();
+  React.useEffect(() => {
+    if (
+      lastNotificationResponse &&
+      lastNotificationResponse.actionIdentifier ===
+        Notifications.DEFAULT_ACTION_IDENTIFIER
+    ) {
+      dispatch(closedApp("HAHAHAHAH!!!"));
+      addItemToAsyncStorageArray(lastNotificationResponse.notification);
+      console.log(
+        "lastNotificationResponse.notification",
+        lastNotificationResponse.notification
+      );
+    }
+  }, [lastNotificationResponse]);
+
   // const notifsSoundResult = async () =>
   //   await AsyncStorage.getItem("notifsSound");
   const notifsResult = async () => await AsyncStorage.getItem("notifs");
@@ -47,11 +90,12 @@ const Index = () => {
   useEffect(() => {
     notifsSoundResult().then((res) => setNotifSound(JSON.parse(res)));
   }, [notifsSound]);
-
+  console.log("notifs", notifSound);
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
-      shouldShowAlert: notif,
-      shouldPlaySound: notif && notifSound,
+      shouldShowAlert: notif !== null ? notif : notifs,
+      shouldPlaySound:
+        (notif || notifs) && notifSound !== null ? notifSound : notifsSound,
       shouldSetBadge: true,
     }),
   });

@@ -240,12 +240,13 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
     }
     return resultInitial;
   } catch (error) {
-    console.log("eeeeeeeeee", error);
+    console.log("rrr", error);
   }
 });
 
 export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
   try {
+    console.log("storyId", storyId);
     const res = await getDoc(doc(db, "stories", storyId));
     const username = await (
       await getDoc(doc(db, "users", res.data().writerId))
@@ -253,6 +254,7 @@ export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
     const avatar = await (
       await getDoc(doc(db, "users", res.data().writerId))
     ).data().avatar;
+    console.log("storyId results", res.data());
 
     return {
       ...res.data(),
@@ -485,6 +487,7 @@ export interface storiesProps {
     error: string;
     notifs: boolean;
     notifsSound: boolean;
+    closedAppValue: string;
   };
 }
 
@@ -520,8 +523,9 @@ export const storiesInitialState = {
   resultUpdate: {},
   IvotedData: [{ storyId: "", voter: "" }],
   error: null,
-  notifs: false,
-  notifsSound: false,
+  notifs: true,
+  notifsSound: true,
+  closedAppValue: "Wiiiiii",
 };
 
 export const storiesSlice = createSlice({
@@ -574,6 +578,9 @@ export const storiesSlice = createSlice({
     ActivateNotificationsSound: (state, action) => {
       state.notifsSound = action.payload;
     },
+    closedApp: (state, action) => {
+      state.closedAppValue = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
@@ -587,6 +594,8 @@ export const storiesSlice = createSlice({
       state.resultUpdate = action.payload;
     });
     builder.addCase(getStory.fulfilled, (state, action) => {
+      console.log("storyId results payload", action.payload);
+
       state.story = action.payload;
     });
     builder.addCase(myStories.fulfilled, (state, action) => {
@@ -614,5 +623,6 @@ export const {
   Ivoted,
   ActivateNotificationsSound,
   ActivateNotifications,
+  closedApp,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

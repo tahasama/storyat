@@ -62,6 +62,7 @@ const HeadOfStory = ({ item }: any) => {
         flexDirection: "row",
         justifyContent: "flex-start",
         alignItems: "center",
+        zIndex: 99,
       }}
     >
       <Image
@@ -91,29 +92,29 @@ const HeadOfStory = ({ item }: any) => {
         <View
           style={{
             flexDirection: "row",
-            justifyContent: "center",
+            justifyContent: "flex-end",
             alignItems: "center",
-            width: "100%",
-            // flex: 1,
-            marginHorizontal: 12,
-            // backgroundColor: "red",
+            // width: "100%",
+            flex: 1,
+            // marginHorizontal: 12,
           }}
         >
-          <View style={{ position: "absolute", left: -64, bottom: 3 }}>
+          <View style={{ position: "absolute" }}>
+            {/* <View> */}
             <StoryModal item={item} />
           </View>
 
           <Animated.View
             style={{
               transform: [{ translateX: anim.current }],
-              marginRight: 40,
+              marginRight: 18,
             }}
           >
             <MaterialCommunityIcons
               onPress={() => handleRemoveStory(item)}
               name="delete-empty"
               color={"#669393"}
-              size={28}
+              size={34}
             />
           </Animated.View>
         </View>

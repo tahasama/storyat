@@ -33,7 +33,6 @@ const UsernameModal = () => {
   const [status, setStatus] = useState("");
   const [usernameError, setUsernameError] = useState(false);
   const { user } = useAppSelector(getAuthData);
-  const pageName = useRoute().name;
 
   const handleUsername = async () => {
     username !== ""
@@ -47,8 +46,7 @@ const UsernameModal = () => {
               type: "info",
             })
           )
-      : // .then(() => dispatch(getUser(user.id)))
-        setUsernameError(true);
+      : setUsernameError(true);
   };
 
   useEffect(() => {
@@ -136,24 +134,11 @@ const UsernameModal = () => {
         </View>
         <FlashMessage position="top" />
       </Modal>
-      {/* <Pressable
-        style={[styles.buttonOpen, { opacity: modalVisible ? 0 : 1 }]}
-        onPress={() => setModalVisible(true)}
-      >
-        <AntDesign
-          style={styles.textStyle}
-          name="plus"
-          size={30}
-          color="#646464"
-        />
-      </Pressable> */}
+
       <Pressable
-        //   onPress={() => HandleUsername()}
         onPress={() => setModalVisible(true)}
         style={{
           flexDirection: "row",
-          // alignItems: "center",
-          // justifyContent: "flex-start",
           backgroundColor: "#7f724c",
           paddingHorizontal: 22,
           paddingVertical: 5,

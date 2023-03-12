@@ -30,7 +30,7 @@ export const updateUserImage = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );
@@ -41,7 +41,7 @@ export const getUser = createAsyncThunk("getUser", async (userId: any) => {
     return { ...res.data(), id: res.id };
   } catch (e) {
     console.error("Error adding document: ", e);
-    Alert.alert("action failed please try again");
+    // Alert.alert("action failgain,", e);
   }
 });
 
@@ -55,7 +55,7 @@ export const updateUsername = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );

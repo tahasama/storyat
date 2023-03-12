@@ -10,29 +10,23 @@ import {
   TouchableOpacity,
   StatusBar,
   ActivityIndicator,
-  Image,
 } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import { getAuthData } from "./state/reducers/authSlice";
 import {
   addStories,
+  getStatus,
   getstoriesData,
   getStory,
   loadStories,
   reloadInitialData,
   updateStories,
-  updateStoriesState,
 } from "./state/reducers/storiesSlice";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Feather from "@expo/vector-icons/Feather";
 import * as ImagePicker from "expo-image-picker";
-import {
-  getDownloadURL,
-  getMetadata,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "./firebase";
 
 const windowWidth = Dimensions.get("window").width;
@@ -45,13 +39,12 @@ const StoryModal = (item) => {
   const [content, setContent] = useState(
     item && item.content ? item.item.content : ""
   );
-  const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [contentError, setContentError] = useState(false);
   const { user } = useAppSelector(getAuthData);
-  const { story } = useAppSelector(getstoriesData);
+  const { story, storyStatus } = useAppSelector(getstoriesData);
   const pageName = useRoute().name;
   const navigation = useNavigation<any>();
   const [storyImage, setStoryImage] = useState("");
@@ -63,13 +56,14 @@ const StoryModal = (item) => {
 
   const handleStory = async () => {
     setLoading(true);
+
     pageName !== "item"
       ? (content !== "" || storyImage !== "") && title !== ""
         ? dispatch(addStories({ title, userId: user.id, content, storyImage }))
             .then(({ payload }: any) => dispatch(getStory(payload.id)))
             .then(() =>
               setTimeout(() => {
-                setStatus("success");
+                dispatch(getStatus("success"));
               }, 50)
             )
             .then(() => (setContent(""), setTitle(""), setStoryImage("")))
@@ -87,17 +81,15 @@ const StoryModal = (item) => {
             storyImage:
               storyImage !== ""
                 ? storyImage
-                : item && item.item && item.storyImage,
+                : item && item.item && item.item.storyImage,
           })
         )
-          .then(() => dispatch(getStory(item.item.id)))
-          .then(
-            () => (
-              setStatus("success"),
-              setContent(""),
-              setTitle(""),
-              setStoryImage("")
-            )
+          .then(({ payload }: any) => dispatch(getStory(payload.id)))
+          .then(() =>
+            setTimeout(() => {
+              dispatch(getStatus("success"));
+              setContent(""), setTitle(""), setStoryImage("");
+            }, 50)
           );
   };
 
@@ -110,19 +102,20 @@ const StoryModal = (item) => {
   }, [modalVisible]);
 
   useEffect(() => {
-    status === "success" &&
+    storyStatus === "success" &&
       setTimeout(() => {
         setLoading(false);
-        setModalVisible(!modalVisible);
-        setStatus("ready");
+        setModalVisible(false);
+        dispatch(getStatus("ready"));
 
-        dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
+        pageName !== "item" &&
+          dispatch(loadStories()).then(() => dispatch(reloadInitialData(true)));
 
         pageName !== "item"
           ? navigation.navigate("item", { item: cloned })
           : navigation.navigate("item", { item: cloned });
       }, 50);
-  }, [status]);
+  }, [storyStatus]);
 
   const getNumber = () => {
     let numbersString = "";
@@ -139,9 +132,7 @@ const StoryModal = (item) => {
       allowsEditing: true,
       quality: 1,
     });
-    console.log("storyImage", storyImage);
     if (!result.canceled) {
-      // dispatch(updateUserImageState(result.assets[0].uri));  :+ ".jpg"
       const response = await fetch(result.assets[0].uri);
       const blob = await response.blob();
       const storageRef =
@@ -162,7 +153,6 @@ const StoryModal = (item) => {
 
         .catch((error) => {
           setImageLoading(false);
-          console.log("error", error);
         });
     } else {
       setImageLoading(false);
@@ -193,7 +183,7 @@ const StoryModal = (item) => {
             style={[
               styles.modalView,
               {
-                height: windowHeight * 0.6,
+                height: windowHeight * 0.57,
                 width: windowWidth,
               },
             ]}
@@ -213,7 +203,7 @@ const StoryModal = (item) => {
               />
               <TextInput
                 multiline
-                numberOfLines={8}
+                numberOfLines={7}
                 placeholder={
                   contentError
                     ? "..you can write your story , or add an image.. or both :)"
@@ -298,7 +288,7 @@ const StoryModal = (item) => {
             <Pressable
               style={[styles.buttonClose]}
               onPress={() => (
-                setModalVisible(!modalVisible), setStatus("ready")
+                setModalVisible(!modalVisible), dispatch(getStatus("ready"))
               )}
             >
               <AntDesign
@@ -314,7 +304,12 @@ const StoryModal = (item) => {
       <Pressable
         style={
           pageName === "item"
-            ? { opacity: modalVisible ? 0 : 1 }
+            ? {
+                opacity: modalVisible ? 0 : 1,
+                position: "absolute",
+                right: 20,
+                top: 24,
+              }
             : [styles.buttonOpen, { opacity: modalVisible ? 0 : 1 }]
         }
         onPress={() => setModalVisible(true)}
@@ -327,7 +322,7 @@ const StoryModal = (item) => {
             color="#646464"
           />
         ) : (
-          <Feather name="edit" color={"#244f76"} size={24} />
+          <Feather name="edit" color={"#244f76"} size={28} />
         )}
       </Pressable>
     </View>
@@ -339,16 +334,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 40,
     width: windowWidth,
   },
   modalView: {
     margin: 20,
     backgroundColor: "#5b6c8f",
     borderRadius: 20,
-    // width: windowWidth,
     paddingVertical: 50,
     paddingHorizontal: 17,
+    top: 10,
   },
 
   buttonOpen: {

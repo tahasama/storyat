@@ -58,44 +58,6 @@ const Item = ({ navigation, route }) => {
   const [bodyVisibilty, setBodyVisibilty] = useState(true);
   const { story, closedAppValue } = useAppSelector(getstoriesData);
 
-  const xxx = {
-    item: {
-      applauds: ["izECchZtdI4U7f3fGudN"],
-      avatar: "https://picsum.photos/id/765/200/300",
-      brokens: ["izECchZtdI4U7f3fGudN"],
-      compassions: [],
-      content: "Hu",
-      id: "VE1uttoyEetTMczHhbdT",
-      justNos: [],
-      numOfComments: 1,
-      pushToken: "ExponentPushToken[gIyviaOontOAP_MHFxRGT8]",
-      storyImage: "",
-      timestamp: 1678033454500,
-      title: "Tj",
-      username: null,
-      writerId: "izECchZtdI4U7f3fGudN",
-    },
-  };
-  const yyy = {
-    applauds: ["izECchZtdI4U7f3fGudN"],
-    avatar: "https://picsum.photos/id/765/200/300",
-    brokens: [],
-    compassions: [],
-    content: "Hu",
-    id: "VE1uttoyEetTMczHhbdT",
-    justNos: [],
-    numOfComments: 1,
-    storyImage: "",
-    timestamp: 1678033454500,
-    title: "Tj",
-    username: null,
-    writerId: "izECchZtdI4U7f3fGudN",
-  };
-
-  // useEffect(() => {
-  //   dispatch(getStory(ccc.item.id)).then(() => console.log(";;;;;;;", story));
-  // }, []);
-
   function schedulePushNotification() {
     let response = fetch("https://exp.host/--/api/v2/push/send", {
       method: "POST",
@@ -109,6 +71,24 @@ const Item = ({ navigation, route }) => {
         body: ` ${
           user.username ? user.username : "Someone"
         }  commented on your story (${ccc.item.title} ), check it out !`,
+        // channelId: "vvv",
+      }),
+    });
+  }
+
+  function schedulePushNotification2() {
+    let response = fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: route.params.item.pushToken,
+        title: "New Comment",
+        body: ` ${
+          user.username ? user.username : "Someone"
+        }  upvoted your comment on story (${ccc.item.title} ), check it out !`,
         // channelId: "vvv",
       }),
     });
@@ -186,6 +166,7 @@ const Item = ({ navigation, route }) => {
     );
     dispatch(loadcomments(ccc.item.id));
     setLikeLoading(false);
+    schedulePushNotification2();
   };
 
   const handleDislike = (item) => {
@@ -287,7 +268,7 @@ const Item = ({ navigation, route }) => {
             borderRadius: 8,
           }}
         >
-          Comments :{closedAppValue}
+          Comments :
         </Text>
       </View>
     </View>

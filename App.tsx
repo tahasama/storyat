@@ -16,8 +16,19 @@ import {
 import * as Notificationz from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Linking } from "react-native";
+import * as Updates from "expo-updates";
 
 function App() {
+  // async function checkForUpdates() {
+  //   const update = await Updates.checkForUpdateAsync();
+  //   if (update.isAvailable) {
+  //     await Updates.fetchUpdateAsync();
+  //     // Display a notification to the user
+  //     Updates.reloadAsync();
+  //   }
+  // }
+
+  // checkForUpdates();
   return (
     <Provider store={store}>
       <Index />

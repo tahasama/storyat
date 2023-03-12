@@ -241,6 +241,7 @@ export const loadStories = createAsyncThunk("loadStories", async () => {
     return resultInitial;
   } catch (error) {
     console.log("rrr", error);
+    // Alert.alert("action failed plegain", error);
   }
 });
 
@@ -263,7 +264,7 @@ export const getStory = createAsyncThunk("getStory", async (storyId: any) => {
       avatar: avatar,
     };
   } catch (e) {
-    Alert.alert("action failed please try again");
+    // Alert.alert("action failed please", e);
   }
 });
 
@@ -301,7 +302,7 @@ export const addStories = createAsyncThunk(
         console.log("result getDoc errorrrrr", error);
       }
     } catch (e) {
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failed please try", e);
     }
   }
 );
@@ -335,7 +336,8 @@ export const updateStories = createAsyncThunk(
 
       return res;
     } catch (e) {
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failed pleasn", e);
+      console.log("rererere", e);
     }
   }
 );
@@ -348,7 +350,7 @@ export const removeStory = createAsyncThunk(
 
       return res;
     } catch (e) {
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failed pleas", e);
     }
   }
 );
@@ -362,7 +364,7 @@ export const addCommentNumberToStory = createAsyncThunk(
       });
       return res;
     } catch (e) {
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failed pleasn", e);
     }
   }
 );
@@ -376,7 +378,7 @@ export const substractCommentNumberToStory = createAsyncThunk(
       });
       return res;
     } catch (e) {
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failed pleaain", e);
     }
   }
 );
@@ -488,6 +490,7 @@ export interface storiesProps {
     notifs: boolean;
     notifsSound: boolean;
     closedAppValue: string;
+    storyStatus: string;
   };
 }
 
@@ -526,6 +529,7 @@ export const storiesInitialState = {
   notifs: true,
   notifsSound: true,
   closedAppValue: "Wiiiiii",
+  storyStatus: "",
 };
 
 export const storiesSlice = createSlice({
@@ -581,6 +585,9 @@ export const storiesSlice = createSlice({
     closedApp: (state, action) => {
       state.closedAppValue = action.payload;
     },
+    getStatus: (state, action) => {
+      state.storyStatus = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(loadStories.fulfilled, (state, action: any) => {
@@ -624,5 +631,6 @@ export const {
   ActivateNotificationsSound,
   ActivateNotifications,
   closedApp,
+  getStatus,
 } = storiesSlice.actions;
 export default storiesSlice.reducer;

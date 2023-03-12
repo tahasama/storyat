@@ -49,6 +49,46 @@ const Reply = ({ navigation, route }) => {
     dispatch(loadreplies(ccc.item.id));
   }, []);
 
+  function schedulePushNotification() {
+    let response = fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: route.params.item.pushToken,
+        title: "New Reply",
+        body: ` ${
+          user.username ? user.username : "Someone"
+        }  replied to your comment on story (${
+          ccc.item.title
+        } ), check it out !`,
+        // channelId: "vvv",
+      }),
+    });
+  }
+
+  function schedulePushNotification2() {
+    let response = fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: route.params.item.pushToken,
+        title: "New Reply",
+        body: ` ${
+          user.username ? user.username : "Someone"
+        }  upvoted your reply on comment for story (${
+          ccc.item.title
+        } ), check it out !`,
+        // channelId: "vvv",
+      }),
+    });
+  }
+
   const handlereply = async () => {
     setLoading(true);
     dispatch(
@@ -72,7 +112,9 @@ const Reply = ({ navigation, route }) => {
       .then(() => Keyboard.dismiss());
 
     setTimeout(() => {
-      dispatch(loadreplies(ccc.item.id)).then(() => setLoading(false));
+      dispatch(loadreplies(ccc.item.id))
+        .then(() => setLoading(false))
+        .then(() => schedulePushNotification());
     }, 250);
   };
 
@@ -104,6 +146,7 @@ const Reply = ({ navigation, route }) => {
       )
         .then(() => dispatch(loadreplies(ccc.item.id)))
         .then(() => setLikeLoading(false))
+        .then(() => schedulePushNotification2())
     );
   };
 

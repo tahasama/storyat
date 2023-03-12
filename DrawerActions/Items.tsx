@@ -29,7 +29,7 @@ import * as Notifications from "expo-notifications";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
-const Items = () => {
+const Items = ({ route }) => {
   const dispatch = useAppDispatch();
 
   const result = async () => await AsyncStorage.getItem("myStoredDataRandom");
@@ -38,6 +38,7 @@ const Items = () => {
   const [data, setData] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { resultInitial } = useAppSelector(getstoriesData);
+  // const route = useRoute();
 
   useEffect(() => {
     setLoading(true),
@@ -45,7 +46,7 @@ const Items = () => {
         .then((res) => setData(JSON.parse(res)))
         .then(() => dispatch(reloadInitialData(false)))
         .then(() => setLoading(false));
-  }, []);
+  }, [resultInitial]);
 
   const onRefresh = async () => {
     dispatch(loadStories());
@@ -57,11 +58,11 @@ const Items = () => {
     setIsRefreshing(false);
   };
 
-  // useEffect(() => {
-  //   route.params &&
-  //     route.params.storyId &&
-  //     setData(data.filter((x: any) => x.id !== route.params.storyId));
-  // }, [route]);
+  useEffect(() => {
+    route.params &&
+      route.params.storyId &&
+      setData(data.filter((x: any) => x.id !== route.params.storyId));
+  }, [route]);
 
   return (
     <SafeAreaView style={styles.container}>

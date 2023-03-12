@@ -305,8 +305,9 @@ const Options = () => {
                 onPress={() => {
                   signOut(auth)
                     .then(() => {
-                      setTimeout(() => {
+                      setTimeout(async () => {
                         dispatch(resetUser({}));
+                        await AsyncStorage.clear();
                         navigation.replace("login", "noSplash");
                       }, 1000);
                     })

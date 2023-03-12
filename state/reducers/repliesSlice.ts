@@ -68,7 +68,7 @@ export const addreplies = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );
@@ -79,7 +79,7 @@ export const getreply = createAsyncThunk("getreply", async (replyId: any) => {
     return res;
   } catch (e) {
     console.error("Error adding document: ", e);
-    Alert.alert("action failed please try again");
+    // Alert.alert("action failgain", e);
   }
 });
 
@@ -96,7 +96,7 @@ export const addreplyLike = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );
@@ -115,7 +115,7 @@ export const addreplyDislike = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );

@@ -141,12 +141,16 @@ export const loadcomments = createAsyncThunk(
         const avatar = await (
           await getDoc(doc(db, "users", docs.data().commenter))
         ).data().avatar;
+        const pushToken = await (
+          await getDoc(doc(db, "users", docs.data().commenter))
+        ).data().pushToken;
 
         return {
           ...docs.data(),
           id: docs.id,
           username: username,
           avatar: avatar,
+          pushToken: pushToken,
         };
       });
       const result = await Promise.all(promises);
@@ -173,7 +177,7 @@ export const addcomments = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );
@@ -188,7 +192,7 @@ export const addReplyNumberToComment = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );
@@ -203,7 +207,7 @@ export const substractReplyNumberToComment = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );
@@ -221,7 +225,7 @@ export const addCommentLike = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );
@@ -240,7 +244,7 @@ export const addCommentDislike = createAsyncThunk(
       return res;
     } catch (e) {
       console.error("Error adding document: ", e);
-      Alert.alert("action failed please try again");
+      // Alert.alert("action failgain", e);
     }
   }
 );

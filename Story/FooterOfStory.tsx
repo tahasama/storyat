@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
 import { getAuthData } from "../state/reducers/authSlice";
-import {
-  getstoriesData,
-  Ivoted,
-  ReactedToStories,
-  vote,
-} from "../state/reducers/storiesSlice";
+import { Ivoted, ReactedToStories, vote } from "../state/reducers/storiesSlice";
 import Reaction from "./Reaction";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FooterOfStory = ({ item }: any) => {
   const dispatch = useAppDispatch();
@@ -39,7 +33,7 @@ const FooterOfStory = ({ item }: any) => {
           storyId: item.id,
           recipient: item.pushToken,
         },
-        channelId: "vvv",
+        // channelId: "vvv",
       }),
     });
   }

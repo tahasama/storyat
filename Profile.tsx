@@ -43,7 +43,6 @@ const Profile = ({ route }: any) => {
   const navigation = useNavigation<any>();
   const isFocused = useIsFocused();
   const profileUser = route.params.notActualUser ? newuser : user;
-  console.log("eeee", user);
 
   useEffect(() => {
     let isSubscribed =

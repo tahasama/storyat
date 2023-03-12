@@ -63,17 +63,18 @@ const Login = ({ navigation, route }) => {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-      if (finalStatus !== "granted") {
-        alert(
-          "(Bad connection... ) Please close and repoen app, if you have trouble logging in "
-        );
-        return;
-      }
+      // if (finalStatus !== "granted") {
+      //   alert(
+      //     "(Bad connection... ) Please close and repoen app, if you have trouble logging in "
+      //   );
+      //   return;
+      // }
       token = (await Notifications.getExpoPushTokenAsync()).data;
       console.log(token);
-    } else {
-      alert("Must use physical device for Push Notifications");
     }
+    //  else {
+    //   alert("Must use physical device for Push Notifications");
+    // }
 
     return token;
   }
@@ -99,7 +100,7 @@ const Login = ({ navigation, route }) => {
     error &&
       showMessage({
         message: "Error",
-        description: "Please  hit authorise to be able to get notifications",
+        description: "Please press authorise to be able to get notifications",
         type: "danger",
       });
   }, [error]);
@@ -120,7 +121,7 @@ const Login = ({ navigation, route }) => {
         try {
           querySnapshot === 0 &&
             (await addDoc(collection(db, "users"), {
-              username: cred.user.displayName,
+              username: cred.user.email.split("@")[0],
               firebaseUserId: cred.user.uid,
               writer: cred.user.email,
               timestamp: Date.now(),
@@ -128,12 +129,11 @@ const Login = ({ navigation, route }) => {
               pushToken: expoPushToken,
             }));
         } catch (e) {
-          Alert.alert("action failed please try again");
+          // Alert.alert("action failed ..........", e);
         }
       })
       .catch((err) => {
         Alert.alert(
-          "SomeThing's wrong ...",
           err.code === "auth/user-not-found"
             ? "wrong email, please try again"
             : err.code === "auth/wrong-password"
@@ -171,7 +171,7 @@ const Login = ({ navigation, route }) => {
             }));
         } catch (e) {
           console.error("Error adding document: ", e);
-          Alert.alert("action failed please try again");
+          // Alert.alert("action failed .........2222", e);
         }
       })
       .catch((error) =>
@@ -201,7 +201,7 @@ const Login = ({ navigation, route }) => {
                   Storyat's{" "}
                 </Text>
                 <Text
-                  style={{ color: "#fccccc", textDecorationLine: "underline" }}
+                  style={{ color: "#dccccc", textDecorationLine: "underline" }}
                   onPress={() =>
                     Linking.openURL(
                       "https://www.privacypolicies.com/live/1fd4e6d1-ec5c-4a4f-b1dc-cca55f96360f"

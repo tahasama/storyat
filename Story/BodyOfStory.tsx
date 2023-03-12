@@ -35,7 +35,13 @@ const BodyOfStory = ({ item }: any) => {
 
   const MemoizedImage = React.memo(({ uri }: any) => {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Image
           source={{
             uri: uri,
@@ -50,7 +56,12 @@ const BodyOfStory = ({ item }: any) => {
     );
   });
   return (
-    <>
+    <View
+      style={{
+        // backgroundColor: "red",
+        zIndex: 1,
+      }}
+    >
       <TouchableOpacity
         onPress={() => {
           handleOnpress(item);
@@ -65,7 +76,7 @@ const BodyOfStory = ({ item }: any) => {
           {"\t"} {item.content}
         </Text>
       </TouchableOpacity>
-    </>
+    </View>
   );
 };
 

@@ -55,7 +55,7 @@ const Notifications = () => {
       const existingArray = await AsyncStorage.getItem("myArray");
 
       const parsedArray = existingArray ? JSON.parse(existingArray) : [];
-      parsedArray.length >= 6 && parsedArray.shift;
+      parsedArray.length >= 6 && parsedArray.shift();
       parsedArray.push(notificationState);
       await AsyncStorage.setItem("myArray", JSON.stringify(parsedArray));
     } catch (error) {}
@@ -137,57 +137,64 @@ const Notifications = () => {
             style={[
               styles.modalView,
               {
-                height: windowHeight / 1.7,
+                height: notif ? windowHeight / 1.7 : windowHeight / 6,
                 width: windowWidth,
               },
             ]}
           >
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {!loadingGoToNotif ? (
-                notif.reverse().map((x: any, index) => (
-                  <TouchableOpacity
-                    disabled={notif.length === 0 && true}
-                    key={index}
-                    onPress={() => goToItem(x.request.content.data.storyId)}
-                  >
-                    <Text style={{ color: "#97897b", fontSize: 16 }}>
-                      {x.request.content.body}
-                    </Text>
+            {notif ? (
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {!loadingGoToNotif ? (
+                  notif &&
+                  notif.reverse().map((x: any, index) => (
+                    <TouchableOpacity
+                      disabled={notif && notif.length === 0 && true}
+                      key={index}
+                      onPress={() => goToItem(x.request.content.data.storyId)}
+                    >
+                      <Text style={{ color: "#97897b", fontSize: 16 }}>
+                        {x.request.content.body}
+                      </Text>
 
+                      <View
+                        style={{
+                          borderBottomColor: "grey",
+                          borderBottomWidth: StyleSheet.hairlineWidth,
+                          margin: 15,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <>
                     <View
                       style={{
-                        borderBottomColor: "grey",
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        margin: 15,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flex: 1,
                       }}
                     />
-                  </TouchableOpacity>
-                ))
-              ) : (
-                <>
-                  <View
-                    style={{
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flex: 1,
-                    }}
-                  />
-                  <ActivityIndicator size="large" />
-                  <Text
-                    style={{ color: "#97897b", fontSize: 16, marginTop: 30 }}
-                  >
-                    Navigating...
-                  </Text>
-                </>
-              )}
-            </ScrollView>
+                    <ActivityIndicator size="large" />
+                    <Text
+                      style={{ color: "#97897b", fontSize: 16, marginTop: 30 }}
+                    >
+                      Navigating...
+                    </Text>
+                  </>
+                )}
+              </ScrollView>
+            ) : (
+              <Text style={{ color: "#97897b", fontSize: 14 }}>
+                No notifications yet.
+              </Text>
+            )}
           </View>
         </View>
       </Modal>
       <TouchableOpacity
         onPress={removeNotification}
         style={{ right: 4 }}
-        disabled={notif.length === 0 && true}
+        disabled={notif && notif.length === 0 && true}
       >
         <AntDesign name="notification" color={"#646464"} size={30} />
         {notificationState && (

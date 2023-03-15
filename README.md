@@ -36,5 +36,9 @@ A mobile App for sharing, commenting and reacting to posts
   - users can navigate to their actions
   
 ![storyat7](https://user-images.githubusercontent.com/69104880/225375827-47139e21-5407-48b6-a28f-86ed9b8ec252.png)
+
+  - Users can check notifications when received, and by pressing on itm it navigates to the story
+  
 ![storyat8](https://user-images.githubusercontent.com/69104880/225376120-a7d48dc4-c3ed-46ae-8f5d-df40083eb11d.png)
+
 ![storyat9](https://user-images.githubusercontent.com/69104880/225376566-4ee29bfa-fe32-4061-b51f-9e46b00fa747.png)

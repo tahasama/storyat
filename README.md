@@ -4,4 +4,5 @@ A mobile App for sharing, commenting and reacting to posts
 
 
 
-<img src="(https://user-images.githubusercontent.com/69104880/225370389-2c9ad654-6fe7-42d9-8ac8-8858a23a84fb.jpg " width="100" height="100">
+
+![Screenshot_20230223_105334_Expo Go](https://user-images.githubusercontent.com/69104880/225371355-20d10396-2786-4e3f-931f-7e832b9e54fc.jpg|width=100px)

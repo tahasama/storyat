@@ -3,7 +3,8 @@ A mobile App for sharing, commenting and reacting to posts
 
 
   - Splash screen with animation going up
-  - then  - Login page with register and Google if not logged 
+  - then 
+    - Login page with register and Google if not logged 
 
 ![storyat1](https://user-images.githubusercontent.com/69104880/225373492-ee6dd2c1-1ba6-43a6-8093-112e00e0e4d3.png)
 ![storyat2](https://user-images.githubusercontent.com/69104880/225373983-138b42b3-4571-4c81-973f-e3b67bf07f8a.png)

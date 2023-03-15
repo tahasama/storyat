@@ -3,33 +3,28 @@ A mobile App for sharing, commenting and reacting to posts
 
 
   - Splash screen with animation going up
+  - then  - Login page with register and Google if not logged 
 
 ![storyat1](https://user-images.githubusercontent.com/69104880/225373492-ee6dd2c1-1ba6-43a6-8093-112e00e0e4d3.png)
-
-  - Login page with register and Google
-  
 ![storyat2](https://user-images.githubusercontent.com/69104880/225373983-138b42b3-4571-4c81-973f-e3b67bf07f8a.png)
 
-  - Main page with randomly ordered stories, it could be written or image or both
+  - else
+    - Main page with randomly ordered stories, it could be written or image or both
+    - A modal to create a story + image
   
 ![storyat10](https://user-images.githubusercontent.com/69104880/225413866-feefbb3d-ce22-4da4-b3c6-9b0fea17484a.png)
-
-  - A modal to create a story + image
-
 ![storyat4](https://user-images.githubusercontent.com/69104880/225375153-a9d4dcaa-95a8-4f26-9bb0-344dc601ad09.png)
 
-  - A drawer to filter by reactions
-  
-![storyat5](https://user-images.githubusercontent.com/69104880/225375416-fe28661e-018a-4d63-a484-25e3dfb70b6a.png)
-
-  - by pressing the profile icon m a modal opens up with possibility to 
+  - A drawer to filter by reactions on left of header
+  - pressing the profile icon on the right of the header, a modal opens up with possibility to 
     - navigate to user's own profile
     - navigate to user's own actions,
     - Policy privacy
     - mute/unmute notifications
     - activate/deactivate notifications
     - logout
-    - 
+    
+![storyat5](https://user-images.githubusercontent.com/69104880/225375416-fe28661e-018a-4d63-a484-25e3dfb70b6a.png)    
 ![storyat6](https://user-images.githubusercontent.com/69104880/225375574-d2104195-17c0-4095-9a8a-8a6c7d36a318.png)
 
   - in profile users can see their action, stats, etc...

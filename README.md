@@ -11,6 +11,7 @@ A mobile App for sharing, commenting and reacting to posts
 ![storyat2](https://user-images.githubusercontent.com/69104880/225373983-138b42b3-4571-4c81-973f-e3b67bf07f8a.png)
 
   - Main page with randomly ordered stories, it could be written or image or both
+  
 ![storyat3](https://user-images.githubusercontent.com/69104880/225374972-fb666229-e005-4303-a3ae-904b3c93cc92.png)
 
   - A modal to create a story + image
@@ -28,6 +29,7 @@ A mobile App for sharing, commenting and reacting to posts
     - mute/unmute notifications
     - activate/deactivate notifications
     - logout
+    - 
 ![storyat6](https://user-images.githubusercontent.com/69104880/225375574-d2104195-17c0-4095-9a8a-8a6c7d36a318.png)
 
   - in profile users can see their action, stats, etc...

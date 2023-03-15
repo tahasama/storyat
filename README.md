@@ -36,8 +36,6 @@ A mobile App for sharing, commenting and reacting to posts
         -  up/down vote a reply
 
 ![storyat13](https://user-images.githubusercontent.com/69104880/225423282-46548f70-dbfa-4c10-9b92-47de8d908463.png)
-
-
 ![storyat14](https://user-images.githubusercontent.com/69104880/225423292-e88952e4-8f40-438a-8fb9-fc35f2a8fc87.png)
 
 

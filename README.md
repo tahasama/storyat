@@ -41,4 +41,6 @@ A mobile App for sharing, commenting and reacting to posts
   
 ![storyat8](https://user-images.githubusercontent.com/69104880/225376120-a7d48dc4-c3ed-46ae-8f5d-df40083eb11d.png)
 
+  - in action users can see stories of all his comments, reactions,...
+
 ![storyat9](https://user-images.githubusercontent.com/69104880/225376566-4ee29bfa-fe32-4061-b51f-9e46b00fa747.png)

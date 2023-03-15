@@ -26,7 +26,20 @@ A mobile App for sharing, commenting and reacting to posts
     - logout
     
 ![storyat6](https://user-images.githubusercontent.com/69104880/225375574-d2104195-17c0-4095-9a8a-8a6c7d36a318.png)
-![storyat5](https://user-images.githubusercontent.com/69104880/225375416-fe28661e-018a-4d63-a484-25e3dfb70b6a.png)    
+![storyat5](https://user-images.githubusercontent.com/69104880/225375416-fe28661e-018a-4d63-a484-25e3dfb70b6a.png)
+
+  - users can 
+    - react to a story
+    - comment a story
+      - up/down vote a comment
+      - reply to a comment
+        -  up/down vote a reply
+
+![storyat13](https://user-images.githubusercontent.com/69104880/225423282-46548f70-dbfa-4c10-9b92-47de8d908463.png)
+
+
+![storyat14](https://user-images.githubusercontent.com/69104880/225423292-e88952e4-8f40-438a-8fb9-fc35f2a8fc87.png)
+
 
 
   - in profile users can see their action, stats, etc...

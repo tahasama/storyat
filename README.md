@@ -25,8 +25,9 @@ A mobile App for sharing, commenting and reacting to posts
     - activate/deactivate notifications
     - logout
     
-![storyat5](https://user-images.githubusercontent.com/69104880/225375416-fe28661e-018a-4d63-a484-25e3dfb70b6a.png)    
 ![storyat6](https://user-images.githubusercontent.com/69104880/225375574-d2104195-17c0-4095-9a8a-8a6c7d36a318.png)
+![storyat5](https://user-images.githubusercontent.com/69104880/225375416-fe28661e-018a-4d63-a484-25e3dfb70b6a.png)    
+
 
   - in profile users can see their action, stats, etc...
   - users can navigate to their actions

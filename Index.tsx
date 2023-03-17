@@ -54,7 +54,8 @@ const Index = () => {
     if (
       lastNotificationResponse &&
       lastNotificationResponse.actionIdentifier ===
-        Notifications.DEFAULT_ACTION_IDENTIFIER
+        (Notifications.addNotificationReceivedListener ||
+          Notifications.addNotificationResponseReceivedListener)
     ) {
       dispatch(closedApp("HAHAHAHAH!!!"));
       addItemToAsyncStorageArray(lastNotificationResponse.notification);

@@ -2,13 +2,11 @@
   "expo": {
     "name": "storyat",
     "slug": "storyat",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "updates": {
-      "checkAutomatically": "ALWAYS"
-    },
+    
     "plugins": [
       [
         "expo-notifications",
@@ -32,7 +30,7 @@
     },
     "android": {
       "package": "com.storyat",
-      "versionCode": 22,
+      "versionCode": 23,
       "googleServicesFile": "./google-services.json"
     },
     "web": {

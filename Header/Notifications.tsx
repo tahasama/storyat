@@ -55,9 +55,13 @@ const Notifications = () => {
       const existingArray = await AsyncStorage.getItem("myArray");
 
       const parsedArray = existingArray ? JSON.parse(existingArray) : [];
-      parsedArray.length >= 6 && parsedArray.shift();
+      parsedArray.length >= 10 && parsedArray.shift();
       parsedArray.push(notificationState);
       await AsyncStorage.setItem("myArray", JSON.stringify(parsedArray));
+      console.log(
+        "8888888",
+        notif.map((x) => x.request.content.data)
+      );
     } catch (error) {}
   };
 
@@ -68,16 +72,18 @@ const Notifications = () => {
 
   useEffect(() => {
     lastNotificationResponse &&
-      Notificationz.addNotificationReceivedListener(async (notification) => {
-        setNotificationState(notification);
-        addItemToAsyncStorageArray(notification);
-      });
-
-    responseListener.current =
-      Notificationz.addNotificationResponseReceivedListener((response) => {
-        setNotificationState(response.notification);
-        addItemToAsyncStorageArray(response.notification);
-      });
+      ((notificationListener.current =
+        Notificationz.addNotificationReceivedListener((notification) => {
+          setNotificationState(notification);
+          addItemToAsyncStorageArray(notification);
+        })),
+      console.log("444444444", notificationListener.current),
+      (responseListener.current =
+        Notificationz.addNotificationResponseReceivedListener((response) => {
+          setNotificationState(response.notification);
+          addItemToAsyncStorageArray(response.notification);
+        })),
+      console.log("555555555", notificationListener.current));
 
     return () => {
       if (notificationListener.current) {

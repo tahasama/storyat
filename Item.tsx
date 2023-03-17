@@ -72,6 +72,10 @@ const Item = ({ navigation, route }) => {
           user.username ? user.username : "Someone"
         }  commented on your story (${ccc.item.title} ), check it out !`,
         // channelId: "vvv",
+        data: {
+          storyId: route.params.item.id,
+          recipient: route.params.item.pushToken,
+        },
       }),
     });
   }
@@ -90,6 +94,10 @@ const Item = ({ navigation, route }) => {
           user.username ? user.username : "Someone"
         }  upvoted your comment on story (${ccc.item.title} ), check it out !`,
         // channelId: "vvv",
+        data: {
+          storyId: ccc.item.id,
+          recipient: ccc.item.pushToken,
+        },
       }),
     });
   }
@@ -130,7 +138,7 @@ const Item = ({ navigation, route }) => {
   };
 
   const handleOnpress = (item) => {
-    navigation.navigate("reply", { item: item });
+    navigation.navigate("reply", { item: item, story: ccc.item });
     setSelectedId(item.id);
   };
 

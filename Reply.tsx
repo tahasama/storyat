@@ -44,6 +44,7 @@ const Reply = ({ navigation, route }) => {
   const dispatch = useAppDispatch();
   const { result } = useAppSelector(getrepliesData);
   const [loading, setLoading] = useState(false);
+  console.log("77777777777", ccc);
 
   useEffect(() => {
     dispatch(loadreplies(ccc.item.id));
@@ -62,14 +63,19 @@ const Reply = ({ navigation, route }) => {
         body: ` ${
           user.username ? user.username : "Someone"
         }  replied to your comment on story (${
-          ccc.item.title
+          ccc.story.title
         } ), check it out !`,
         // channelId: "vvv",
+        data: {
+          storyId: ccc.item.id,
+          recipient: ccc.item.pushToken,
+        },
       }),
     });
   }
 
   function schedulePushNotification2() {
+    console.log("00000000", route.params.story.id);
     let response = fetch("https://exp.host/--/api/v2/push/send", {
       method: "POST",
       headers: {
@@ -82,9 +88,13 @@ const Reply = ({ navigation, route }) => {
         body: ` ${
           user.username ? user.username : "Someone"
         }  upvoted your reply on comment for story (${
-          ccc.item.title
+          ccc.story.title
         } ), check it out !`,
         // channelId: "vvv",
+        data: {
+          storyId: route.params.story.id,
+          recipient: route.params.item.pushToken,
+        },
       }),
     });
   }

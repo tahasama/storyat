@@ -1,4 +1,7 @@
 # storyat
+
+### made with React Native, Expo, redux toolkit and Firebase (Storage, authentification and FireStore).
+
 A mobile App for sharing, commenting and reacting to posts
 
 
